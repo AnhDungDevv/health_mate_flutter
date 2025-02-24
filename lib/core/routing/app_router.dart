@@ -1,12 +1,12 @@
 import 'package:go_router/go_router.dart';
-import 'package:health_mate/modules/auth/presentation/screens/register/screens/consultant_info_screen.dart';
-import 'package:health_mate/modules/auth/presentation/screens/register/screens/consultant_info_screen_2.dart';
-import 'package:health_mate/modules/auth/presentation/screens/register/screens/customer_info_screen.dart';
+import 'package:health_mate/modules/auth/presentation/screens/register/consultant/consultant_info_screen.dart';
+import 'package:health_mate/modules/auth/presentation/screens/register/consultant/consultant_info_screen_2.dart';
+import 'package:health_mate/modules/auth/presentation/screens/register/consultant/customer_info_screen.dart';
 import 'package:health_mate/modules/auth/presentation/screens/register/signup_main_screen.dart';
-import 'package:health_mate/modules/auth/presentation/screens/register/screens/onboarding_screen.dart';
-import 'package:health_mate/modules/auth/presentation/screens/register/screens/onboarding_selection_screen.dart';
-import 'package:health_mate/modules/auth/presentation/screens/register/screens/select_interest_screen.dart';
-import 'package:health_mate/modules/auth/presentation/screens/register/screens/verify_phone_screen.dart';
+import 'package:health_mate/modules/auth/presentation/screens/register/onboarding_screen.dart';
+import 'package:health_mate/modules/auth/presentation/screens/register/onboarding_selection_screen.dart';
+import 'package:health_mate/modules/auth/presentation/screens/register/consultant/select_interest_screen.dart';
+import 'package:health_mate/modules/auth/presentation/screens/register/verify_phone_screen.dart';
 
 final GoRouter router = GoRouter(
   routes: [
