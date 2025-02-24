@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:health_mate/core/constants/assets.dart';
 import 'package:health_mate/modules/auth/data/models/onboarding_data.dart';
@@ -14,6 +16,38 @@ class SliderOnboarding extends StatefulWidget {
 class _SliderOnboardingState extends State<SliderOnboarding> {
   final PageController _pageController = PageController();
   int currentIndex = 0;
+  Timer? _timer;
+
+  void _startAutoScroll() {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 4), (Timer timer) {
+      if (currentIndex < 2) {
+        currentIndex++;
+      } else {
+        currentIndex = 0;
+      }
+      if (mounted) {
+        _pageController.animateToPage(
+          currentIndex,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _startAutoScroll();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +107,7 @@ class _SliderOnboardingState extends State<SliderOnboarding> {
               setState(() {
                 currentIndex = index; // Chỉ thay đổi nội dung chữ
               });
+              _startAutoScroll();
             },
             itemBuilder: (context, index) {
               return const SizedBox(); // Không hiển thị gì trong PageView vì chỉ dùng để điều khiển chữ

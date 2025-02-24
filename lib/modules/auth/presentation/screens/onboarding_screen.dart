@@ -13,13 +13,19 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final TextEditingController _phoneController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final RegExp _phoneRegex = RegExp(r'^\d{7,15}$');
   String selectedCountryCode = '+84';
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   void dispose() {
     _phoneController.dispose();
+
     super.dispose();
   }
 
