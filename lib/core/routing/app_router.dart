@@ -1,17 +1,17 @@
 import 'package:go_router/go_router.dart';
-import 'package:health_mate/modules/onboarding/presentation/screens/consultant_info_screen.dart';
-import 'package:health_mate/modules/onboarding/presentation/screens/consultant_info_screen_2.dart';
-import 'package:health_mate/modules/onboarding/presentation/screens/customer_info_screen.dart';
-import 'package:health_mate/modules/onboarding/presentation/screens/main.dart';
-import 'package:health_mate/modules/onboarding/presentation/screens/onboarding_screen.dart';
-import 'package:health_mate/modules/onboarding/presentation/screens/onboarding_selection_screen.dart';
-import 'package:health_mate/modules/onboarding/presentation/screens/select_interest_screen.dart';
-import 'package:health_mate/modules/onboarding/presentation/screens/verify_phone_screen.dart';
+import 'package:health_mate/modules/auth/presentation/screens/register/screens/consultant_info_screen.dart';
+import 'package:health_mate/modules/auth/presentation/screens/register/screens/consultant_info_screen_2.dart';
+import 'package:health_mate/modules/auth/presentation/screens/register/screens/customer_info_screen.dart';
+import 'package:health_mate/modules/auth/presentation/screens/register/signup_main_screen.dart';
+import 'package:health_mate/modules/auth/presentation/screens/register/screens/onboarding_screen.dart';
+import 'package:health_mate/modules/auth/presentation/screens/register/screens/onboarding_selection_screen.dart';
+import 'package:health_mate/modules/auth/presentation/screens/register/screens/select_interest_screen.dart';
+import 'package:health_mate/modules/auth/presentation/screens/register/screens/verify_phone_screen.dart';
 
 final GoRouter router = GoRouter(
   routes: [
     ShellRoute(
-      builder: (context, state, child) => MainScaffold(child: child),
+      builder: (context, state, child) => SignupMainScreen(child: child),
       routes: [
         GoRoute(
           path: '/verify-phone',
