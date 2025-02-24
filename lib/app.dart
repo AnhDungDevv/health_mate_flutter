@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:health_mate/core/routing/app_router.dart';
+import 'package:health_mate/core/routing/app_routes.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
