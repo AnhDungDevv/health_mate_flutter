@@ -43,6 +43,8 @@ class UserModel {
       avatar: json['avatar'],
     );
   }
+
+  get role => null;
 }
 
 class ConsultantModel extends UserModel {

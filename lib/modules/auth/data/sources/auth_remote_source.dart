@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:health_mate/modules/auth/data/models/user_model.dart';
+import 'package:health_mate/modules/auth/data/models/auth_model.dart';
 
 class AuthRemoteSource {
   final Dio dio;

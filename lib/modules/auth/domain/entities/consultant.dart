@@ -1,6 +1,6 @@
-import 'package:health_mate/modules/auth/domain/entities/user.dart';
+import 'package:health_mate/modules/auth/domain/entities/customer.dart';
 
-class ConsultantEntity extends UserEntity {
+class ConsultantEntity extends CustomerEntity {
   String expertise;
   int yearsOfExperience;
 
@@ -12,6 +12,7 @@ class ConsultantEntity extends UserEntity {
     required this.expertise,
     required this.yearsOfExperience,
     required super.id,
+    required super.role,
   });
 
   @override
@@ -24,13 +25,14 @@ class ConsultantEntity extends UserEntity {
 
   factory ConsultantEntity.fromJson(Map<String, dynamic> json) {
     return ConsultantEntity(
+      id: json['id'] ?? '',
       name: json['name'] ?? '',
       email: json['email'] ?? '',
       phone: json['phone'] ?? '',
       avatar: json['avatar'],
       expertise: json['expertise'] ?? '',
       yearsOfExperience: json['yearsOfExperience'] ?? 0,
-      id: '',
+      role: json['role'],
     );
   }
 }

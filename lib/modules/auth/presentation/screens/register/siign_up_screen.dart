@@ -27,8 +27,14 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     setState(() {
       _selectedRole = role;
       _currentStep = 1;
-      _screenSignUp = _getScreensForRole(role);
-      _totalStep = _screenSignUp.length + 1;
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _screenSignUp = _getScreensForRole(role);
+        _totalStep = _screenSignUp.length + 1;
+        isFinish = _currentStep == _totalStep;
+      });
     });
   }
 
@@ -36,7 +42,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     if (_selectedRole == null) {
       return;
     }
-    if (_currentStep < _totalStep) {
+    if (_currentStep <= _totalStep) {
       setState(() {
         _currentStep++;
       });
@@ -92,7 +98,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       ),
       body: PageView(
         controller: _pageController,
-        physics: const NeverScrollableScrollPhysics(),
         children: [_buildRoleSelectionPage(), ..._screenSignUp],
       ),
       floatingActionButton: Padding(
@@ -108,9 +113,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            onPressed: (_selectedRole == null || _currentStep > _totalStep)
+            onPressed: (_selectedRole == null)
                 ? null
-                : _nextPage,
+                : (_currentStep == _totalStep)
+                    ? () {
+                        print("Đăng ký hoàn tất!");
+                      }
+                    : _nextPage,
             child: Text(
               isFinish ? "Finish" : "Continue",
               style: const TextStyle(fontSize: 16, color: Colors.white),

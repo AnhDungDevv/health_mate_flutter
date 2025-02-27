@@ -1,7 +1,9 @@
 import 'package:health_mate/modules/auth/data/sources/auth_local_source.dart';
 import 'package:health_mate/modules/auth/data/sources/auth_remote_source.dart';
-import 'package:health_mate/modules/auth/domain/entities/user.dart';
+import 'package:health_mate/modules/auth/domain/entities/consultant.dart';
+import 'package:health_mate/modules/auth/domain/entities/customer.dart';
 import 'package:health_mate/modules/auth/domain/repositories/auth_repository.dart';
+import 'package:health_mate/modules/auth/presentation/screens/register/siign_up_screen.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteSource api;
@@ -10,14 +12,14 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl({required this.api, required this.localDataSource});
 
   @override
-  Future<UserEntity> login(String email, String password) async {
-    final userModel = await api.login(email, password);
-    localDataSource.saveToken(userModel.id);
-    return UserEntity(
-        id: userModel.id,
-        name: userModel.name,
-        email: userModel.email,
-        phone: '');
+  Future<CustomerEntity> login(String email, String password) async {
+    final response = await api.login(email, password);
+    localDataSource.saveToken(response.id);
+
+    if (response.role == Role.consultant) {
+      return ConsultantEntity.fromJson(response.toJson());
+    }
+    return CustomerEntity.fromJson(response.toJson());
   }
 
   @override
