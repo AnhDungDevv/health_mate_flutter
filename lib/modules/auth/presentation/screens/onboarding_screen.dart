@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:health_mate/core/routing/routes_name.dart';
 import 'package:health_mate/modules/auth/presentation/widgets/slider_onboarding.dart';
 import 'package:health_mate/shared/styles/colors.dart';
 import 'package:country_code_picker/country_code_picker.dart';
@@ -109,7 +109,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  context.push('/verify-phone');
+                  Navigator.pushNamed(context, RoutesName.signUpScreen);
                 } else {}
               },
               child: const Text(

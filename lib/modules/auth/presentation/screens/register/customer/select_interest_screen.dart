@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class SelectInterestScreen extends StatefulWidget {
   const SelectInterestScreen({super.key});
@@ -57,27 +56,6 @@ class _SelectInterestScreenState extends State<SelectInterestScreen> {
                 },
               ),
             ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                onPressed: () {
-                  // _submitForm();
-                  context.push('/select-interest');
-                }, // Handle form submission
-                child: const Text(
-                  'Continue',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
           ],
         ));
   }

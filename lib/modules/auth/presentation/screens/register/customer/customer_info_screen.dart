@@ -17,18 +17,6 @@ class _CustomerInfoScreenState extends State<CustomerInfoScreen> {
   bool _isImagePicked = false;
 
   // Handle form submission
-  void _submitForm() {
-    if (_formKey.currentState?.validate() ?? false) {
-      if (!_isImagePicked) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please upload your photo')),
-        );
-        return;
-      }
-
-      context.push('/select-interest');
-    } else {}
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,27 +102,6 @@ class _CustomerInfoScreenState extends State<CustomerInfoScreen> {
               ),
             ],
           )),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueAccent,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              onPressed: () {
-                // _submitForm();
-                context.push('/select-interest');
-              }, // Handle form submission
-              child: const Text(
-                'Continue',
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
         ],
       ),
     );

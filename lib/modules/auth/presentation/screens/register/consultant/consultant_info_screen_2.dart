@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:health_mate/modules/auth/presentation/widgets/custom_input_field.dart';
 import 'package:health_mate/modules/auth/presentation/widgets/schedule.dart';
 

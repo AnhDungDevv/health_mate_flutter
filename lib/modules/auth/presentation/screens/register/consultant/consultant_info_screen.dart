@@ -11,9 +11,8 @@ class ConsultantInfoScreen extends StatefulWidget {
 }
 
 class _ConsultantInfoScreenState extends State<ConsultantInfoScreen> {
-  final _formKey = GlobalKey<FormState>(); // ✅ Key cho form
+  final _formKey = GlobalKey<FormState>();
   bool _isImagePicked = false;
-  // ✅ Khai báo controllers cho input fields
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
@@ -22,7 +21,6 @@ class _ConsultantInfoScreenState extends State<ConsultantInfoScreen> {
 
   @override
   void dispose() {
-    // ✅ Giải phóng bộ nhớ
     nameController.dispose();
     emailController.dispose();
     phoneController.dispose();

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:health_mate/shared/styles/colors.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
 import 'package:otp_text_field/style.dart';
@@ -53,7 +54,6 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
       });
       startTimer();
       _otpFieldController.clear();
-      // TODO:  OTP từ server
     }
   }
 
@@ -68,20 +68,16 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
               child: Column(
             children: [
               const SizedBox(height: 20),
-              Text(
+              const Text(
                 'Enter Verification Code',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
-              Text(
+              const Text(
                 'We have sent a 6-digit code to',
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
               const SizedBox(height: 4),
-              // Text(
-              //   // Hash.formatPhoneNumber(widget.phoneNumber),
-              //   // style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              // ),
               const SizedBox(height: 40),
 
               // OTP Input
@@ -94,29 +90,30 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
                 width: MediaQuery.of(context).size.width,
                 textFieldAlignment: MainAxisAlignment.spaceBetween,
                 onChanged: (pin) => setState(() => otp = pin),
+                outlineBorderRadius: 5,
                 otpFieldStyle: OtpFieldStyle(
-                  borderColor: Colors.blueAccent,
+                  borderColor: AppColors.secondary,
                   enabledBorderColor: Colors.grey.shade300,
-                  focusBorderColor: Colors.blue,
+                  focusBorderColor: AppColors.secondary,
                 ),
               ),
               const SizedBox(height: 20),
 
               // Countdown & Resend
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
                     _countDown > 0
                         ? 'Resend code in 00:${_countDown.toString().padLeft(2, '0')}'
                         : 'Didn\'t receive code?',
-                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                    style: const TextStyle(fontSize: 14, color: Colors.grey),
                   ),
                   const SizedBox(width: 5),
                   _canResend
                       ? GestureDetector(
                           onTap: _resendOtp,
-                          child: Text(
+                          child: const Text(
                             'Resend',
                             style: TextStyle(
                                 fontSize: 14,
@@ -136,18 +133,17 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blueAccent,
-                padding: EdgeInsets.symmetric(vertical: 14),
+                padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
               onPressed: otp.length == 6
                   ? () {
-                      // TODO: Verify OTP from server
                       context.push('/onboarding-selection');
                     }
                   : null,
-              child: Text(
+              child: const Text(
                 'Verify & Continue',
                 style: TextStyle(fontSize: 16, color: Colors.white),
               ),
