@@ -1,12 +1,14 @@
+// ignore_for_file: use_build_context_synchronously, unnecessary_null_comparison
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:health_mate/modules/auth/presentation/screens/register/consultant/consultant_info_screen.dart';
-import 'package:health_mate/modules/auth/presentation/screens/register/consultant/consultant_info_screen_2.dart';
-import 'package:health_mate/modules/auth/presentation/screens/register/customer/customer_info_screen.dart';
-import 'package:health_mate/modules/auth/presentation/screens/register/customer/select_interest_screen.dart';
+import 'package:health_mate/core/routing/routes_name.dart';
+import 'package:health_mate/modules/auth/data/models/user_model.dart';
+import 'package:health_mate/modules/auth/presentation/screens/register/consultant-information.dart';
+import 'package:health_mate/modules/auth/presentation/screens/register/consultant_information_2.dart';
+import 'package:health_mate/modules/auth/presentation/screens/register/customer_infomation.dart';
+import 'package:health_mate/modules/auth/presentation/screens/register/customer_select_interest.dart';
+import 'package:health_mate/modules/auth/presentation/states/providers/auth_providers.dart';
 import 'package:health_mate/modules/auth/presentation/widgets/option_card.dart';
-
-enum Role { consultant, customer }
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
@@ -15,155 +17,178 @@ class SignUpScreen extends ConsumerStatefulWidget {
   _SignUpScreenState createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends ConsumerState<SignUpScreen> {
+class _SignUpScreenState extends ConsumerState<SignUpScreen>
+    with WidgetsBindingObserver {
   final PageController _pageController = PageController();
-  Role? _selectedRole;
-  int _currentStep = 0;
-  List<Widget> _screenSignUp = [];
-  int _totalStep = 1;
-  late bool isFinish = _currentStep == _totalStep;
 
-  void _setRole(Role role) {
-    setState(() {
-      _selectedRole = role;
-      _currentStep = 1;
-    });
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _screenSignUp = _getScreensForRole(role);
-        _totalStep = _screenSignUp.length + 1;
-        isFinish = _currentStep == _totalStep;
-      });
-    });
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
   }
 
-  void _nextPage() {
-    if (_selectedRole == null) {
-      return;
-    }
-    if (_currentStep <= _totalStep) {
-      setState(() {
-        _currentStep++;
-      });
-      _pageController.nextPage(
-          duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-    } else {
-      print("Đăng ký hoàn tất!");
-    }
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _pageController.dispose();
+    super.dispose();
   }
 
-  void _prevPage() {
-    if (_currentStep > 1) {
-      setState(() => _currentStep--);
-      _pageController.previousPage(
-          duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+  @override
+  void didChangeMetrics() {
+    final bottomInset = WidgetsBinding.instance.window.viewInsets.bottom;
+    final isOpen = bottomInset > 0;
+    ref.read(keyboardProvider.notifier).state = isOpen;
+  }
+
+  Future<void> _handleFinish(
+      BuildContext context, registrationState, notifier) async {
+    await notifier.register();
+    if (registrationState.errorMessage == null) {
+      final route = registrationState.data.role == Role.consultant
+          ? RoutesName.homeConsultantScreen
+          : RoutesName.homeCustomerScreen;
+      Navigator.pushReplacementNamed(context, route);
     } else {
-      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(registrationState.errorMessage!),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
   List<Widget> _getScreensForRole(Role role) {
-    if (role == Role.consultant) {
-      return [const ConsultantInfoScreen(), const ConsultantInfoScreen2()];
-    } else {
-      return [const CustomerInfoScreen(), const SelectInterestScreen()];
-    }
+    return role == Role.consultant
+        ? [const ConsultantInfoScreen(), const ConsultantInfoScreen2()]
+        : [const CustomerInfoScreen(), const CustomerSelectInterest()];
   }
 
-  bool isRoleSelected(Role role) => _selectedRole == role;
+  bool _isRoleSelected(Role role) =>
+      ref.watch(registrationProvider).data.role == role;
 
   @override
   Widget build(BuildContext context) {
+    final registrationState = ref.watch(registrationProvider);
+    final notifier = ref.read(registrationProvider.notifier);
+    final screens = _getScreensForRole(registrationState.data.role);
+    final isFinish = registrationState.currentStep == notifier.totalStep;
+
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-            onPressed: _prevPage,
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            )),
-        actions: [
-          (_currentStep == _totalStep && _selectedRole == Role.customer)
-              ? TextButton(
-                  onPressed: () {},
-                  child: const Text(
-                    "skip",
-                    style: TextStyle(color: Colors.black, fontSize: 12),
-                  ))
-              : (_selectedRole != null
-                  ? Text("$_currentStep / $_totalStep")
-                  : const SizedBox())
-        ],
-      ),
+      appBar: _buildAppBar(context, registrationState, notifier),
       body: PageView(
         controller: _pageController,
-        children: [_buildRoleSelectionPage(), ..._screenSignUp],
+        physics: const NeverScrollableScrollPhysics(),
+        children: [_buildRoleSelectionPage(notifier), ...screens],
       ),
-      floatingActionButton: Padding(
-        padding:
-            const EdgeInsets.symmetric(horizontal: 16), // Thêm padding hai bên
-        child: SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blueAccent,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            onPressed: (_selectedRole == null)
-                ? null
-                : (_currentStep == _totalStep)
-                    ? () {
-                        print("Đăng ký hoàn tất!");
-                      }
-                    : _nextPage,
-            child: Text(
-              isFinish ? "Finish" : "Continue",
-              style: const TextStyle(fontSize: 16, color: Colors.white),
-            ),
-          ),
-        ),
-      ),
-      floatingActionButtonLocation:
-          FloatingActionButtonLocation.centerFloat, // Đặt vị trí trung tâm dưới
+      floatingActionButton: _buildFloatingActionButton(
+          context, isFinish, registrationState, notifier),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
-  Widget _buildRoleSelectionPage() {
+  AppBar _buildAppBar(BuildContext context, registrationState, notifier) {
+    return AppBar(
+      leading: IconButton(
+        onPressed: () {
+          if (registrationState.currentStep > 0) {
+            notifier.prevStep();
+            _pageController.previousPage(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut);
+          } else {
+            Navigator.pop(context);
+          }
+        },
+        icon: const Icon(Icons.arrow_back, color: Colors.black),
+      ),
+      actions: [
+        if (registrationState.currentStep == notifier.totalStep &&
+            registrationState.data.role == Role.customer)
+          TextButton(
+            onPressed: () async {
+              await notifier.register();
+              if (registrationState.errorMessage == null) {
+                Navigator.pushReplacementNamed(context, '/success');
+              }
+            },
+            child: const Text(
+              "Skip",
+              style: TextStyle(color: Colors.black, fontSize: 12),
+            ),
+          )
+        else
+          Text("${registrationState.currentStep} / ${notifier.totalStep}"),
+      ],
+    );
+  }
+
+  Widget _buildFloatingActionButton(
+      BuildContext context, bool isFinish, registrationState, notifier) {
+    final isKeyboardOpen = ref.watch(keyboardProvider);
+    if (isKeyboardOpen) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blueAccent,
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          onPressed: () async {
+            if (isFinish) {
+              await _handleFinish(context, registrationState, notifier);
+            } else {
+              notifier.nextStep();
+              _pageController.nextPage(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            }
+          },
+          child: Text(
+            isFinish ? "Finish" : "Continue",
+            style: const TextStyle(fontSize: 16, color: Colors.white),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRoleSelectionPage(notifier) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-              child: Column(
-            children: [
-              const Text(
-                "Tell us who you are and how you'd like to engage with the app",
-                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
-              ),
-              const SizedBox(height: 20),
-              OptionCard(
-                role: Role.customer,
-                isSelected: isRoleSelected(Role.customer),
-                title: "I am looking for Consultant",
-                subtitle: "Search your best consultant around the world",
-                steps: 2,
-                onSelect: _setRole,
-              ),
-              const SizedBox(height: 20),
-              OptionCard(
-                role: Role.consultant,
-                isSelected: isRoleSelected(Role.consultant),
-                title: "I am a Consultant Provider",
-                subtitle: "Search your best consultant around the world",
-                steps: 3,
-                onSelect: _setRole,
-              ),
-            ],
-          )),
+          const Text(
+            "Tell us who you are and how you'd like to engage with the app",
+            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+          ),
+          const SizedBox(height: 20),
+          OptionCard(
+            role: Role.customer,
+            isSelected: _isRoleSelected(Role.customer),
+            title: "I am looking for a Consultant",
+            subtitle: "Search for the best consultants worldwide",
+            steps: 2,
+            onSelect: (role) => notifier.updateData(role: role),
+          ),
+          const SizedBox(height: 20),
+          OptionCard(
+            role: Role.consultant,
+            isSelected: _isRoleSelected(Role.consultant),
+            title: "I am a Consultant Provider",
+            subtitle: "Offer your expertise to clients worldwide",
+            steps: 3,
+            onSelect: (role) => notifier.updateData(role: role),
+          ),
         ],
       ),
     );

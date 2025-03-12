@@ -1,41 +1,61 @@
+import 'dart:io';
+import 'package:dartz/dartz.dart';
+import 'package:health_mate/core/error/failure.dart';
+import 'package:health_mate/modules/auth/data/models/user_model.dart';
 import 'package:health_mate/modules/auth/data/sources/auth_local_source.dart';
 import 'package:health_mate/modules/auth/data/sources/auth_remote_source.dart';
-import 'package:health_mate/modules/auth/domain/entities/consultant.dart';
-import 'package:health_mate/modules/auth/domain/entities/customer.dart';
+import 'package:health_mate/modules/auth/domain/entities/user_entity.dart';
 import 'package:health_mate/modules/auth/domain/repositories/auth_repository.dart';
-import 'package:health_mate/modules/auth/presentation/screens/register/siign_up_screen.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
-  final AuthRemoteSource api;
-  final AuthLocalSource localDataSource;
+  final AuthRemoteDataSource remoteSource;
+  final AuthLocalSource localSource;
 
-  AuthRepositoryImpl({required this.api, required this.localDataSource});
+  AuthRepositoryImpl({required this.localSource, required this.remoteSource});
 
   @override
-  Future<CustomerEntity> login(String email, String password) async {
-    final response = await api.login(email, password);
-    localDataSource.saveToken(response.id);
+  Future<Either<Failure, UserModel>> register(UserEntity user) async {
+    try {
+      // Chuyển đổi từ UserEntity sang UserModel
+      UserModel userModel = UserModel.fromEntity(user);
 
-    if (response.role == Role.consultant) {
-      return ConsultantEntity.fromJson(response.toJson());
+      final registeredUser = await remoteSource.register(userModel);
+      await localSource.saveUser(registeredUser, user.id as int);
+
+      return Right(registeredUser);
+    } catch (e) {
+      return Left(ServerFailure("Registration failed: ${e.toString()}"));
     }
-    return CustomerEntity.fromJson(response.toJson());
   }
 
   @override
-  Future<void> logout() async {
-    await localDataSource.clearToken();
+  Future<Either<Failure, String>> uploadAvatar(File file) async {
+    try {
+      final url = await remoteSource.uploadAvatar(file);
+      return Right(url);
+    } catch (e) {
+      return Left(ServerFailure("Upload avatar failed: ${e.toString()}"));
+    }
   }
 
   @override
-  Future<void> registerConsultant(consultant) {
-    // TODO: implement registerConsultant
-    throw UnimplementedError();
+  Future<Either<Failure, String>> sendOtp(String phoneNumber) async {
+    try {
+      final otp = await remoteSource.sendOtp(phoneNumber);
+      return Right(otp);
+    } catch (e) {
+      return Left(ServerFailure("Send OTP failed: ${e.toString()}"));
+    }
   }
 
   @override
-  Future<void> registerUser(user) {
-    // TODO: implement registerUser
-    throw UnimplementedError();
+  Future<Either<Failure, void>> verifyOtp(
+      String verificationId, String smsCode) async {
+    try {
+      await remoteSource.verifyOtp(verificationId, smsCode);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure("Verify OTP failed: ${e.toString()}"));
+    }
   }
 }

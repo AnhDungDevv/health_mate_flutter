@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:health_mate/core/constants/assets.dart';
-import 'package:health_mate/modules/auth/data/models/onboarding_data.dart';
+import 'package:health_mate/modules/auth/data/dummydata/dummy_data.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:transparent_image/transparent_image.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:health_mate/modules/auth/presentation/screens/register/siign_up_screen.dart';
+import 'package:health_mate/modules/auth/data/models/user_model.dart';
 import 'package:health_mate/shared/styles/colors.dart';
 
 class OptionCard extends StatelessWidget {

@@ -7,6 +7,7 @@ class CustomInputField extends StatelessWidget {
   final TextEditingController controller;
   final String? Function(String?)? validator;
   final TextInputType keyboardType;
+  final Function(String) onChange;
   final bool obscureText;
 
   const CustomInputField({
@@ -14,6 +15,7 @@ class CustomInputField extends StatelessWidget {
     required this.label,
     required this.hintText,
     required this.controller,
+    required this.onChange,
     this.prefixText,
     this.validator,
     this.keyboardType = TextInputType.text,
@@ -28,17 +30,26 @@ class CustomInputField extends StatelessWidget {
         Text(label),
         TextFormField(
           controller: controller,
+          onChanged: (value) {
+            onChange(value);
+          },
           decoration: InputDecoration(
             labelText: hintText.isEmpty ? '' : hintText,
             prefixText: prefixText,
-            border: InputBorder.none,
-            fillColor: Colors.grey[200], // Màu nền của ô input
-            filled: true, // Đảm bảo màu nền hiển thị
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5.0),
+              borderSide: BorderSide.none,
+            ),
+            fillColor: Colors.grey[200],
+            filled: true,
             floatingLabelBehavior: FloatingLabelBehavior.never,
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 15, horizontal: 12),
           ),
           validator: validator,
           keyboardType: keyboardType,
           obscureText: obscureText,
+          textAlignVertical: TextAlignVertical.center,
         ),
       ],
     );

@@ -1,9 +1,12 @@
-import 'package:health_mate/modules/auth/data/models/auth_model.dart';
-import 'package:health_mate/modules/auth/domain/entities/customer.dart';
+import 'dart:io';
+import 'package:dartz/dartz.dart';
+import 'package:health_mate/core/error/failure.dart';
+import 'package:health_mate/modules/auth/domain/entities/user_entity.dart';
 
 abstract class AuthRepository {
-  Future<CustomerEntity> login(String email, String password);
-  Future<void> registerUser(UserModel user);
-  Future<void> registerConsultant(ConsultantModel consultant);
-  Future<void> logout();
+  Future<Either<Failure, UserEntity>> register(UserEntity user);
+  Future<Either<Failure, String>> uploadAvatar(File file);
+  Future<Either<Failure, String>> sendOtp(String phoneNumber);
+  Future<Either<Failure, void>> verifyOtp(
+      String verificationId, String smsCode);
 }

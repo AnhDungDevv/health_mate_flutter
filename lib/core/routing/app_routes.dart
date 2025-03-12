@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:health_mate/core/routing/routes_name.dart';
 import 'package:health_mate/modules/auth/presentation/screens/onboarding_screen.dart';
 import 'package:health_mate/modules/auth/presentation/screens/register/siign_up_screen.dart';
+import 'package:health_mate/modules/auth/presentation/screens/register/verify_phone_screen.dart';
 
 class Routes {
   static Route<dynamic> generatedRoutes(RouteSettings setting) {
@@ -10,7 +11,8 @@ class Routes {
         return _createRoute(const OnboardingScreen());
       case RoutesName.signUpScreen:
         return _createRoute(const SignUpScreen());
-
+      case RoutesName.verifyPhoneScreen:
+        return _createRoute(const VerifyPhoneScreen());
       default:
         return _createRoute(
           const Scaffold(
@@ -28,7 +30,7 @@ class Routes {
         const curve = Curves.easeInOut; // Smooth curve for both entry and exit
 
         var slideAnimation = Tween<Offset>(
-          begin: const Offset(0.0, 1.0), // Slide from bottom to top
+          begin: const Offset(0.0, 1.0),
           end: Offset.zero,
         ).animate(CurvedAnimation(
           parent: animation,
