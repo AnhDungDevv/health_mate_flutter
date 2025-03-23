@@ -18,8 +18,8 @@ class ApiClient {
         'Accept': 'application/json',
       },
     ));
-    _dio.interceptors.add(_AuthInterceptor());
-    _dio.interceptors.add(_LoggingInterceptor());
+    // _dio.interceptors.add(_AuthInterceptor());
+    // _dio.interceptors.add(_LoggingInterceptor());
   }
   Dio get dio => _dio;
 }

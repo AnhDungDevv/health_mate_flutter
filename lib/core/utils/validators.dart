@@ -13,8 +13,11 @@ class Validators {
     return regex.hasMatch(phone);
   }
 
-  static bool isValidPassword(String password) {
-    return password.length >= 6;
+  static String? validatePassword(String? password) {
+    if (password!.trim().length < 6) {
+      return "Password must be at least 6 characters";
+    }
+    return null;
   }
 
   static String? validateName(String? value) {
@@ -28,6 +31,12 @@ class Validators {
   }
 
   static String? validateReferralCode(String? value) {
+    if (value != null && value.isNotEmpty && value.length < 6) {
+      return 'Referral code should be at least 6 characters';
+    }
+    return null;
+  }
+   static String? notEmpty(String? value) {
     if (value != null && value.isNotEmpty && value.length < 6) {
       return 'Referral code should be at least 6 characters';
     }

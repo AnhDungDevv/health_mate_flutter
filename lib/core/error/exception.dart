@@ -10,10 +10,10 @@ class CacheException implements Exception {
 
 class UnauthorizedException implements Exception {
   final String message;
-  UnauthorizedException([this.message = "Bạn cần đăng nhập lại"]);
+  UnauthorizedException([this.message = "You need to log in again"]);
 }
 
 class NetworkException implements Exception {
   final String message;
-  NetworkException([this.message = "Không có kết nối mạng"]);
+  NetworkException([this.message = "No internet connection"]);
 }

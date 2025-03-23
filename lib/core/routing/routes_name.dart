@@ -1,7 +1,8 @@
 class RoutesName {
-  static const String homeConsultantScreen = "home_consultant_screen";
-  static const String homeCustomerScreen = "home_customer_screen";
-  static const String verifyPhoneScreen = "verify_phone_screen";
-  static const String onboardingScreen = "onboarding_screen";
-  static const String signUpScreen = "signup_screen";
+  static const String homeConsultantView = "home_consultant_view";
+  static const String homeCustomerView = "home_customer_view";
+  static const String verifyPhoneView = "verify_phone_view";
+  static const String onboardingView = "onboarding_view";
+  static const String signUpView = "signup_view";
+  static const String signInView = "signin_view";
 }

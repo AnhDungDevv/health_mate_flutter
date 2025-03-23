@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'app.dart';
+import 'package:health_mate/app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
