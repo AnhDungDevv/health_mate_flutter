@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:health_mate/src/auth/presentation/app/providers/input_provider.dart';
+import 'package:health_mate/core/routing/routes_name.dart';
+import 'package:health_mate/src/auth/presentation/app/providers/phone_provider.dart';
 import 'package:health_mate/src/auth/presentation/app/providers/auth_providers.dart';
 import 'package:health_mate/src/auth/presentation/app/providers/countdown_provider.dart';
 import 'package:health_mate/core/common/styles/colors.dart';
@@ -8,38 +9,91 @@ import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
 import 'package:otp_text_field/style.dart';
 
-class VerifyPhoneScreen extends StatelessWidget {
+class VerifyPhoneScreen extends ConsumerStatefulWidget {
   const VerifyPhoneScreen({super.key});
 
   @override
+  _VerifyPhoneScreenState createState() => _VerifyPhoneScreenState();
+}
+
+class _VerifyPhoneScreenState extends ConsumerState<VerifyPhoneScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(countdownProvider.notifier).startCountdown();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    final phoneNumber = ref.read(phoneInputProvider).phoneNumber;
+    final sendOtpNotifier = ref.read(sendOtpProvider.notifier);
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          onPressed: () {
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            } else {
+              Navigator.pushNamed(context, RoutesName.onboardingView);
+            }
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
+      ),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Enter Verification Code',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    'We have sent a 6-digit code to your phone',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
-                  SizedBox(height: 40),
-                  _OTPField(),
-                  SizedBox(height: 20),
-                  _ResendRow(),
-                ],
-              ),
+            const Text(
+              'Enter Verification Code',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            _VerifyButton(),
-            SizedBox(height: 20),
+            const SizedBox(height: 8),
+            const Text(
+              'We have sent a 6-digit code to your phone',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+            const SizedBox(height: 40),
+            const _OTPField(),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                const _CountdownText(),
+                const SizedBox(width: 5),
+                Consumer(
+                  builder: (_, ref, __) {
+                    final countdown = ref.watch(countdownProvider);
+                    return countdown == 0
+                        ? GestureDetector(
+                            onTap: () {
+                              ref.read(countdownProvider.notifier).reset();
+                              sendOtpNotifier.sendOtp(phoneNumber);
+                            },
+                            child: const Text(
+                              'Resend',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          )
+                        : const SizedBox.shrink();
+                  },
+                ),
+              ],
+            ),
+            const Spacer(),
+            const _VerifyButton(),
+            const SizedBox(
+              height: 10,
+            )
           ],
         ),
       ),
@@ -52,10 +106,7 @@ class _OTPField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final otpController = OtpFieldController();
-
     return OTPTextField(
-      controller: otpController,
       fieldWidth: 50,
       fieldStyle: FieldStyle.box,
       length: 6,
@@ -69,46 +120,6 @@ class _OTPField extends ConsumerWidget {
         enabledBorderColor: Colors.grey.shade300,
         focusBorderColor: AppColors.secondary,
       ),
-    );
-  }
-}
-
-class _ResendRow extends ConsumerWidget {
-  const _ResendRow();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final countdown = ref.watch(countdownProvider);
-    final phoneNumber = ref.read(phoneInputProvider).phoneNumber;
-    final countdownNotifier = ref.read(countdownProvider.notifier);
-    final sendOtpNotifier = ref.read(sendOtpProvider.notifier);
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Text(
-          countdown > 0
-              ? 'Resend in 00:${countdown.toString().padLeft(2, '0')}'
-              : 'Didn\'t receive code?',
-          style: const TextStyle(fontSize: 14, color: Colors.grey),
-        ),
-        const SizedBox(width: 5),
-        if (countdown == 0)
-          GestureDetector(
-            onTap: () {
-              countdownNotifier.reset();
-              sendOtpNotifier.sendOtp(phoneNumber);
-            },
-            child: const Text(
-              'Resend',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
-              ),
-            ),
-          ),
-      ],
     );
   }
 }
@@ -141,6 +152,22 @@ class _VerifyButton extends ConsumerWidget {
                 style: TextStyle(fontSize: 16, color: Colors.white),
               ),
       ),
+    );
+  }
+}
+
+class _CountdownText extends ConsumerWidget {
+  const _CountdownText();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final countdown = ref.watch(countdownProvider);
+
+    return Text(
+      countdown > 0
+          ? 'Resend in 00:${countdown.toString().padLeft(2, '0')}'
+          : 'Didn\'t receive code?',
+      style: const TextStyle(fontSize: 14, color: Colors.grey),
     );
   }
 }

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_mate/core/common/styles/colors.dart';
+import 'package:health_mate/core/routing/routes_name.dart';
 import 'package:health_mate/src/auth/presentation/app/providers/auth_providers.dart';
-import 'package:health_mate/src/auth/presentation/app/providers/input_provider.dart';
+import 'package:health_mate/src/auth/presentation/app/providers/phone_provider.dart';
 
 class PhoneInputWidget extends ConsumerWidget {
   const PhoneInputWidget({super.key});
@@ -22,7 +23,7 @@ class PhoneInputWidget extends ConsumerWidget {
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: Colors.grey.shade300),
           ),
-          child: const PhoneTextField(), // Tách riêng ra widget con
+          child: const PhoneTextField(),
         ),
         SizedBox(
           width: double.infinity,
@@ -33,7 +34,10 @@ class PhoneInputWidget extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            onPressed: () => sendOtpNotifier.sendOtp(phoneController.text),
+            onPressed: () {
+              sendOtpNotifier.sendOtp(phoneController.text);
+              Navigator.pushNamed(context, RoutesName.verifyPhoneView);
+            },
             child: const Text("Continue",
                 style: TextStyle(fontSize: 16, color: Colors.white)),
           ),

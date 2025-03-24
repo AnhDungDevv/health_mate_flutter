@@ -10,31 +10,22 @@ class OnboardingScreen extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    spacing: 10,
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SliderOnboarding(),
-                      const PhoneInputWidget(),
-                      const SocialLoginOptions(),
-                      _buildOrDivider(),
-                      _buildTermsText()
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              spacing: 10,
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SliderOnboarding(),
+                const PhoneInputWidget(),
+                const SocialLoginOptions(),
+                _buildOrDivider(),
+                _buildTermsText()
+              ],
+            ),
+          ),
         ),
       ),
     );

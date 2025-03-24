@@ -1,26 +1,27 @@
-// 3. Optimized Countdown Notifier
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:async';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CountdownNotifier extends StateNotifier<int> {
-  CountdownNotifier() : super(30) {
-    _startTimer();
-  }
-
   Timer? _timer;
 
-  bool get canResend => state == 0;
+  CountdownNotifier() : super(30);
 
-  void _startTimer() {
+  void startCountdown() {
     _timer?.cancel();
     state = 30;
+
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (state > 0) state--;
-      if (state == 0) timer.cancel();
+      if (state > 0) {
+        state = state - 1;
+      } else {
+        timer.cancel();
+      }
     });
   }
 
-  void reset() => _startTimer();
+  void reset() {
+    startCountdown();
+  }
 
   @override
   void dispose() {
@@ -29,6 +30,8 @@ class CountdownNotifier extends StateNotifier<int> {
   }
 }
 
-final countdownProvider = StateNotifierProvider<CountdownNotifier, int>(
-  (ref) => CountdownNotifier(),
-);
+final countdownProvider = StateNotifierProvider<CountdownNotifier, int>((ref) {
+  final notifier = CountdownNotifier();
+
+  return notifier;
+});
