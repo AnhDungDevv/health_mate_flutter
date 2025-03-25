@@ -10,8 +10,8 @@ class ForgotPassword extends StatelessWidget {
       alignment: Alignment.centerRight,
       child: TextButton(
         onPressed: onTap,
-        child:
-            const Text("Forgot Password?", style: TextStyle(color: Colors.red)),
+        child: const Text("Forgot Password?",
+            style: TextStyle(color: Colors.red, fontSize: 12)),
       ),
     );
   }

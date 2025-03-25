@@ -13,9 +13,8 @@ import 'package:health_mate/src/auth/presentation/app/states/send_o_t_p_state.da
 import 'package:health_mate/src/auth/presentation/app/states/verify_o_t_p_state.dart';
 import 'package:health_mate/src/auth/presentation/app/notifiers/registration_notifier.dart';
 import 'package:health_mate/src/auth/presentation/app/states/registration_state.dart';
-import 'package:health_mate/src/auth/presentation/app/notifiers/signin_notifier.dart';
 import 'package:health_mate/src/auth/presentation/app/states/signin_state.dart';
-import 'package:health_mate/src/auth/presentation/app/notifiers/signin_status_notifier.dart';
+import 'package:health_mate/src/auth/presentation/app/notifiers/signin_notifier.dart';
 
 // Auth Sources
 final authRemoteSourceProvider = Provider((ref) => AuthRemoteSource());
@@ -56,13 +55,8 @@ final verifyOtpProvider =
   (ref) => VerifyOtpNotifier(ref.read(verifyOtpUseCaseProvider)),
 );
 
-final signInStatusProvider =
-    StateNotifierProvider<SigninNotifier, AsyncValue<void>>(
-  (ref) => SigninNotifier(loginUsecase: ref.read(loginUseCaseProvider)),
-);
-
-final signInProvider = StateNotifierProvider<SignInStateNotifier, SigninState>(
-  (ref) => SignInStateNotifier(),
+final signInProvider = StateNotifierProvider<SignInNotifier, SignInState>(
+  (ref) => SignInNotifier(loginUsecase: ref.watch(loginUseCaseProvider)),
 );
 
 // State Providers

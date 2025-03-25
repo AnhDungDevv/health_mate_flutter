@@ -1,48 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:health_mate/core/common/styles/colors.dart';
 import 'package:health_mate/core/routing/routes_name.dart';
+import 'package:health_mate/core/utils/validators.dart';
 import 'package:health_mate/src/auth/presentation/app/providers/auth_providers.dart';
 import 'package:health_mate/src/auth/presentation/app/providers/phone_provider.dart';
+import 'package:health_mate/src/auth/presentation/widgets/custom_button.dart';
+import 'package:health_mate/src/auth/presentation/widgets/custom_input_field.dart';
 
-class PhoneInputWidget extends ConsumerWidget {
+class PhoneInputWidget extends ConsumerStatefulWidget {
   const PhoneInputWidget({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PhoneInputWidget> createState() => _PhoneInputWidgetState();
+}
+
+class _PhoneInputWidgetState extends ConsumerState<PhoneInputWidget> {
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
     final phoneController =
         ref.watch(phoneInputProvider.notifier).phoneController;
     final sendOtpNotifier = ref.read(sendOtpProvider.notifier);
 
-    return Column(
-      children: [
-        Container(
-          margin: const EdgeInsets.symmetric(vertical: 20),
-          decoration: BoxDecoration(
-            color: Colors.grey.shade100,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.grey.shade300),
-          ),
-          child: const PhoneTextField(),
-        ),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            onPressed: () {
-              sendOtpNotifier.sendOtp(phoneController.text);
-              Navigator.pushNamed(context, RoutesName.verifyPhoneView);
-            },
-            child: const Text("Continue",
-                style: TextStyle(fontSize: 16, color: Colors.white)),
-          ),
-        ),
-      ],
+    return Form(
+      key: _formKey,
+      child: Column(
+        spacing: 10,
+        children: [
+          const PhoneTextField(),
+          CustomButton(
+              label: 'Continue',
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  sendOtpNotifier.sendOtp(phoneController.text);
+                  Navigator.pushNamed(context, RoutesName.verifyPhoneView);
+                }
+              })
+        ],
+      ),
     );
   }
 }
@@ -55,19 +51,24 @@ class PhoneTextField extends ConsumerWidget {
     final phoneController =
         ref.watch(phoneInputProvider.notifier).phoneController;
 
-    return TextFormField(
+    return CustomInputField(
       controller: phoneController,
       keyboardType: TextInputType.phone,
-      style: const TextStyle(fontSize: 16),
-      decoration: const InputDecoration(
-        hintText: "Enter your mobile number",
-        border: InputBorder.none,
-        isDense: true,
-        contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 12),
-      ),
-      textAlignVertical: TextAlignVertical.center,
-      onChanged: (value) =>
+      validator: Validators.validatePhone,
+      onChange: (value) =>
           ref.read(phoneInputProvider.notifier).updatePhoneNumber(value),
+      inputDecoration: InputDecoration(
+        hintText: "Enter your mobile number",
+        hintStyle: const TextStyle(color: Colors.grey),
+        filled: true,
+        fillColor: Colors.grey[300],
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(0),
+          borderSide: BorderSide.none,
+        ),
+      ),
     );
   }
 }

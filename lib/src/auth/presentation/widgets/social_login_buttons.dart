@@ -1,49 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class SocialLoginButtons extends StatelessWidget {
-  const SocialLoginButtons({super.key});
+class SocialButton extends StatelessWidget {
+  final IconData icon;
+  final Color iconColor;
+  final String text;
+  final VoidCallback onPressed;
+
+  const SocialButton({
+    required this.icon,
+    required this.iconColor,
+    required this.text,
+    required this.onPressed,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        width: double.infinity,
+        height: 50,
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Expanded(child: Divider(color: Colors.grey[400])),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              child: Text("or"),
+            FaIcon(icon, color: iconColor, size: 20), // Icon Google/Facebook
+            const SizedBox(width: 12),
+            Text(
+              text,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
             ),
-            Expanded(child: Divider(color: Colors.grey[400])),
           ],
         ),
-        const SizedBox(
-          height: 16,
-        ),
-
-        // Google Login
-        SizedBox(
-          width: double.infinity,
-          child: OutlinedButton.icon(
-            onPressed: () {},
-            icon: const Icon(Icons.g_mobiledata, size: 28),
-            label: const Text("Continue with Google"),
-          ),
-        ),
-        const SizedBox(
-          height: 16,
-        ),
-
-        // Facebook Login
-        SizedBox(
-          width: double.infinity,
-          child: OutlinedButton.icon(
-            onPressed: () {},
-            icon: const Icon(Icons.facebook, size: 28, color: Colors.blue),
-            label: const Text("Continue with Facebook"),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

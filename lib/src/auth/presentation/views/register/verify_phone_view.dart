@@ -31,6 +31,7 @@ class _VerifyPhoneScreenState extends ConsumerState<VerifyPhoneScreen> {
     final sendOtpNotifier = ref.read(sendOtpProvider.notifier);
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: IconButton(

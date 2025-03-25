@@ -1,26 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:health_mate/core/common/styles/colors.dart';
 
 class CustomButton extends StatelessWidget {
-  final String title;
-  final VoidCallback onTap;
-  const CustomButton({super.key, required this.title, required this.onTap});
+  final VoidCallback onPressed;
+  final String label;
+
+  const CustomButton({
+    super.key,
+    required this.label,
+    required this.onPressed,
+  });
+
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
       child: ElevatedButton(
+        onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blueAccent,
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        onPressed: onTap,
-        child: Text(
-          title,
-          style: const TextStyle(fontSize: 16, color: Colors.white),
+            backgroundColor: AppColors.blue,
+            minimumSize: const Size(double.infinity, 40),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(2),
+            )),
+        child: const Text(
+          "Continue",
+          style: TextStyle(color: Colors.white),
         ),
       ),
     );

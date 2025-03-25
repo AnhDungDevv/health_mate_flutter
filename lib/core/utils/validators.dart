@@ -8,9 +8,13 @@ class Validators {
     return regex.hasMatch(email) ? null : "Invalid email address";
   }
 
-  static bool isValidPhoneNumber(String phone) {
-    final regex = RegExp(r'^(0[3|5|7|8|9])+([0-9]{8})$');
-    return regex.hasMatch(phone);
+  static String? validatePhone(String? phone) {
+    if (phone == null || phone.isEmpty) {
+      return "Phone number cannot be empty";
+    }
+
+    final regex = RegExp(r'^(0[3|5|7|8|9])([0-9]{8})$');
+    return regex.hasMatch(phone) ? null : "Invalid phone number";
   }
 
   static String? validatePassword(String? password) {
@@ -36,7 +40,8 @@ class Validators {
     }
     return null;
   }
-   static String? notEmpty(String? value) {
+
+  static String? notEmpty(String? value) {
     if (value != null && value.isNotEmpty && value.length < 6) {
       return 'Referral code should be at least 6 characters';
     }

@@ -59,14 +59,36 @@ class _SliderOnboardingState extends ConsumerState<SliderOnboarding> {
     return Positioned.fill(
       child: ClipRRect(
         borderRadius: BorderRadius.circular(25.r),
-        child: FadeInImage(
-          fit: BoxFit.cover,
-          width: double.infinity,
-          height: double.infinity,
-          placeholder: MemoryImage(kTransparentImage),
-          image: imagePath!.isNotEmpty
-              ? AssetImage(imagePath)
-              : const AssetImage("assets/images/default.png"),
+        child: Stack(
+          children: [
+            FadeInImage(
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+              placeholder: MemoryImage(kTransparentImage),
+              image: imagePath.isNotEmpty
+                  ? AssetImage(imagePath)
+                  : const AssetImage("assets/images/default.png"),
+            ),
+            Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: 120.w,
+                child: IgnorePointer(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                            colors: [
+                          Colors.black.withOpacity(0.9),
+                          Colors.black.withOpacity(0.45),
+                          Colors.transparent,
+                        ])),
+                  ),
+                ))
+          ],
         ),
       ),
     );
@@ -74,7 +96,7 @@ class _SliderOnboardingState extends ConsumerState<SliderOnboarding> {
 
   Widget _buildContent(OnboardingEntity onboardingData) {
     return Positioned(
-      top: 20.h,
+      bottom: 20.h,
       left: 20.w,
       right: 20.w,
       child: ValueListenableBuilder<int>(
@@ -90,13 +112,14 @@ class _SliderOnboardingState extends ConsumerState<SliderOnboarding> {
                   style: TextStyle(
                       fontSize: 24.sp,
                       fontWeight: FontWeight.w700,
+                      height: 1.2.sp,
                       color: Colors.white),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 10.h),
+                SizedBox(height: 2.h),
                 Text(
                   onboardingData.contents[index].description,
-                  style: TextStyle(fontSize: 16.sp, color: Colors.white70),
+                  style: TextStyle(fontSize: 16.sp, color: Colors.white),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -109,7 +132,7 @@ class _SliderOnboardingState extends ConsumerState<SliderOnboarding> {
 
   Widget _buildPageIndicator(int count) {
     return Positioned(
-      bottom: 20.h,
+      bottom: 10.h,
       left: 0,
       right: 0,
       child: Center(
@@ -122,8 +145,8 @@ class _SliderOnboardingState extends ConsumerState<SliderOnboarding> {
               effect: ExpandingDotsEffect(
                 activeDotColor: Colors.white,
                 dotColor: Colors.white54,
-                dotHeight: 5.h,
-                dotWidth: 8.w,
+                dotHeight: 3.h,
+                dotWidth: 10.w,
               ),
             );
           },

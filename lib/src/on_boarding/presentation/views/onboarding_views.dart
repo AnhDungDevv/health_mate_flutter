@@ -20,8 +20,8 @@ class OnboardingScreen extends StatelessWidget {
               children: [
                 const SliderOnboarding(),
                 const PhoneInputWidget(),
-                const SocialLoginOptions(),
                 _buildOrDivider(),
+                const SocialLoginOptions(),
                 _buildTermsText()
               ],
             ),
@@ -33,7 +33,7 @@ class OnboardingScreen extends StatelessWidget {
 
   Widget _buildOrDivider() {
     return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 50),
+      padding: EdgeInsets.symmetric(horizontal: 80),
       child: Row(
         children: [
           Expanded(

@@ -58,6 +58,7 @@ dependencies:
   dartz: ^0.10.1
   flutter_screenutil: ^5.9.3
   connectivity_plus: ^6.1.3
+  font_awesome_flutter: ^10.8.0
 
 dev_dependencies:
   flutter_test:

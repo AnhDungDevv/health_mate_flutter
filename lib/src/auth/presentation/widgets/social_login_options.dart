@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:health_mate/core/routing/routes_name.dart';
 
 class SocialLoginOptions extends StatelessWidget {
@@ -11,25 +12,30 @@ class SocialLoginOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<IconData> icons = [
-      Icons.g_mobiledata,
-      Icons.apple,
-      Icons.facebook,
+      FontAwesomeIcons.google, // Google Icon
+      FontAwesomeIcons.apple, // Apple Icon
+      FontAwesomeIcons.facebook, // Facebook Icon
     ];
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: icons
-          .map(
-            (icon) => InkWell(
-              onTap: () => _navigateToOptionsScreen(context),
-              borderRadius: BorderRadius.circular(8),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Icon(icon, size: 32, color: Colors.black54),
-              ),
-            ),
-          )
-          .toList(),
+    return GestureDetector(
+      onTap: () => _navigateToOptionsScreen(context),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 50),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: icons
+              .map((icon) => Container(
+                    width: 30,
+                    height: 30,
+                    alignment: Alignment.center,
+                    child: FaIcon(
+                      icon,
+                      size: 18,
+                    ),
+                  ))
+              .toList(),
+        ),
+      ),
     );
   }
 }

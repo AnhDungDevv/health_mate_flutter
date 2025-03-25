@@ -1,16 +1,29 @@
-import 'package:flutter/foundation.dart';
+enum SignInStatus { idle, loading, success, failure }
 
-@immutable
-class SigninState {
+class SignInState {
   final String email;
   final String password;
+  final SignInStatus status;
+  final String? errorMessage;
 
-  const SigninState({this.email = '', this.password = ''});
+  SignInState({
+    this.email = '',
+    this.password = '',
+    this.status = SignInStatus.idle,
+    this.errorMessage,
+  });
 
-  SigninState copyWith({String? email, String? password}) {
-    return SigninState(
+  SignInState copyWith({
+    String? email,
+    String? password,
+    SignInStatus? status,
+    String? errorMessage,
+  }) {
+    return SignInState(
       email: email ?? this.email,
       password: password ?? this.password,
+      status: status ?? this.status,
+      errorMessage: errorMessage,
     );
   }
 }
