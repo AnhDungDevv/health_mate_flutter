@@ -26,6 +26,11 @@ class _VerifyPhoneScreenState extends ConsumerState<VerifyPhoneScreen> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final phoneNumber = ref.read(phoneInputProvider).phoneNumber;
     final sendOtpNotifier = ref.read(sendOtpProvider.notifier);
@@ -143,12 +148,12 @@ class _VerifyButton extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(vertical: 14),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
-        // onPressed: otpCode.length == 6 && !verifyOtpState.isLoading
-        //     ? () => verifyOtpNotifier.verifyOtp(verificationId ?? "", otpCode)
-        //     : null,
-        onPressed: () {
-          Navigator.pushNamed(context, RoutesName.signUpView);
-        },
+        onPressed: otpCode.length == 6 && !verifyOtpState.isLoading
+            ? () => {
+                  verifyOtpNotifier.verifyOtp(verificationId ?? "", otpCode),
+                  Navigator.pushReplacementNamed(context, RoutesName.signUpView)
+                }
+            : null,
         child: verifyOtpState.isLoading
             ? const CircularProgressIndicator(color: Colors.white)
             : const Text(

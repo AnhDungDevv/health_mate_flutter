@@ -28,10 +28,19 @@ class CountdownNotifier extends StateNotifier<int> {
     _timer?.cancel();
     super.dispose();
   }
+
+  void stopCountdown() {
+    _timer?.cancel();
+    state = 0;
+  }
 }
 
 final countdownProvider = StateNotifierProvider<CountdownNotifier, int>((ref) {
   final notifier = CountdownNotifier();
+
+  ref.onDispose(() {
+    notifier.stopCountdown();
+  });
 
   return notifier;
 });
