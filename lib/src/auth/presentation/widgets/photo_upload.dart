@@ -1,6 +1,7 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:health_mate/core/common/styles/colors.dart';
 import 'package:health_mate/src/profile/profile_provider.dart';
 
 class PhotoUpload extends ConsumerWidget {
@@ -19,10 +20,11 @@ class PhotoUpload extends ConsumerWidget {
           onTap: () => _showImagePicker(context, ref),
           child: DottedBorder(
             borderType: BorderType.Circle,
-            radius: const Radius.circular(50),
-            padding: const EdgeInsets.all(10),
-            color: Colors.blue,
-            strokeWidth: 2,
+            radius: const Radius.circular(40),
+            padding: const EdgeInsets.all(2),
+            color: AppColors.blue,
+            strokeWidth: 1.5,
+            dashPattern: const [5, 5],
             child: avatarState.when(
               data: (avatarUrl) => avatarUrl == null
                   ? _buildPlaceholder()
@@ -30,8 +32,8 @@ class PhotoUpload extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(50),
                       child: Image.network(
                         avatarUrl,
-                        width: 100,
-                        height: 100,
+                        width: 90,
+                        height: 90,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -44,8 +46,8 @@ class PhotoUpload extends ConsumerWidget {
         const Text(
           'Upload photo',
           style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
+            fontSize: 12,
+            fontWeight: FontWeight.w400,
             color: Colors.black,
           ),
         ),
@@ -58,7 +60,7 @@ class PhotoUpload extends ConsumerWidget {
       width: 100,
       height: 100,
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: Colors.grey[100],
         shape: BoxShape.circle,
       ),
       child: const Icon(

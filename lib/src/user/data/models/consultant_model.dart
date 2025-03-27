@@ -1,4 +1,4 @@
-import 'package:health_mate/src/auth/presentation/app/states/registration_state.dart';
+import 'package:health_mate/src/auth/presentation/app/states/sign_up_state.dart';
 import 'package:health_mate/src/user/data/models/user_model.dart';
 import 'package:health_mate/src/user/domain/entities/consultant_entity.dart';
 

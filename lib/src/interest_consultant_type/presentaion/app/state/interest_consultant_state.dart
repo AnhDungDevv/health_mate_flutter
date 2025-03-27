@@ -1,33 +1,33 @@
-import 'package:health_mate/src/interest_consultant_type/data/model/interest_consultant_type_model.dart';
+import 'package:health_mate/src/interest_consultant_type/domain/entities/consultant_type_entity.dart';
 
 enum InterestConsultantStatus { initial, loading, loaded, error }
 
 class InterestConsultantState {
   final InterestConsultantStatus status;
-  final List<ConsultantTypeModel> consultants;
+  final List<ConsultantTypeEntity> consultantsType;
   final String? errorMessage;
 
   InterestConsultantState({
     required this.status,
-    required this.consultants,
+    required this.consultantsType,
     this.errorMessage,
   });
 
   factory InterestConsultantState.initial() {
     return InterestConsultantState(
       status: InterestConsultantStatus.initial,
-      consultants: [],
+      consultantsType: [],
     );
   }
 
   InterestConsultantState copyWith({
     InterestConsultantStatus? status,
-    List<ConsultantTypeModel>? consultants,
+    List<ConsultantTypeEntity>? consultantsType,
     String? errorMessage,
   }) {
     return InterestConsultantState(
       status: status ?? this.status,
-      consultants: consultants ?? this.consultants,
+      consultantsType: consultantsType ?? this.consultantsType,
       errorMessage: errorMessage,
     );
   }

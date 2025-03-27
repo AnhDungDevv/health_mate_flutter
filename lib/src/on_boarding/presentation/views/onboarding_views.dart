@@ -19,6 +19,9 @@ class OnboardingScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SliderOnboarding(),
+                const SizedBox(
+                  height: 10,
+                ),
                 const PhoneInputWidget(),
                 _buildOrDivider(),
                 const SocialLoginOptions(),

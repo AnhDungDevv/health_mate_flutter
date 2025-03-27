@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_mate/src/auth/presentation/app/states/signin_state.dart';
 import 'package:health_mate/src/user/domain/entities/user_entity.dart';
-import 'package:health_mate/src/auth/domain/usecases/login_usecase.dart';
+import 'package:health_mate/src/auth/domain/usecases/sign_in_usecase.dart';
 
 class SignInNotifier extends StateNotifier<SignInState> {
   final LoginUsecase loginUsecase;

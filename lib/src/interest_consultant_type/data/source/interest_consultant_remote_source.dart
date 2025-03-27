@@ -15,4 +15,16 @@ class InterestConsultantRemoteSource {
       throw Exception('Lỗi server: ${response.statusCode}');
     }
   }
+
+  Future<void> postSelectedInterests(
+      String userId, List<String> interests) async {
+    final res = await _dio.post(
+      'selected-interests',
+      data: {'user_id': userId, 'interests': interests},
+    );
+    if (res.statusCode! >= 200 && res.statusCode! < 400) {
+    } else {
+      throw Exception("error");
+    }
+  }
 }

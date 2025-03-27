@@ -5,4 +5,8 @@ class RoutesName {
   static const String onboardingView = "onboarding_view";
   static const String signUpView = "signup_view";
   static const String signInView = "signin_view";
+  static const String customerInfoView = "customer_info_view";
+  static const String customerInterestView = "customer_interest_view";
+  static const String consultantInfoView1 = "consultant_info_view_1";
+  static const String consultantInfoView2 = "consultant_info_view_2";
 }

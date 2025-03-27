@@ -9,7 +9,7 @@ class ConsultantTypeModel extends ConsultantTypeEntity {
 
   factory ConsultantTypeModel.fromJson(Map<String, dynamic> json) {
     return ConsultantTypeModel(
-      id: json["id"] as int,
+      id: json["id"] as String,
       name: json["name"] as String,
       imageURL: json["imageURL"] as String,
     );

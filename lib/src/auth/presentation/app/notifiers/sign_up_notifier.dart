@@ -1,31 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_mate/src/user/data/models/customer_model.dart';
 import 'package:health_mate/src/user/data/models/user_model.dart';
-import 'package:health_mate/src/auth/presentation/app/states/registration_state.dart';
+import 'package:health_mate/src/auth/presentation/app/states/sign_up_state.dart';
 import 'package:health_mate/src/user/data/models/consultant_model.dart';
 import 'package:health_mate/src/auth/domain/usecases/register_usecase.dart';
 import 'package:health_mate/src/user/domain/entities/user_entity.dart';
 
-class RegistrationNotifier extends StateNotifier<RegistrationState> {
-  final RegisterUsecase _registerUsecase;
+class SignUpNotifier extends StateNotifier<SignUpState> {
+  final SignUpUsecase signUpUsecase;
 
-  RegistrationNotifier(this._registerUsecase)
-      : super(RegistrationState.initial());
-
-  int get totalStep => 3;
-
-  void nextStep() {
-    if (!mounted || state.currentStep >= totalStep) return;
-    state = state.copyWith(currentStep: state.currentStep + 1);
-  }
-
-  void prevStep() {
-    if (!mounted || state.currentStep <= 1) return;
-    state = state.copyWith(currentStep: state.currentStep - 1);
-  }
+  SignUpNotifier({required this.signUpUsecase}) : super(SignUpState.initial());
 
   void setRole(Role role) {
-    if (!mounted || state.data.role == role) return;
     state = state.copyWith(data: state.data.copyWith(role: role));
   }
 
@@ -60,16 +46,20 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
     }
   }
 
+  void resetData() {
+    state = SignUpState.initial();
+  }
+
   Future<void> register() async {
     if (!mounted) return;
     state = state.copyWith(isLoading: true, errorMessage: null);
 
     try {
       final entity = _createUserEntity();
-      await _registerUsecase(entity);
+      await signUpUsecase(entity);
 
       if (mounted) {
-        state = RegistrationState.initial();
+        state = SignUpState.initial();
       }
     } catch (e) {
       if (mounted) {

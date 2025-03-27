@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:health_mate/src/user/data/models/user_model.dart';
 import 'package:health_mate/core/common/styles/colors.dart';
 
@@ -10,13 +10,11 @@ class OptionCard extends StatelessWidget {
       required this.isSelected,
       required this.title,
       required this.subtitle,
-      required this.steps,
       required this.onSelect});
   final Role role;
   final bool isSelected;
   final String title;
   final String subtitle;
-  final int steps;
   final ValueChanged<Role> onSelect;
   @override
   Widget build(BuildContext context) {
@@ -26,12 +24,12 @@ class OptionCard extends StatelessWidget {
         width: double.infinity,
         height: 130,
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.softPeach : AppColors.lightGray,
+          color: isSelected ? AppColors.softPeach : AppColors.lightGrey,
           border: Border.all(
-            width: 1,
-            color: isSelected ? AppColors.secondaryColor : Colors.grey,
-          ),
-          borderRadius: BorderRadius.circular(5),
+              width: isSelected ? 2 : 2,
+              color:
+                  isSelected ? AppColors.secondaryColor : AppColors.lightGrey),
+          borderRadius: BorderRadius.circular(isSelected ? 5 : 1),
         ),
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -44,7 +42,12 @@ class OptionCard extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(CupertinoIcons.chat_bubble),
+                child: Icon(
+                  role == Role.customer
+                      ? FontAwesomeIcons.comment
+                      : FontAwesomeIcons.user,
+                  color: isSelected ? AppColors.secondaryColor : AppColors.text,
+                ),
               ),
               const SizedBox(width: 20),
               Expanded(

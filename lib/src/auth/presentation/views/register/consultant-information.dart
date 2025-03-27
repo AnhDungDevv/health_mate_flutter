@@ -7,14 +7,14 @@ import 'package:health_mate/src/auth/presentation/app/providers/usedebounce_prov
 import 'package:health_mate/src/auth/presentation/widgets/custom_input_field.dart';
 import 'package:health_mate/src/auth/presentation/widgets/photo_upload.dart';
 
-class ConsultantInfoScreen extends ConsumerStatefulWidget {
-  const ConsultantInfoScreen({super.key});
+class ConsultantInfoView1 extends ConsumerStatefulWidget {
+  const ConsultantInfoView1({super.key});
 
   @override
-  _ConsultantInfoScreenState createState() => _ConsultantInfoScreenState();
+  _ConsultantInfoView1State createState() => _ConsultantInfoView1State();
 }
 
-class _ConsultantInfoScreenState extends ConsumerState<ConsultantInfoScreen> {
+class _ConsultantInfoView1State extends ConsumerState<ConsultantInfoView1> {
   final _formKey = GlobalKey<FormState>();
 
   late final List<TextEditingController> _controllers;
@@ -54,13 +54,13 @@ class _ConsultantInfoScreenState extends ConsumerState<ConsultantInfoScreen> {
   }
 
   void handleImagePicked(String? imageUrl) {
-    ref.read(registrationProvider.notifier).updateData(avatar: imageUrl);
+    ref.read(signUpProvider.notifier).updateData(avatar: imageUrl);
   }
 
   void _handleInputChange(WidgetRef ref, String field, String value) {
     ref.read(debounceInputProvider(field).notifier).state = null;
     Future.delayed(const Duration(milliseconds: 500), () {
-      // ref.read(registrationProvider.notifier).updateDataField(field, value);
+      // ref.read(signUpProvider.notifier).updateDataField(field, value);
     });
   }
 
@@ -75,8 +75,8 @@ class _ConsultantInfoScreenState extends ConsumerState<ConsultantInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
+    return Scaffold(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Form(
           key: _formKey,
@@ -143,7 +143,7 @@ class _ConsultantInfoScreenState extends ConsumerState<ConsultantInfoScreen> {
       String hint, String? Function(String?) validator,
       [TextInputType? keyboardType]) {
     // final value =
-    //     ref.watch(registrationProvider.select((state) => state[field] ?? ''));
+    //     ref.watch(signUpProvider.select((state) => state[field] ?? ''));
 
     final controller = TextEditingController();
 

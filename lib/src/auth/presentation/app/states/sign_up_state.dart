@@ -54,32 +54,28 @@ class RegistrationData {
   }
 }
 
-class RegistrationState {
-  final int currentStep;
+class SignUpState {
   final RegistrationData data;
   final bool isLoading;
   final String? errorMessage;
 
-  RegistrationState({
-    required this.currentStep,
+  SignUpState({
     required this.data,
     this.isLoading = false,
     this.errorMessage,
   });
 
-  factory RegistrationState.initial() => RegistrationState(
-        currentStep: 1,
+  factory SignUpState.initial() => SignUpState(
         data: RegistrationData.initial(),
       );
 
-  RegistrationState copyWith({
+  SignUpState copyWith({
     int? currentStep,
     RegistrationData? data,
     bool? isLoading,
     String? errorMessage,
   }) {
-    return RegistrationState(
-      currentStep: currentStep ?? this.currentStep,
+    return SignUpState(
       data: data ?? this.data,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
