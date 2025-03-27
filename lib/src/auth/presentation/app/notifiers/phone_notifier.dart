@@ -18,7 +18,7 @@ class PhoneInputNotifier extends StateNotifier<PhoneInputState> {
   }
 
   Future<void> verifyOtp(String otp) async {
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
     bool isRegistered = _mockCheckPhoneRegistered(state.phoneNumber);
     state = state.copyWith(isRegistered: isRegistered);

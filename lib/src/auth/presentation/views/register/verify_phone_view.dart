@@ -5,6 +5,7 @@ import 'package:health_mate/src/auth/presentation/app/providers/phone_provider.d
 import 'package:health_mate/src/auth/presentation/app/providers/auth_providers.dart';
 import 'package:health_mate/src/auth/presentation/app/providers/countdown_provider.dart';
 import 'package:health_mate/core/common/styles/colors.dart';
+import 'package:health_mate/src/auth/presentation/app/states/verify_o_t_p_state.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
 import 'package:otp_text_field/style.dart';
@@ -136,7 +137,6 @@ class _VerifyButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final otpCode = ref.watch(otpInputProvider);
-    final verificationId = ref.read(sendOtpProvider).verificationId;
     final verifyOtpState = ref.watch(verifyOtpProvider);
     final verifyOtpNotifier = ref.read(verifyOtpProvider.notifier);
 
@@ -150,8 +150,14 @@ class _VerifyButton extends ConsumerWidget {
         ),
         onPressed: otpCode.length == 6 && !verifyOtpState.isLoading
             ? () => {
-                  verifyOtpNotifier.verifyOtp(verificationId ?? "", otpCode),
-                  Navigator.pushReplacementNamed(context, RoutesName.signUpView)
+                  verifyOtpNotifier.verifyOtp(otpCode),
+                  ref.listen<VerifyOtpState>(verifyOtpProvider,
+                      (previous, next) {
+                    if (next.isSuccess) {
+                      Navigator.pushReplacementNamed(
+                          context, RoutesName.signUpView);
+                    }
+                  })
                 }
             : null,
         child: verifyOtpState.isLoading

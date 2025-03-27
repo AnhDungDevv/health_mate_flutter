@@ -17,8 +17,7 @@ class VerifyOtpUseCase {
 
   VerifyOtpUseCase(this.repository);
 
-  Future<Either<Failure, void>> call(
-      String verificationId, String smsCode) async {
-    return await repository.verifyOtp(verificationId, smsCode);
+  Future<Either<Failure, void>> call(String smsCode) async {
+    return await repository.verifyOtp(smsCode);
   }
 }

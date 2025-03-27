@@ -8,17 +8,18 @@ class VerifyOtpNotifier extends StateNotifier<VerifyOtpState> {
 
   VerifyOtpNotifier(this._verifyOtpUseCase)
       : super(VerifyOtpState(errorMessage: null));
+  Future<void> verifyOtp(String smsCode) async {
+    state =
+        state.copyWith(isLoading: true, errorMessage: null, isSuccess: false);
 
-  Future<void> verifyOtp(String verificationId, String smsCode) async {
-    state = state.copyWith(isLoading: true, errorMessage: null);
-
-    final result = await _verifyOtpUseCase(verificationId, smsCode);
+    final result = await _verifyOtpUseCase(smsCode);
     result.fold(
       (failure) => state = state.copyWith(
         isLoading: false,
         errorMessage: _mapFailureToMessage(failure),
+        isSuccess: false,
       ),
-      (_) => state = state.copyWith(isLoading: false),
+      (_) => state = state.copyWith(isLoading: false, isSuccess: true),
     );
   }
 

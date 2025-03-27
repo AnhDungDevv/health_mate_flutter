@@ -6,6 +6,5 @@ abstract class AuthRepository {
   Future<Either<Failure, UserEntity>> register(UserEntity user);
   Future<Either<Failure, UserEntity>> login(UserEntity user);
   Future<Either<Failure, String>> sendOtp(String phoneNumber);
-  Future<Either<Failure, void>> verifyOtp(
-      String verificationId, String smsCode);
+  Future<Either<Failure, void>> verifyOtp(String smsCode);
 }

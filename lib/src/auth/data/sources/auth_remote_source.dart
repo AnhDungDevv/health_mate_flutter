@@ -1,17 +1,20 @@
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:health_mate/core/network/api_client.dart';
 import 'package:health_mate/src/user/data/models/user_model.dart';
+import 'dart:async';
 
 abstract class AuthRemoteDataSource {
   Future<UserModel> register(UserModel user);
   Future<UserModel> login(UserModel user);
   Future<String> sendOtp(String phoneNumber);
-  Future<void> verifyOtp(String verificationId, String smsCode);
+  Future<void> verifyOtp(String smsCode);
 }
 
 class AuthRemoteSource implements AuthRemoteDataSource {
   final Dio _dio = ApiClient().dio;
-
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  String? _verificationId;
   @override
   Future<UserModel> register(UserModel user) async {
     try {
@@ -69,22 +72,35 @@ class AuthRemoteSource implements AuthRemoteDataSource {
 
   @override
   Future<String> sendOtp(String phoneNumber) async {
-    try {
-      final response =
-          await _dio.post('/send-otp', data: {'phone': phoneNumber});
+    final Completer<String> completer = Completer();
 
-      if (response.statusCode == 200) {
-        return response.data['otp'];
-      } else {
-        throw DioException(
-          requestOptions: response.requestOptions,
-          response: response,
-          type: DioExceptionType.badResponse,
-          error: "Failed to send OTP: ${response.statusMessage}",
-        );
-      }
-    } on DioException {
-      rethrow;
+    try {
+      await _auth.verifyPhoneNumber(
+        phoneNumber: "+84338524493",
+        timeout: const Duration(seconds: 60),
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          await _auth.signInWithCredential(credential);
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          completer.completeError(DioException(
+            requestOptions: RequestOptions(path: "/send-otp"),
+            error: "Firebase Auth Error: ${e.message}",
+            type: DioExceptionType.badResponse,
+          ));
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          completer.complete(verificationId);
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          completer.completeError(DioException(
+            requestOptions: RequestOptions(path: "/send-otp"),
+            error: "OTP retrieval timeout",
+            type: DioExceptionType.connectionTimeout,
+          ));
+        },
+      );
+
+      return completer.future;
     } catch (error) {
       throw DioException(
         requestOptions: RequestOptions(path: "/send-otp"),
@@ -95,10 +111,12 @@ class AuthRemoteSource implements AuthRemoteDataSource {
   }
 
   @override
-  Future<void> verifyOtp(String verificationId, String smsCode) async {
+  Future<void> verifyOtp(String smsCode) async {
     try {
-      final response = await _dio
-          .post('/verify-otp', data: {'id': verificationId, 'code': smsCode});
+      final response = await _dio.post('/verify-otp', data: {
+        "verification_id": _verificationId,
+        "otp": smsCode,
+      });
 
       if (response.statusCode != 200) {
         throw DioException(

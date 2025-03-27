@@ -58,10 +58,9 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> verifyOtp(
-      String verificationId, String smsCode) async {
+  Future<Either<Failure, void>> verifyOtp(String smsCode) async {
     try {
-      await remoteSource.verifyOtp(verificationId, smsCode);
+      await remoteSource.verifyOtp(smsCode);
       return const Right(null);
     } on DioException catch (error) {
       return Left(ErrorHandler.handleDioError(error));

@@ -45,8 +45,9 @@ class AuthLocalSource {
         }
 
         final user = UserModel.fromJson(jsonDecode(userJson));
-        final consultantId =
-            user.role == "consultant" ? prefs.getInt(_consultantIdKey) : null;
+        final consultantId = user.role == Role.consultant
+            ? prefs.getInt(_consultantIdKey)
+            : null;
 
         return {
           "user": user,
