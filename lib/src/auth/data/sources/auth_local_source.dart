@@ -8,7 +8,7 @@ class AuthLocalSource {
   static const String _timestampKey = 'user_saved_timestamp';
   static const Duration _cacheDuration = Duration(days: 7);
 
-  Future<void> saveUser(UserModel user, int? consultantId) async {
+  Future<void> saveUser(UserModel user, String? consultantId) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final userJson = jsonEncode(user.toJson());
@@ -16,7 +16,7 @@ class AuthLocalSource {
       await prefs.setString(_userKey, userJson);
 
       if (user.role == "consultant" && consultantId != null) {
-        await prefs.setInt(_consultantIdKey, consultantId);
+        await prefs.setString(_consultantIdKey, consultantId);
       } else {
         await prefs.remove(_consultantIdKey);
       }

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:health_mate/core/error/logger.dart';
 import 'package:health_mate/core/network/api_client.dart';
 import 'package:health_mate/src/user/data/models/user_model.dart';
 import 'dart:async';
@@ -15,10 +16,45 @@ class AuthRemoteSource implements AuthRemoteDataSource {
   final Dio _dio = ApiClient().dio;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String? _verificationId;
+
+  @override
+  Future<UserModel> login(UserModel user) async {
+    try {
+      final response = await _dio.post(
+        '/auth/login',
+        data: user.toJson(),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final userData = response.data["user"]; 
+        if (userData == null) {
+          throw Exception("User data is null");
+        }
+
+        return UserModel.fromJson(userData);
+      } else {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          response: response,
+          type: DioExceptionType.badResponse,
+          error: "Login failed: ${response.statusMessage}",
+        );
+      }
+    } on DioException {
+      rethrow;
+    } catch (error) {
+      throw DioException(
+        requestOptions: RequestOptions(path: "/api/v1/auth/login"),
+        error: "Unexpected error: ${error.toString()}",
+        type: DioExceptionType.unknown,
+      );
+    }
+  }
+
   @override
   Future<UserModel> register(UserModel user) async {
     try {
-      final response = await _dio.post('/register', data: user.toJson());
+      final response = await _dio.post('/auth/register', data: user.toJson());
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return UserModel.fromJson(response.data);
@@ -35,35 +71,6 @@ class AuthRemoteSource implements AuthRemoteDataSource {
     } catch (error) {
       throw DioException(
         requestOptions: RequestOptions(path: "/register"),
-        error: "Unexpected error: ${error.toString()}",
-        type: DioExceptionType.unknown,
-      );
-    }
-  }
-
-  @override
-  Future<UserModel> login(UserModel user) async {
-    try {
-      final response = await _dio.post(
-        '/login',
-        data: user.toJson(),
-      );
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        return UserModel.fromJson(response.data);
-      } else {
-        throw DioException(
-          requestOptions: response.requestOptions,
-          response: response,
-          type: DioExceptionType.badResponse,
-          error: "Login failed: ${response.statusMessage}",
-        );
-      }
-    } on DioException {
-      rethrow;
-    } catch (error) {
-      throw DioException(
-        requestOptions: RequestOptions(path: "/login"),
         error: "Unexpected error: ${error.toString()}",
         type: DioExceptionType.unknown,
       );

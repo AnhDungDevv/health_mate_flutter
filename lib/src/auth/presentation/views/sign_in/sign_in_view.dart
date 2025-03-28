@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:health_mate/core/common/styles/style.dart';
-import 'package:health_mate/core/routing/routes_name.dart';
 import 'package:health_mate/core/utils/validators.dart';
 import 'package:health_mate/src/auth/presentation/app/providers/auth_providers.dart';
 import 'package:health_mate/src/auth/presentation/app/states/signin_state.dart';
@@ -29,11 +28,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final signInState = ref.read(signInProvider);
-      _emailController.text = signInState.email;
-      _passwordController.text = signInState.password;
-    });
+    final signInState = ref.read(signInProvider);
+    _emailController = TextEditingController(text: signInState.email);
+    _passwordController = TextEditingController(text: signInState.password);
   }
 
   @override
@@ -56,8 +53,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () => Navigator.pushReplacementNamed(
-              context, RoutesName.onboardingView),
+          onPressed: () {
+            // Navigator.pop(context);
+          },
           icon: const Icon(Icons.arrow_back),
         ),
       ),
@@ -83,7 +81,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     onChange: ref.read(signInProvider.notifier).updateEmail,
                     validator: Validators.validateEmail,
                     inputDecoration: _inputDecoration("example@email.com"),
-                    onFieldSubmitted: (_) => _passwordFocus.requestFocus(),
                   ),
                   const SizedBox(height: 16),
 
@@ -96,7 +93,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     obscureText: true,
                     onChange: ref.read(signInProvider.notifier).updatePassword,
                     validator: Validators.validatePassword,
-                    onFieldSubmitted: (_) => _submitForm(),
                     inputDecoration: _inputDecoration("Min 8 character"),
                   ),
 
@@ -136,6 +132,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           ),
 
           /// Loading Overlay
+
           Consumer(
             builder: (context, ref, child) {
               final isLoading = ref.watch(signInProvider

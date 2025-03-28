@@ -37,27 +37,30 @@ class OnboardingNotifier extends StateNotifier<OnboardingState> {
   Future<void> loadOnboardingData() async {
     final startTime = DateTime.now();
     state = state.copyWith(isLoading: true);
-
-    final result = await getOnboardingUseCase();
-
-    final endTime = DateTime.now();
-    print(
-        "API Call Duration: ${endTime.difference(startTime).inMilliseconds} ms");
-
-    result.fold(
-      (failure) {
-        state = state.copyWith(
-          isLoading: false,
-          data: defaultOnboardingData,
-        );
-      },
-      (data) {
-        state = state.copyWith(
-          isLoading: false,
-          data: data,
-        );
-      },
+    state = state.copyWith(
+      isLoading: false,
+      data: defaultOnboardingData,
     );
+    // final result = await getOnboardingUseCase();
+
+    // final endTime = DateTime.now();
+    // print(
+    //     "API Call Duration: ${endTime.difference(startTime).inMilliseconds} ms");
+
+    // result.fold(
+    //   (failure) {
+    //     state = state.copyWith(
+    //       isLoading: false,
+    //       data: defaultOnboardingData,
+    //     );
+    //   },
+    //   (data) {
+    //     state = state.copyWith(
+    //       isLoading: false,
+    //       data: data,
+    //     );
+    //   },
+    // );
   }
 }
 

@@ -1,7 +1,7 @@
 import 'package:health_mate/src/user/data/models/user_model.dart';
 
 class UserEntity {
-  final int? id;
+  final String? id;
   final String? name;
   final Role? role;
   final String? email;

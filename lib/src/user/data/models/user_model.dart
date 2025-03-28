@@ -3,25 +3,26 @@ import 'package:health_mate/src/user/domain/entities/user_entity.dart';
 enum Role { consultant, customer }
 
 class UserModel extends UserEntity {
-  const UserModel({
-    super.id,
-    required super.name,
-    required super.role,
-    super.email,
-    super.phone,
-    super.avatar,
-    super.referralCode,
-  });
+  const UserModel(
+      {super.id,
+      required super.name,
+      required super.role,
+      super.email,
+      super.phone,
+      super.avatar,
+      super.referralCode,
+      super.password});
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['id'] as int,
+      id: json['id'] as String,
       name: json['name'] as String,
       role: Role.values.firstWhere(
         (r) => r.name == json['role'],
         orElse: () => Role.customer,
       ),
       email: json['email'] as String?,
+      password: json['password'] as String?,
       phone: json['phone'] as String?,
       avatar: json['avatar'] as String?,
       referralCode: json['referralCode'] as String?,
@@ -34,6 +35,7 @@ class UserModel extends UserEntity {
       'name': name,
       'role': role,
       'email': email,
+      'password': password,
       'phone': phone,
       'avatar': avatar,
       'referralCode': referralCode,
@@ -46,6 +48,7 @@ class UserModel extends UserEntity {
       name: entity.name,
       role: entity.role,
       email: entity.email,
+      password: entity.password,
       phone: entity.phone,
       avatar: entity.avatar,
       referralCode: entity.referralCode,
@@ -58,6 +61,7 @@ class UserModel extends UserEntity {
       name: name,
       role: role,
       email: email,
+      password: password,
       phone: phone,
       avatar: avatar,
       referralCode: referralCode,

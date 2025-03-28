@@ -36,7 +36,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final userModel = UserModel.fromEntity(user);
       final loginUser = await remoteSource.login(userModel);
       await localSource.saveUser(loginUser, user.id);
-
+      AppLogger.debug("User logged in: ${loginUser.toJson()}");
       return Right(loginUser);
     } catch (error, stackTrace) {
       AppLogger.error("Unexpected Error in register:$error\n$stackTrace");
