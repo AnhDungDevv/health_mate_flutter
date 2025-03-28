@@ -1,13 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:health_mate/core/error/logger.dart';
 import 'package:health_mate/core/network/api_client.dart';
+import 'package:health_mate/src/auth/data/models/auth_res.dart';
 import 'package:health_mate/src/user/data/models/user_model.dart';
 import 'dart:async';
 
 abstract class AuthRemoteDataSource {
   Future<UserModel> register(UserModel user);
-  Future<UserModel> login(UserModel user);
+  Future<AuthResponse> login(UserModel user);
   Future<String> sendOtp(String phoneNumber);
   Future<void> verifyOtp(String smsCode);
 }
@@ -18,7 +18,7 @@ class AuthRemoteSource implements AuthRemoteDataSource {
   String? _verificationId;
 
   @override
-  Future<UserModel> login(UserModel user) async {
+  Future<AuthResponse> login(UserModel user) async {
     try {
       final response = await _dio.post(
         '/auth/login',
@@ -26,12 +26,7 @@ class AuthRemoteSource implements AuthRemoteDataSource {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final userData = response.data["user"]; 
-        if (userData == null) {
-          throw Exception("User data is null");
-        }
-
-        return UserModel.fromJson(userData);
+        return AuthResponse.fromJson(response.data);
       } else {
         throw DioException(
           requestOptions: response.requestOptions,

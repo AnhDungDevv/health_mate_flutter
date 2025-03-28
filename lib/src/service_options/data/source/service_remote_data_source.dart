@@ -4,15 +4,15 @@ import 'package:health_mate/core/network/api_client.dart';
 import 'package:health_mate/src/service_options/data/model/service_option_model.dart';
 
 abstract class ServiceRemoteDataSource {
-  Future<List<ServiceModel>> fetchService(int consultantId);
-  Future<void> updateService(int consultantId, ServiceModel service);
+  Future<List<ServiceModel>> fetchService(String consultantId);
+  Future<void> updateService(String consultantId, ServiceModel service);
 }
 
 class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
   final Dio _dio = ApiClient().dio;
 
   @override
-  Future<List<ServiceModel>> fetchService(int consultantId) async {
+  Future<List<ServiceModel>> fetchService(String consultantId) async {
     try {
       final response = await _dio.get('/services/$consultantId');
       final List<dynamic> data = response.data;
@@ -31,7 +31,7 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
   }
 
   @override
-  Future<void> updateService(int consultantId, ServiceModel service) async {
+  Future<void> updateService(String consultantId, ServiceModel service) async {
     try {
       await _dio.put('/services/$consultantId/${service.id}',
           data: service.toJson());

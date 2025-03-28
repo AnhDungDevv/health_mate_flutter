@@ -8,7 +8,7 @@ class LoginUsecase {
 
   LoginUsecase({required this.repository});
 
-  Future<Either<Failure, UserEntity>> call(UserEntity user) async {
+  Future<Either<Failure, Unit>> call(UserEntity user) async {
     return await repository.login(user);
   }
 }

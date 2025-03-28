@@ -6,7 +6,7 @@ class GetServiceUseCase {
 
   GetServiceUseCase({required this.repository});
 
-  Future<List<ServiceEntity>> call(int consultantId) async {
+  Future<List<ServiceEntity>> call(String consultantId) async {
     return await repository.fetchService(consultantId);
   }
 }

@@ -4,9 +4,11 @@ import 'package:health_mate/src/auth/domain/repos/auth_repo.dart';
 import 'package:health_mate/src/auth/data/repos/auth_repo_impl.dart';
 import 'package:health_mate/src/auth/data/sources/auth_local_source.dart';
 import 'package:health_mate/src/auth/data/sources/auth_remote_source.dart';
+import 'package:health_mate/src/auth/domain/usecases/check_login_usecase.dart';
 import 'package:health_mate/src/auth/domain/usecases/sign_in_usecase.dart';
 import 'package:health_mate/src/auth/domain/usecases/otp_usecase.dart';
 import 'package:health_mate/src/auth/domain/usecases/register_usecase.dart';
+import 'package:health_mate/src/auth/presentation/app/notifiers/auth_notifier.dart';
 import 'package:health_mate/src/auth/presentation/app/notifiers/send_o_t_p_notifier.dart';
 import 'package:health_mate/src/auth/presentation/app/notifiers/sign_up_step_notifier.dart';
 import 'package:health_mate/src/auth/presentation/app/notifiers/verify_o_t_p_notifier.dart';
@@ -36,6 +38,9 @@ final signUpUsecaseProvider =
 final loginUseCaseProvider = Provider(
     (ref) => LoginUsecase(repository: ref.watch(authRepositoryProvider)));
 
+final checkLoginusecase =
+    Provider((ref) => CheckLoginUsecase(ref.watch(authRepositoryProvider)));
+
 final sendOtpUseCaseProvider =
     Provider((ref) => SendOtpUseCase(ref.watch(authRepositoryProvider)));
 final verifyOtpUseCaseProvider =
@@ -61,6 +66,10 @@ final signInProvider = StateNotifierProvider<SignInNotifier, SignInState>(
 
 final signUpStepProvider = StateNotifierProvider<SignUpStepNotifier, int>(
   (ref) => SignUpStepNotifier(ref: ref),
+);
+
+final authProvider = StateNotifierProvider<AuthNotifier, AuthState>(
+  (ref) => AuthNotifier(ref.read(checkLoginusecase)),
 );
 
 // State Providers

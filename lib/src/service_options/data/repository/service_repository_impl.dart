@@ -9,7 +9,7 @@ class ServiceRepositoryImpl implements ServiceRepository {
   ServiceRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<List<ServiceEntity>> fetchService(int userId) async {
+  Future<List<ServiceEntity>> fetchService(String userId) async {
     final List<ServiceModel> serviceModels =
         await remoteDataSource.fetchService(userId);
 
@@ -25,7 +25,7 @@ class ServiceRepositoryImpl implements ServiceRepository {
   }
 
   @override
-  Future<void> updateService(int userId, ServiceEntity service) async {
+  Future<void> updateService(String userId, ServiceEntity service) async {
     final serviceModel = ServiceModel(
       id: service.id,
       name: service.name,

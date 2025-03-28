@@ -1,85 +1,60 @@
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:health_mate/src/user/data/models/user_model.dart';
 
 class AuthLocalSource {
-  static const String _userKey = 'registered_user';
-  static const String _consultantIdKey = 'consultant_id';
-  static const String _timestampKey = 'user_saved_timestamp';
-  static const Duration _cacheDuration = Duration(days: 7);
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
-  Future<void> saveUser(UserModel user, String? consultantId) async {
+  /// Lưu access token vào storage
+  Future<void> saveToken(String token) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final userJson = jsonEncode(user.toJson());
-
-      await prefs.setString(_userKey, userJson);
-
-      if (user.role == "consultant" && consultantId != null) {
-        await prefs.setString(_consultantIdKey, consultantId);
-      } else {
-        await prefs.remove(_consultantIdKey);
-      }
-
-      final now = DateTime.now().millisecondsSinceEpoch;
-      await prefs.setInt(_timestampKey, now);
+      await _storage.write(key: "accessToken", value: token);
     } catch (e) {
-      print("Error saving user: $e");
+      print("❌ Lỗi khi lưu token: $e");
     }
   }
 
-  /// Retrieve user information from SharedPreferences (automatically deletes if expired)
-  Future<Map<String, dynamic>?> getUser() async {
+  /// Lưu user vào storage dưới dạng JSON
+  Future<void> saveUser(UserModel userData) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final userJson = prefs.getString(_userKey);
-      final savedTimestamp = prefs.getInt(_timestampKey);
-
-      if (userJson != null && savedTimestamp != null) {
-        final savedTime = DateTime.fromMillisecondsSinceEpoch(savedTimestamp);
-        final now = DateTime.now();
-
-        if (now.difference(savedTime) > _cacheDuration) {
-          await clearUser();
-          return null;
-        }
-
-        final user = UserModel.fromJson(jsonDecode(userJson));
-        final consultantId = user.role == Role.consultant
-            ? prefs.getInt(_consultantIdKey)
-            : null;
-
-        return {
-          "user": user,
-          "consultantId": consultantId,
-        };
-      }
+      final jsonString = jsonEncode(userData.toJson());
+      await _storage.write(key: "user", value: jsonString);
     } catch (e) {
-      print("Error retrieving user: $e");
+      print("❌ Lỗi khi lưu UserModel: $e");
     }
-    return null;
   }
 
-  /// Retrieve consultantId separately
-  Future<int?> getConsultantId() async {
+  /// Lấy access token từ storage
+  Future<String?> getToken() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      return prefs.getInt(_consultantIdKey);
+      return await _storage.read(key: "accessToken");
     } catch (e) {
-      print("Error retrieving consultantId: $e");
+      print("❌ Lỗi khi lấy token: $e");
+      return null;
     }
-    return null;
   }
 
-  /// Clear user data when logging out or when expired
-  Future<void> clearUser() async {
+  /// Lấy user từ storage
+  Future<UserModel?> getUser() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove(_userKey);
-      await prefs.remove(_consultantIdKey);
-      await prefs.remove(_timestampKey);
+      final userString = await _storage.read(key: "user");
+      if (userString == null) return null;
+
+      final userData = jsonDecode(userString);
+      return UserModel.fromJson(userData);
     } catch (e) {
-      print("Error deleting user: $e");
+      print("❌ Lỗi khi đọc UserModel: $e");
+      return null;
+    }
+  }
+
+  Future<void> clearAuthData() async {
+    try {
+      await _storage.delete(key: "accessToken");
+      await _storage.delete(key: "user");
+    } catch (e) {
+      print("❌ Lỗi khi xóa dữ liệu: $e");
     }
   }
 }

@@ -44,7 +44,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      ref.read(signInProvider.notifier).signIn();
+      ref.read(signInProvider.notifier).signIn(context);
     }
   }
 

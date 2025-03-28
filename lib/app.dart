@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         debugShowCheckedModeBanner: false,
-        initialRoute: RoutesName.onboardingView,
+        initialRoute: RoutesName.splashView,
         onGenerateRoute: Routes.generatedRoutes,
       )),
     );

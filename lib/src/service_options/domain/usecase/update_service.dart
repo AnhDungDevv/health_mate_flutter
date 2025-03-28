@@ -6,7 +6,7 @@ class UpdateServiceUseCase {
 
   UpdateServiceUseCase({required this.repository});
 
-  Future<void> call(int userId, ServiceEntity service) async {
+  Future<void> call(String userId, ServiceEntity service) async {
     return await repository.updateService(userId, service);
   }
 }

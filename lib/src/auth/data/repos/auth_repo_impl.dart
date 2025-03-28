@@ -20,7 +20,6 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final userModel = UserModel.fromEntity(user);
       final registeredUser = await remoteSource.register(userModel);
-      await localSource.saveUser(registeredUser, user.id);
       return Right(registeredUser);
     } on DioException catch (error) {
       return Left(ErrorHandler.handleDioError(error));
@@ -31,16 +30,37 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, UserModel>> login(UserEntity user) async {
+  Future<Either<Failure, Unit>> login(UserEntity user) async {
     try {
       final userModel = UserModel.fromEntity(user);
-      final loginUser = await remoteSource.login(userModel);
-      await localSource.saveUser(loginUser, user.id);
-      AppLogger.debug("User logged in: ${loginUser.toJson()}");
-      return Right(loginUser);
+      final responseData = await remoteSource.login(userModel);
+
+      final userData = responseData.user;
+      final String accessToken = responseData.token;
+
+      await localSource.saveToken(accessToken);
+
+      await localSource.saveUser(userData);
+
+      return const Right(unit);
     } catch (error, stackTrace) {
-      AppLogger.error("Unexpected Error in register:$error\n$stackTrace");
+      AppLogger.error("Unexpected Error in login: $error\n$stackTrace");
       return Left(ServerFailure("Unexpected error: ${error.toString()}"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserModel>> checkLogin() async {
+    try {
+      final token = await localSource.getToken();
+      if (token == null || token.isEmpty) {
+        return const Left(AuthFailure("Token không tồn tại"));
+      }
+
+      final user = await localSource.getUser();
+      return Right(user!);
+    } catch (error) {
+      return Left(AuthFailure("Lỗi kiểm tra login: ${error.toString()}"));
     }
   }
 

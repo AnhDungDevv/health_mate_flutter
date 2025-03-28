@@ -20,7 +20,8 @@ class ServiceNotifier extends StateNotifier<List<ServiceEntity>> {
 
   Future<void> _init() async {
     try {
-      final consultantId = await AuthLocalSource().getConsultantId();
+      final consultantId = 'jalsdlflasdf';
+      // final consultantId = await AuthLocalSource().getUser();
       if (consultantId != null) {
         await fetchServiceList(consultantId);
       }
@@ -29,7 +30,7 @@ class ServiceNotifier extends StateNotifier<List<ServiceEntity>> {
     }
   }
 
-  Future<void> fetchServiceList(int consultantId) async {
+  Future<void> fetchServiceList(String consultantId) async {
     try {
       final services = await _getServiceUseCase(consultantId);
       state = services;
@@ -40,7 +41,9 @@ class ServiceNotifier extends StateNotifier<List<ServiceEntity>> {
 
   Future<void> updatePrice(String key, double newPrice) async {
     try {
-      final consultantId = await AuthLocalSource().getConsultantId();
+      // final consultantId = await AuthLocalSource().getConsultantId();
+      final consultantId = 'jalsdlflasdf';
+
       if (consultantId == null) return;
 
       final serviceIndex = state.indexWhere((service) => service.key == key);
@@ -58,7 +61,9 @@ class ServiceNotifier extends StateNotifier<List<ServiceEntity>> {
 
   Future<void> updateMultiplePrices(Map<String, double> prices) async {
     try {
-      final consultantId = await AuthLocalSource().getConsultantId();
+      // final consultantId = await AuthLocalSource().getConsultantId();
+      final consultantId = 'jalsdlflasdf';
+
       if (consultantId == null) return;
 
       List<ServiceEntity> updatedServices = [];
