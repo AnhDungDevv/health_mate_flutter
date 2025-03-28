@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:health_mate/core/common/styles/style.dart';
+import 'package:health_mate/core/routing/routes_name.dart';
 import 'package:health_mate/core/utils/validators.dart';
 import 'package:health_mate/src/auth/presentation/app/providers/auth_providers.dart';
 import 'package:health_mate/src/auth/presentation/app/states/signin_state.dart';
@@ -27,10 +29,11 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   @override
   void initState() {
     super.initState();
-    final signInState = ref.read(signInProvider);
-    {}
-    _emailController = TextEditingController(text: signInState.email);
-    _passwordController = TextEditingController(text: signInState.password);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final signInState = ref.read(signInProvider);
+      _emailController.text = signInState.email;
+      _passwordController.text = signInState.password;
+    });
   }
 
   @override
@@ -50,11 +53,14 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final signInState = ref.watch(signInProvider);
-    final signInNotifier = ref.read(signInProvider.notifier);
-
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () => Navigator.pushReplacementNamed(
+              context, RoutesName.onboardingView),
+          icon: const Icon(Icons.arrow_back),
+        ),
+      ),
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -64,21 +70,17 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 16),
-                  const Text("Sign In",
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                  const Text("Sign In", style: headerTextStyle),
                   const SizedBox(height: 16),
 
                   /// Email Input
                   CustomInputField(
                     label: "Email",
-                    labelStyle: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w400),
+                    labelStyle: labelTextStyle,
                     controller: _emailController,
                     focusNode: _emailFocus,
                     keyboardType: TextInputType.emailAddress,
-                    onChange: signInNotifier.updateEmail,
+                    onChange: ref.read(signInProvider.notifier).updateEmail,
                     validator: Validators.validateEmail,
                     inputDecoration: _inputDecoration("example@email.com"),
                     onFieldSubmitted: (_) => _passwordFocus.requestFocus(),
@@ -88,12 +90,11 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   /// Password Input
                   CustomInputField(
                     label: "Password",
-                    labelStyle: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w400),
+                    labelStyle: labelTextStyle,
                     controller: _passwordController,
                     focusNode: _passwordFocus,
                     obscureText: true,
-                    onChange: signInNotifier.updatePassword,
+                    onChange: ref.read(signInProvider.notifier).updatePassword,
                     validator: Validators.validatePassword,
                     onFieldSubmitted: (_) => _submitForm(),
                     inputDecoration: _inputDecoration("Min 8 character"),
@@ -102,11 +103,16 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   ForgotPassword(onTap: () {}),
 
                   /// Sign In Button
-                  CustomButton(
-                    label: 'Continue',
-                    onPressed: _submitForm,
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final isLoading = ref.watch(signInProvider
+                          .select((s) => s.status == SignInStatus.loading));
+                      return CustomButton(
+                        label: isLoading ? 'Loading...' : 'Continue',
+                        onPressed: isLoading ? () {} : _submitForm,
+                      );
+                    },
                   ),
-
                   const SizedBox(height: 16),
                   _buildOrDivider(),
                   const SizedBox(height: 16),
@@ -121,7 +127,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     child: Text(
                       "By continuing you agree to the Terms of Service and Privacy Policy",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 12),
+                      style: footerTextStyle,
                     ),
                   ),
                 ],
@@ -130,18 +136,13 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           ),
 
           /// Loading Overlay
-          if (signInState.status == SignInStatus.loading)
-            const _LoadingOverlay(),
-
-          /// Error Message
-          if (signInState.status == SignInStatus.failure)
-            Center(
-              child: Text(
-                signInState.errorMessage ?? "Đã có lỗi xảy ra!",
-                style: const TextStyle(
-                    color: Colors.red, fontWeight: FontWeight.bold),
-              ),
-            ),
+          Consumer(
+            builder: (context, ref, child) {
+              final isLoading = ref.watch(signInProvider
+                  .select((s) => s.status == SignInStatus.loading));
+              return isLoading ? const _LoadingOverlay() : const SizedBox();
+            },
+          ),
         ],
       ),
     );
@@ -167,19 +168,13 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       padding: EdgeInsets.symmetric(horizontal: 80),
       child: Row(
         children: [
-          Expanded(
-              child: Divider(
-            thickness: 1.2,
-            color: Colors.grey,
-          )),
+          Expanded(child: Divider(thickness: 1.2, color: Colors.grey)),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8),
             child:
                 Text("or", style: TextStyle(fontSize: 14, color: Colors.grey)),
           ),
-          Expanded(
-            child: Divider(thickness: 1.2, color: Colors.grey),
-          ),
+          Expanded(child: Divider(thickness: 1.2, color: Colors.grey)),
         ],
       ),
     );
@@ -194,10 +189,7 @@ class _LoadingOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Stack(
       children: [
-        ModalBarrier(
-          dismissible: false,
-          color: Colors.black45,
-        ),
+        ModalBarrier(dismissible: false, color: Colors.black45),
         Center(child: CircularProgressIndicator()),
       ],
     );

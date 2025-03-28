@@ -6,7 +6,7 @@ class SocialLoginOptions extends StatelessWidget {
   const SocialLoginOptions({super.key});
 
   void _navigateToOptionsScreen(BuildContext context) {
-    Navigator.pushNamed(context, RoutesName.signInView);
+    Navigator.pushReplacementNamed(context, RoutesName.signInView);
   }
 
   @override

@@ -19,4 +19,5 @@ class AppTypography {
     fontWeight: FontWeight.w600,
     color: Colors.white,
   );
+  
 }

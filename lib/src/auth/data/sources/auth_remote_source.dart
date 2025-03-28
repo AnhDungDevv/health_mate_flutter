@@ -76,7 +76,7 @@ class AuthRemoteSource implements AuthRemoteDataSource {
 
     try {
       await _auth.verifyPhoneNumber(
-        phoneNumber: "+84338524493",
+        phoneNumber: phoneNumber,
         timeout: const Duration(seconds: 60),
         verificationCompleted: (PhoneAuthCredential credential) async {
           await _auth.signInWithCredential(credential);
