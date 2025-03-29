@@ -1,32 +1,48 @@
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:health_mate/core/network/api_client.dart';
-import 'package:health_mate/src/auth/data/models/auth_res.dart';
+import 'package:health_mate/src/auth/data/models/auth_data.dart';
+import 'package:health_mate/src/auth/data/models/sign_in_request_model.dart';
 import 'package:health_mate/src/user/data/models/user_model.dart';
 import 'dart:async';
 
 abstract class AuthRemoteDataSource {
   Future<UserModel> register(UserModel user);
-  Future<AuthResponse> login(UserModel user);
+  Future<AuthDataModel> login(SignInRequestModel data);
+  Future<AuthDataModel> refreshAccessToken(String refreshToken);
+  Future<AuthDataModel> getAuthData();
   Future<String> sendOtp(String phoneNumber);
   Future<void> verifyOtp(String smsCode);
 }
 
-class AuthRemoteSource implements AuthRemoteDataSource {
+class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final Dio _dio = ApiClient().dio;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String? _verificationId;
+  @override
+  Future<AuthDataModel> getAuthData() async {
+    final response = await _dio.get('/me');
+    return AuthDataModel.fromJson(response.data);
+  }
 
   @override
-  Future<AuthResponse> login(UserModel user) async {
+  Future<AuthDataModel> refreshAccessToken(String refreshToken) async {
+    final response = await _dio.post('/auth/refresh', data: {
+      'refreshToken': refreshToken,
+    });
+    return AuthDataModel.fromJson(response.data);
+  }
+
+  @override
+  Future<AuthDataModel> login(SignInRequestModel data) async {
     try {
       final response = await _dio.post(
         '/auth/login',
-        data: user.toJson(),
+        data: data.toJson(),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return AuthResponse.fromJson(response.data);
+        return AuthDataModel.fromJson(response.data);
       } else {
         throw DioException(
           requestOptions: response.requestOptions,

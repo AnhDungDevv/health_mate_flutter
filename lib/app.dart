@@ -18,12 +18,11 @@ class MyApp extends StatelessWidget {
           child: MaterialApp(
         theme: ThemeData(
           fontFamily: GoogleFonts.outfit().fontFamily,
-          scaffoldBackgroundColor:
-              Colors.white, // 🔥 Đặt màu nền trắng cho toàn bộ app
+          scaffoldBackgroundColor: Colors.white,
           appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.white, // 🔥 Giữ màu nền AppBar trắng
-            elevation: 0, // Loại bỏ bóng nếu cần
-            iconTheme: IconThemeData(color: Colors.black), // Giữ icon màu đen
+            backgroundColor: Colors.white,
+            elevation: 0,
+            iconTheme: IconThemeData(color: Colors.black),
           ),
         ),
         debugShowCheckedModeBanner: false,

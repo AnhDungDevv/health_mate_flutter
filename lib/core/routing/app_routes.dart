@@ -18,7 +18,7 @@ class Routes {
   static Route<dynamic> generatedRoutes(RouteSettings settings) {
     final Map<String, Widget> routes = {
       RoutesName.onboardingView: const OnboardingScreen(),
-      RoutesName.splashView: const SplashScreen(),
+      RoutesName.splashView: const SplashView(),
       RoutesName.signUpView: const SignUpScreen(),
       RoutesName.verifyPhoneView: const VerifyPhoneScreen(),
       RoutesName.signInView: const SignInScreen(),

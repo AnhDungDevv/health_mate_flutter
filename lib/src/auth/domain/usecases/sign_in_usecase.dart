@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:health_mate/core/error/failure.dart';
-import 'package:health_mate/src/user/domain/entities/user_entity.dart';
+import 'package:health_mate/src/auth/domain/entities/auth_entity.dart';
+import 'package:health_mate/src/auth/domain/entities/sign_in_entity.dart';
 import 'package:health_mate/src/auth/domain/repos/auth_repo.dart';
 
 class LoginUsecase {
@@ -8,7 +9,7 @@ class LoginUsecase {
 
   LoginUsecase({required this.repository});
 
-  Future<Either<Failure, Unit>> call(UserEntity user) async {
+  Future<Either<Failure, AuthDataEntity>> call(SignInEntity user) async {
     return await repository.login(user);
   }
 }

@@ -1,32 +1,35 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:health_mate/src/auth/domain/usecases/check_login_usecase.dart';
-import 'package:health_mate/src/user/domain/entities/user_entity.dart';
+import 'package:health_mate/src/auth/domain/usecases/auth_usecase.dart';
+import 'package:health_mate/src/auth/presentation/app/states/auth_state.dart';
 
 class AuthNotifier extends StateNotifier<AuthState> {
-  final CheckLoginUsecase _checkLoginUsecase;
+  final AuthUsecase _authUseCase;
 
-  AuthNotifier(this._checkLoginUsecase) : super(AuthInitial());
+  AuthNotifier(this._authUseCase) : super(AuthState());
 
-  Future<void> checkLogin() async {
-    state = AuthLoading();
-    final result = await _checkLoginUsecase();
+  Future<void> quickCheckAuth() async {
+    final accessToken = await _authUseCase.getLocalAccessToken();
 
-    result.fold(
-      (failure) => state = AuthUnauthenticated(),
-      (user) => state = AuthAuthenticated(user),
-    );
+    if (accessToken != null) {
+      await _validateAuth();
+    } else {
+      state =
+          state.copyWith(status: AuthStatus.unauthenticated, authData: null);
+    }
+  }
+
+  Future<void> _validateAuth() async {
+    final authData = await _authUseCase.checkAuth();
+
+    if (authData != null) {
+      state = state.copyWith(
+        status: AuthStatus.authenticated,
+        authData: authData,
+      );
+    } else {
+      if (state.status != AuthStatus.unauthenticated) {
+        state = const AuthState(status: AuthStatus.unauthenticated);
+      }
+    }
   }
 }
-
-abstract class AuthState {}
-
-class AuthInitial extends AuthState {}
-
-class AuthLoading extends AuthState {}
-
-class AuthAuthenticated extends AuthState {
-  final UserEntity user;
-  AuthAuthenticated(this.user);
-}
-
-class AuthUnauthenticated extends AuthState {}
