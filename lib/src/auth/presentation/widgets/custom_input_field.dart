@@ -6,10 +6,10 @@ class CustomInputField extends StatelessWidget {
   final FocusNode? focusNode;
   final Function(String)? onFieldSubmitted;
   final String? prefixText;
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String? Function(String?)? validator;
   final TextInputType keyboardType;
-  final Function(String) onChange;
+  final Function(String)? onChange;
   final bool obscureText;
   final TextStyle? labelStyle;
   final TextStyle? textStyle;
@@ -19,8 +19,8 @@ class CustomInputField extends StatelessWidget {
     super.key,
     this.label,
     this.hintText,
-    required this.controller,
-    required this.onChange,
+    this.controller,
+    this.onChange,
     this.focusNode,
     this.onFieldSubmitted,
     this.prefixText,

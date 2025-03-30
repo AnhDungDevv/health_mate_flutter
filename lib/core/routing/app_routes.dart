@@ -6,8 +6,9 @@ import 'package:health_mate/src/auth/presentation/views/register/consultant_info
 import 'package:health_mate/src/auth/presentation/views/register/customer_infomation.dart';
 import 'package:health_mate/src/auth/presentation/views/register/customer_select_interest.dart';
 import 'package:health_mate/src/auth/presentation/views/sign_in/sign_in_view.dart';
-import 'package:health_mate/src/home/presentation/home_consultant_screen.dart';
-import 'package:health_mate/src/home/presentation/home_customer_screen.dart';
+import 'package:health_mate/src/home/presentation/views/customer/main_layout_customer_view.dart';
+import 'package:health_mate/src/home/presentation/views/home_consultant_view.dart';
+import 'package:health_mate/src/home/presentation/views/home_customer_view.dart';
 import 'package:health_mate/src/on_boarding/presentation/views/onboarding_views.dart';
 import 'package:health_mate/src/auth/presentation/views/register/verify_phone_view.dart';
 import 'package:health_mate/src/splash/presentation/splash_view.dart';
@@ -26,8 +27,9 @@ class Routes {
       RoutesName.customerInterestView: const CustomerSelectInterest(),
       RoutesName.consultantInfoView1: const ConsultantInfoView1(),
       RoutesName.consultantInfoView2: const ConsultantInfoView2(),
-      RoutesName.homeCustomerView: const HomeCustomerScreen(),
+      RoutesName.homeCustomerView: const HomeCustomerView(),
       RoutesName.homeConsultantView: const HomeConsultantScreen(),
+      RoutesName.mainLayoutCustomerView: const MainLayoutCustomerView(),
     };
 
     final screen = routes[settings.name];

@@ -1,4 +1,7 @@
 class RoutesName {
+  static const String mainLayoutCustomerView = "main_layout_customer_view";
+  static const String mainLayoutConsultantView = "main_layout_consultant_view";
+
   static const String homeConsultantView = "home_consultant_view";
   static const String splashView = "splash_view";
   static const String homeCustomerView = "home_customer_view";

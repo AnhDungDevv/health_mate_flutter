@@ -6,11 +6,9 @@ import 'package:health_mate/firebase_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> clearAllCache() async {
-  // Xóa FlutterSecureStorage
   const FlutterSecureStorage secureStorage = FlutterSecureStorage();
   await secureStorage.deleteAll();
 
-  // Xóa SharedPreferences
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.clear();
 
@@ -22,7 +20,6 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // Gọi xóa cache trước khi chạy app
-  await clearAllCache();
+  // await clearAllCache();
   runApp(const MyApp());
 }

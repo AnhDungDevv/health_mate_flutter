@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_mate/core/routing/routes_name.dart';
 import 'package:health_mate/src/auth/presentation/app/providers/auth_providers.dart';
 import 'package:health_mate/src/auth/presentation/app/states/auth_state.dart';
-import 'package:health_mate/src/user/data/models/user_model.dart';
 
 class SplashView extends ConsumerStatefulWidget {
   const SplashView({super.key});
@@ -15,7 +14,7 @@ class SplashView extends ConsumerStatefulWidget {
 
 class _SplashViewState extends ConsumerState<SplashView> {
   double _opacity = 0.0;
-  bool _hasNavigated = false;
+  final bool _hasNavigated = false;
 
   @override
   void initState() {
@@ -37,29 +36,25 @@ class _SplashViewState extends ConsumerState<SplashView> {
   void _navigateBasedOnAuth(AuthState authState) {
     if (!mounted || _hasNavigated) return;
 
-    _hasNavigated = true;
+    // _hasNavigated = true;
 
-    if (authState.status != AuthStatus.authenticated ||
-        authState.authData == null) {
-      Navigator.pushReplacementNamed(context, RoutesName.onboardingView);
-      return;
-    }
+    // if (authState.status != AuthStatus.authenticated ||
+    //     authState.authData == null) {
+    //   Navigator.pushReplacementNamed(context, RoutesName.onboardingView);
+    //   return;
+    // }
 
-    final role = authState.authData!.user.role;
-    final nextRoute = role == Role.customer
-        ? RoutesName.homeCustomerView
-        : RoutesName.homeConsultantView;
+    // final role = authState.authData!.user.role;
+    // final nextRoute = role == Role.customer
+    //     ? RoutesName.homeCustomerView
+    //     : RoutesName.homeConsultantView;
 
-    Navigator.pushReplacementNamed(context, nextRoute);
+    Navigator.pushReplacementNamed(context, RoutesName.mainLayoutCustomerView);
   }
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authNotifierProvider); // Kiểm tra giá trị
-    print("👀 Current AuthState: $authState");
-
     ref.listen<AuthState>(authNotifierProvider, (previous, next) {
-      print("🔄 AuthState changed: $previous → $next");
       _navigateBasedOnAuth(next);
     });
 
