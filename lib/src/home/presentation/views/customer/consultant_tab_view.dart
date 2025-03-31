@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:health_mate/core/common/styles/colors.dart';
 
 class ConsultantTabView extends StatelessWidget {
   const ConsultantTabView({super.key});
@@ -6,39 +8,36 @@ class ConsultantTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Banner Section
-            _buildBanner(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Banner Section
+          _buildBanner(),
 
-            const SizedBox(height: 16),
+          const SizedBox(height: 16),
 
-            // Categories Section
-            _buildCategories(),
+          // Categories Section
+          _buildCategories(),
 
-            const SizedBox(height: 16),
+          const SizedBox(height: 16),
 
-            // Recommended Section
-            _buildSectionHeader("Recommended", onViewAll: () {}),
-            const SizedBox(height: 8),
-            _buildRecommended(),
+          // Recommended Section
+          _buildSectionHeader("Recommended", onViewAll: () {}),
+          const SizedBox(height: 8),
+          _buildRecommended(),
 
-            const SizedBox(height: 16),
+          const SizedBox(height: 16),
 
-            // Top Rated Section
-            _buildSectionHeader("Top Rated Doctor", onViewAll: () {}),
-            const SizedBox(height: 8),
-            _buildTopRated(),
+          // Top Rated Section
+          _buildSectionHeader("Top Rated Doctor", onViewAll: () {}),
+          const SizedBox(height: 8),
+          _buildTopRated(),
 
-            const SizedBox(height: 16),
+          const SizedBox(height: 16),
 
-            // Refer and Earn Section
-            _buildReferAndEarn(),
-          ],
-        ),
+          // Refer and Earn Section
+          _buildReferAndEarn(),
+        ],
       ),
     );
   }
@@ -47,18 +46,21 @@ class ConsultantTabView extends StatelessWidget {
     final List<Map<String, dynamic>> banners = [
       {
         "title": "Take Your First Consultant and Get 10% OFF",
-        "subtitle": "Coupon automatically applies on your first order",
+        "subtitle": "Coupon automatically apply on your first order",
         "icon": Icons.local_offer,
+        "image": "assets/images/take_consultant/1.png",
       },
       {
         "title": "Free Shipping on Orders Over \$50",
         "subtitle": "Limited time offer. Shop now!",
         "icon": Icons.local_shipping,
+        "image": "assets/images/take_consultant/1.png",
       },
       {
         "title": "Refer a Friend & Get \$5 OFF",
         "subtitle": "Share the love and earn rewards",
         "icon": Icons.people,
+        "image": "assets/images/take_consultant/1.png",
       },
     ];
 
@@ -71,34 +73,80 @@ class ConsultantTabView extends StatelessWidget {
         itemBuilder: (context, index) {
           final banner = banners[index];
           return Container(
-            width: 250,
-            padding: const EdgeInsets.all(16),
+            width: 300.w,
+            height: 150.h,
             decoration: BoxDecoration(
               color: Colors.grey[200],
               borderRadius: BorderRadius.circular(8),
+              image: DecorationImage(
+                image: AssetImage(banner["image"] as String),
+                fit: BoxFit.cover,
+              ),
             ),
-            child: Row(
+            child: Stack(
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withAlpha((0.7 * 255).toInt()),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        banner["title"] as String,
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              banner["title"] as String,
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 8),
+                            SizedBox(
+                              width: 200.w,
+                              child: Text(
+                                banner["subtitle"] as String,
+                                style: const TextStyle(
+                                    fontSize: 12, color: Colors.white),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        banner["subtitle"] as String,
-                        style:
-                            const TextStyle(fontSize: 12, color: Colors.grey),
+                      const SizedBox(
+                        width: 10,
                       ),
+                      Icon(banner["icon"], color: Colors.orange, size: 40),
                     ],
                   ),
                 ),
-                Icon(banner["icon"],
-                    color: Colors.orange, size: 40), // ✅ Dùng icon động
+                Positioned(
+                  bottom: 8,
+                  right: 8,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withAlpha((0.6 * 255).toInt()),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Text(
+                      "1/4",
+                      style: TextStyle(
+                        color: Colors.white, // White text color
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           );
@@ -108,30 +156,67 @@ class ConsultantTabView extends StatelessWidget {
   }
 
   Widget _buildCategories() {
-    final categories = ["Doctor", "Lawyer", "Mentor"];
+    final categories = [
+      {"title": "Doctor", "image": "assets/images/category/cate1.png"},
+      {"title": "Lawyer", "image": "assets/images/category/cate2.png"},
+      {"title": "Mentor", "image": "assets/images/category/cate3.png"},
+    ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionHeader("Choose your category", onViewAll: () {}),
         const SizedBox(height: 8),
         SizedBox(
-          height: 80,
+          height: 180.h,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: categories.length,
             separatorBuilder: (_, __) => const SizedBox(width: 16),
             itemBuilder: (context, index) {
-              return Column(
-                children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.grey[300],
-                    child:
-                        Icon(Icons.person, size: 30, color: Colors.grey[700]),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(categories[index]),
-                ],
+              return Container(
+                width: 150.w,
+                height: 180.h,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    image: DecorationImage(
+                      image: AssetImage(categories[index]["image"].toString()),
+                      fit: BoxFit.cover,
+                    )),
+                child: Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        height: 90.h,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.black.withAlpha((0.7 * 255).toInt())
+                                ])),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 10,
+                        ),
+                        child: Text(
+                          categories[index]["title"].toString(),
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               );
             },
           ),
@@ -142,12 +227,24 @@ class ConsultantTabView extends StatelessWidget {
 
   Widget _buildRecommended() {
     final recommended = [
-      {"name": "Dr. Vinod Kumar", "specialty": "Orthopedic", "rating": 4.5},
-      {"name": "Dr. Madhuri", "specialty": "Gynecologist", "rating": 4.8},
+      {
+        "name": "Dr. Vinod Kumar",
+        "image": "assets/images/user_consultant/1.png",
+        "specialty": "Orthopedic",
+        "rating": 4.5,
+        "online": true
+      },
+      {
+        "name": "Dr. Madhuri",
+        "image": "assets/images/user_consultant/1.png",
+        "specialty": "Gynecologist",
+        "rating": 4.8,
+        "online": false
+      },
     ];
 
     return SizedBox(
-      height: 120,
+      height: 180.h,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: recommended.length,
@@ -155,26 +252,43 @@ class ConsultantTabView extends StatelessWidget {
         itemBuilder: (context, index) {
           final item = recommended[index];
           return Container(
-            width: 150,
+            width: 150.w,
+            height: 176.h,
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: Colors.white,
+              border: Border.all(color: AppColors.lightGrey),
               borderRadius: BorderRadius.circular(8),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withAlpha((0.2 * 255).toInt()),
-                  blurRadius: 4,
-                  spreadRadius: 2,
-                ),
-              ],
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.grey[300],
-                  child: Icon(Icons.person, size: 30, color: Colors.grey[700]),
+                Stack(
+                  children: [
+                    ClipOval(
+                      child: Image.asset(
+                        item["image"] as String,
+                        width: 60.w,
+                        height: 60.h,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 1,
+                      right: 1,
+                      child: Container(
+                        width: 15.w,
+                        height: 15.w,
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 2, color: Colors.white),
+                          color: item["online"] as bool
+                              ? Colors.green
+                              : Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -186,11 +300,17 @@ class ConsultantTabView extends StatelessWidget {
                   style: const TextStyle(color: Colors.grey),
                 ),
                 const Spacer(),
-                Row(
-                  children: [
-                    const Icon(Icons.star, color: Colors.orange, size: 16),
-                    Text("${item["rating"]}"),
-                  ],
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10.w),
+                  color: AppColors.lightPeach,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.star, color: Colors.orange, size: 16),
+                      Text("${item["rating"]}"),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -204,18 +324,24 @@ class ConsultantTabView extends StatelessWidget {
     final topRated = [
       {
         "name": "Dr. John Smith",
+        "image": "assets/images/user_consultant/1.png",
         "specialty": "Clinical Psychologist",
-        "rating": 4.9
+        "rating": 4.9,
+        "online": true
       },
       {
         "name": "Dr. John Smith",
+        "image": "assets/images/user_consultant/1.png",
         "specialty": "Clinical Psychologist",
-        "rating": 5.0
+        "rating": 5.0,
+        "online": false
       },
       {
         "name": "Dr. John Smith",
+        "image": "assets/images/user_consultant/1.png",
         "specialty": "Clinical Psychologist",
-        "rating": 4.8
+        "rating": 4.8,
+        "online": true
       },
     ];
 
@@ -238,10 +364,31 @@ class ConsultantTabView extends StatelessWidget {
           ),
           child: Row(
             children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundColor: Colors.grey[300],
-                child: Icon(Icons.person, size: 30, color: Colors.grey[700]),
+              Stack(
+                children: [
+                  ClipOval(
+                    child: Image.asset(
+                      item["image"] as String,
+                      width: 60.w,
+                      height: 60.h,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 1,
+                    right: 1,
+                    child: Container(
+                      width: 15.w,
+                      height: 15.w,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 2, color: Colors.white),
+                        color:
+                            item["online"] as bool ? Colors.green : Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -275,6 +422,7 @@ class ConsultantTabView extends StatelessWidget {
   Widget _buildReferAndEarn() {
     return Container(
       padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Colors.blue,
         borderRadius: BorderRadius.circular(8),
@@ -294,21 +442,24 @@ class ConsultantTabView extends StatelessWidget {
   }
 
   Widget _buildSectionHeader(String title, {required VoidCallback onViewAll}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-        GestureDetector(
-          onTap: onViewAll,
-          child: const Text(
-            "View all",
-            style: TextStyle(color: Colors.blue),
+    return Container(
+      height: 40.h,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
-        ),
-      ],
+          GestureDetector(
+            onTap: onViewAll,
+            child: const Text(
+              "View all",
+              style: TextStyle(color: AppColors.secondary),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

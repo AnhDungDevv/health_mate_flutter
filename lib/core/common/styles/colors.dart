@@ -8,6 +8,7 @@ class AppColors {
   static const Color text = Color(0xFF333333);
   static const Color error = Color(0xFFB00020);
   static const Color lightGrey = Color(0xFFF3F3F3);
+  static const Color lightPeach = Color(0xFFFFEFE7);
 
   static const Color grey = Color(0xFF969696); // hoặc Color(0xFFF3F3F3)
   static const Color softPeach =

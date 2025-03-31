@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:health_mate/src/auth/data/models/auth_data.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:health_mate/core/constants/storage_keys.dart';
 import 'package:health_mate/src/user/data/models/user_model.dart';
+import 'package:health_mate/core/storage/secure_storage_service.dart';
+import 'package:health_mate/core/storage/prefs_storage_service.dart';
 
 abstract class AuthLocalDataSource {
   Future<void> saveAuthData(AuthDataModel authData);
@@ -14,45 +14,38 @@ abstract class AuthLocalDataSource {
 }
 
 class AuthLocalDataSourceImpl implements AuthLocalDataSource {
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+  final SecureStorageService _secureStorage = SecureStorageService.instance;
+  final PrefsStorageService _prefsStorage = PrefsStorageService.instance;
 
   @override
   Future<void> saveAuthData(AuthDataModel authData) async {
-    final prefs = await SharedPreferences.getInstance();
-    await _secureStorage.write(
-        key: StorageKeys.accessToken, value: authData.accessToken);
-    await _secureStorage.write(
-        key: StorageKeys.refreshToken, value: authData.refreshToken);
-    await prefs.setString(StorageKeys.user, jsonEncode(authData.user.toJson()));
+    await _secureStorage.write(StorageKeys.accessToken, authData.accessToken);
+    await _secureStorage.write(StorageKeys.refreshToken, authData.refreshToken);
+    await _prefsStorage.write(
+        StorageKeys.user, jsonEncode(authData.user.toJson()));
   }
 
   @override
   Future<String?> getAccessToken() async {
-    return await _secureStorage.read(key: StorageKeys.accessToken);
+    return await _secureStorage.read(StorageKeys.accessToken);
   }
 
   @override
   Future<String?> getRefreshToken() async {
-    return await _secureStorage.read(key: StorageKeys.refreshToken);
+    return await _secureStorage.read(StorageKeys.refreshToken);
   }
 
   @override
   Future<UserModel?> getUserInfo() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userString = prefs.getString(StorageKeys.user);
+    final userString = await _prefsStorage.read(StorageKeys.user);
     if (userString == null) return null;
     return UserModel.fromJson(jsonDecode(userString));
   }
 
   @override
   Future<void> clearAuthData() async {
-    final prefs = await SharedPreferences.getInstance();
-    await _secureStorage.delete(key: StorageKeys.accessToken);
-    await _secureStorage.delete(key: StorageKeys.refreshToken);
-    await prefs.remove(StorageKeys.user);
-  }
-
-  Future<void> clearSecureStorage() async {
-    await _secureStorage.deleteAll();
+    await _secureStorage.delete(StorageKeys.accessToken);
+    await _secureStorage.delete(StorageKeys.refreshToken);
+    await _prefsStorage.delete(StorageKeys.user);
   }
 }
