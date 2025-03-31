@@ -12,7 +12,7 @@ class InterestConsultantRemoteSource {
       final List<dynamic> jsonData = json.decode(response.data);
       return jsonData.map((e) => ConsultantTypeModel.fromJson(e)).toList();
     } else {
-      throw Exception('Lỗi server: ${response.statusCode}');
+      throw Exception('Server error: ${response.statusCode}');
     }
   }
 

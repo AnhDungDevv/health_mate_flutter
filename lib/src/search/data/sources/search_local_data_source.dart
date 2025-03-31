@@ -1,46 +1,85 @@
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../models/search_history_model.dart';
+import 'package:health_mate/core/storage/prefs_storage_service.dart';
 
 abstract class SearchLocalDataSource {
-  Future<List<SearchHistoryModel>> getSearchHistory();
-  Future<void> addSearchHistory(String query);
-  Future<void> removeSearchHistory(String query);
-  Future<void> clearSearchHistory();
+  Future<List<String>>
+      getSearchHistory(); // Save search history (list of keywords)
+  Future<void> addSearchHistory(String query); // Add a query to the history
+  Future<void> removeSearchHistory(
+      String query); // Remove a query from the history
+  Future<void> clearSearchHistory(); // Clear all search history
 }
 
 class SearchLocalDataSourceImpl implements SearchLocalDataSource {
-  final SharedPreferences prefs;
+  final PrefsStorageService _prefsStorage = PrefsStorageService.instance;
 
-  SearchLocalDataSourceImpl(this.prefs);
+  // @override
+  // Future<List<String>> getSearchHistory() async {
+  //   if (!(await _prefsStorage.containsKey('search_history'))) {
+  //     return []; // Return an empty list if there's no history
+  //   }
 
+  //   // Retrieve the list of stored search keywords
+  //   final List<String> jsonStringList =
+  //       (await _prefsStorage.getStringList('search_history'))?.cast<String>() ??
+  //           [];
+
+  //   return jsonStringList; // Return the list of search keywords
+  // }
   @override
-  Future<List<SearchHistoryModel>> getSearchHistory() async {
-    final jsonString = prefs.getStringList('search_history') ?? [];
-    return jsonString
-        .map((json) => SearchHistoryModel.fromJson(jsonDecode(json)))
-        .toList();
+  Future<List<String>> getSearchHistory() async {
+    // Fake data for testing purposes
+    return [
+      'english tutor',
+      'chest doctor',
+      'criminal lawyer',
+      'top marketer',
+      'software engineer',
+      'personal trainer',
+      'nutritionist',
+      'graphic designer',
+      'financial advisor',
+      'career coach',
+    ];
   }
 
   @override
   Future<void> addSearchHistory(String query) async {
     final history = await getSearchHistory();
-    if (history.any((item) => item.query == query)) return;
-    history.insert(0, SearchHistoryModel(query: query));
-    await prefs.setStringList(
-        'search_history', history.map((e) => jsonEncode(e.toJson())).toList());
+
+    if (history.contains(query)) {
+      history.remove(query); // Move the existing query to the top
+    }
+
+    history.insert(0, query);
+
+    // Limit the history size to 10 items
+    if (history.length > 10) {
+      history.removeLast();
+    }
+
+    await _prefsStorage.setStringList(
+      'search_history',
+      history,
+    );
   }
 
   @override
   Future<void> removeSearchHistory(String query) async {
     final history = await getSearchHistory();
-    history.removeWhere((item) => item.query == query);
-    await prefs.setStringList(
-        'search_history', history.map((e) => jsonEncode(e.toJson())).toList());
+
+    // Remove the query from the search history
+    history.remove(query);
+
+    // Save the updated list back to SharedPreferences
+    await _prefsStorage.setStringList(
+      'search_history',
+      history,
+    );
   }
 
   @override
   Future<void> clearSearchHistory() async {
-    await prefs.remove('search_history');
+    // Clear the entire search history
+    await _prefsStorage.delete('search_history');
   }
 }

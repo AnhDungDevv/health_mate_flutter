@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_mate/core/common/styles/colors.dart';
+import 'package:health_mate/core/routing/routes_name.dart';
 import 'package:health_mate/src/home/presentation/views/customer/consultant_tab_view.dart';
 import 'package:health_mate/src/home/presentation/views/customer/following_tab_view.dart';
 
@@ -20,7 +21,7 @@ class HomeCustomerView extends ConsumerWidget {
           child: CustomScrollView(
             slivers: [
               _buildHeader(),
-              _buildSearch(),
+              _buildSearch(context),
               _buildTabSelector(ref),
               _buildTabContent(ref)
             ],
@@ -95,10 +96,12 @@ Widget _buildTabSelector(WidgetRef ref) {
   );
 }
 
-Widget _buildSearch() {
+Widget _buildSearch(BuildContext context) {
   return SliverToBoxAdapter(
       child: GestureDetector(
-    onTap: () {},
+    onTap: () {
+      Navigator.pushReplacementNamed(context, RoutesName.searchView);
+    },
     child: Container(
       height: 50,
       margin: const EdgeInsets.only(top: 16),

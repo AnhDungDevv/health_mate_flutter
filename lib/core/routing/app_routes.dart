@@ -11,6 +11,7 @@ import 'package:health_mate/src/home/presentation/views/home_consultant_view.dar
 import 'package:health_mate/src/home/presentation/views/home_customer_view.dart';
 import 'package:health_mate/src/on_boarding/presentation/views/onboarding_views.dart';
 import 'package:health_mate/src/auth/presentation/views/register/verify_phone_view.dart';
+import 'package:health_mate/src/search/presentation/views/search_for_consultant_view.dart';
 import 'package:health_mate/src/splash/presentation/splash_view.dart';
 
 import 'app_page_route.dart'; // Import file quản lý hiệu ứng
@@ -20,6 +21,7 @@ class Routes {
     final Map<String, Widget> routes = {
       RoutesName.onboardingView: const OnboardingScreen(),
       RoutesName.splashView: const SplashView(),
+      RoutesName.searchView: const SearchConsultantView(),
       RoutesName.signUpView: const SignUpScreen(),
       RoutesName.verifyPhoneView: const VerifyPhoneScreen(),
       RoutesName.signInView: const SignInScreen(),

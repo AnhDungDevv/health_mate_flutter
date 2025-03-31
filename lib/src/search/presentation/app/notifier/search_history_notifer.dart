@@ -1,16 +1,22 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:health_mate/src/search/domain/entities/search_history.dart';
 import 'package:health_mate/src/search/domain/usecase/manage_search_history.dart';
 
-class SearchHistoryNotifier extends StateNotifier<List<SearchHistory>> {
-  final ManageSearchHistory useCase;
+class SearchHistoryNotifier extends StateNotifier<AsyncValue<List<String>>> {
+  final ManageSearchHistoryUseCase useCase;
 
-  SearchHistoryNotifier(this.useCase) : super([]) {
-    loadHistory();
-  }
-
+  SearchHistoryNotifier(this.useCase) : super(const AsyncValue.loading());
   Future<void> loadHistory() async {
-    state = await useCase.getHistory();
+    try {
+      print('Loading search history...');
+      final history = await useCase.getHistory();
+      print('Search history loaded: $history');
+      state = AsyncValue.data(history.isNotEmpty ? history : []);
+      print('State updated to AsyncData');
+    } catch (e) {
+      print('Error loading search history: $e');
+      state = AsyncValue.error(e, StackTrace.current);
+      print('State updated to AsyncError');
+    }
   }
 
   Future<void> addQuery(String query) async {
@@ -25,6 +31,6 @@ class SearchHistoryNotifier extends StateNotifier<List<SearchHistory>> {
 
   Future<void> clearAll() async {
     await useCase.clearAll();
-    state = [];
+    state = const AsyncValue.data([]);
   }
 }

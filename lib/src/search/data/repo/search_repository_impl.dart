@@ -1,6 +1,6 @@
 import 'package:health_mate/src/search/data/sources/search_local_data_source.dart';
 import 'package:health_mate/src/search/data/sources/search_remote_data_source.dart';
-import 'package:health_mate/src/search/domain/entities/search_history.dart';
+import 'package:health_mate/src/search/domain/entities/consultant_search_res.dart';
 import 'package:health_mate/src/search/domain/repo/search_repository.dart';
 
 class SearchRepositoryImpl implements SearchRepository {
@@ -10,24 +10,37 @@ class SearchRepositoryImpl implements SearchRepository {
   SearchRepositoryImpl(this.dataLocalSource, this.dataRemoteSource);
 
   @override
-  Future<List<SearchHistory>> getSearchHistory() async =>
-      await dataLocalSource.getSearchHistory();
+  Future<List<String>> getSearchHistory() async {
+    try {
+      final res = await dataLocalSource.getSearchHistory();
+      return res;
+    } catch (e) {
+      throw Exception('Failed to fetch search history');
+    }
+  }
 
   @override
-  Future<void> addSearchHistory(String query) async =>
-      await dataLocalSource.addSearchHistory(query);
+  Future<void> addSearchHistory(String query) async {
+    await dataLocalSource.addSearchHistory(query);
+  }
 
   @override
-  Future<void> removeSearchHistory(String query) async =>
-      await dataLocalSource.removeSearchHistory(query);
+  Future<void> removeSearchHistory(String query) async {
+    await dataLocalSource.removeSearchHistory(query);
+  }
 
   @override
-  Future<void> clearSearchHistory() async =>
-      await dataLocalSource.clearSearchHistory();
+  Future<void> clearSearchHistory() async {
+    await dataLocalSource.clearSearchHistory();
+  }
 
   @override
-  Future<List<String>> searchConsultant(String query) async {
-    final response = await dataRemoteSource.searchConsultant("search?q=$query");
-    return List<String>.from(response['results']);
+  Future<List<ConsultantSearchRes>> searchConsultant(String query) async {
+    try {
+      final res = await dataRemoteSource.searchConsultant(query);
+      return res.map((e) => e.toEntity()).toList();
+    } catch (e) {
+      throw Exception("Failed to search consultants: $e");
+    }
   }
 }
