@@ -14,18 +14,16 @@ class HomeCustomerView extends ConsumerWidget {
   const HomeCustomerView({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SafeArea(
-      child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: CustomScrollView(
-            slivers: [
-              _buildHeader(),
-              _buildSearch(context),
-              _buildTabSelector(ref),
-              _buildTabContent(ref)
-            ],
-          ),
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: CustomScrollView(
+          slivers: [
+            _buildHeader(),
+            _buildSearch(context),
+            _buildTabSelector(ref),
+            _buildTabContent(ref)
+          ],
         ),
       ),
     );

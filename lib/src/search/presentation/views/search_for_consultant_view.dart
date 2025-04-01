@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_mate/core/routing/routes_name.dart';
 import 'package:health_mate/src/search/presentation/app/provider/search_provider.dart';
 
+final searchTextProvider = StateProvider<String>((ref) => '');
+
 class SearchConsultantView extends ConsumerStatefulWidget {
   const SearchConsultantView({super.key});
 
@@ -17,22 +19,31 @@ class _SearchConsultantViewState extends ConsumerState<SearchConsultantView> {
   @override
   void initState() {
     super.initState();
+    _controller.addListener(() {
+      ref.read(searchTextProvider.notifier).state = _controller.text;
+    });
+
     Future.microtask(() {
-      print('Calling loadHistory...');
       ref.read(searchHistoryProvider.notifier).loadHistory();
     });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(80), // Adjust height
+        preferredSize: const Size.fromHeight(60),
         child: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
           flexibleSpace: Padding(
-            padding: const EdgeInsets.only(top: 40, left: 16, right: 16),
+            padding: const EdgeInsets.only(top: 40, left: 0, right: 16),
             child: Row(
               children: [
                 IconButton(
@@ -49,10 +60,12 @@ class _SearchConsultantViewState extends ConsumerState<SearchConsultantView> {
                     controller: _controller,
                     decoration: InputDecoration(
                       hintText: 'Search for consultant',
+                      hintStyle: const TextStyle(fontSize: 14),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 5),
                       filled: true,
                       fillColor: Colors.grey[200],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
+                      border: const OutlineInputBorder(
                         borderSide: BorderSide.none,
                       ),
                       prefixIcon: const Icon(Icons.search, color: Colors.grey),
@@ -86,13 +99,19 @@ class SearchResultsOrHistory extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (controller.text.isEmpty) {
+    final searchText = ref.watch(searchTextProvider);
+
+    if (searchText.isEmpty) {
       return const SearchHistoryList();
     }
-    final searchQuery = ref.watch(searchConsultantProvider);
 
+    final searchQuery = ref.watch(searchConsultantProvider);
     return searchQuery.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
       data: (queryList) {
+        if (queryList.isEmpty) {
+          return const Center(child: Text('No results found.'));
+        }
         return ListView.builder(
           itemCount: queryList.length,
           itemBuilder: (context, index) {
@@ -100,15 +119,14 @@ class SearchResultsOrHistory extends ConsumerWidget {
             return ListTile(
               title: Text(item.name),
               onTap: () {
-                controller.text = item.name; // Update the controller text
+                controller.text = item.name;
                 ref.read(searchHistoryProvider.notifier).addQuery(item.name);
               },
             );
           },
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, stack) => Center(child: Text('Error: $err')),
+      error: (err, stack) => Center(child: Text('$err')),
     );
   }
 }
@@ -150,22 +168,32 @@ class SearchHistoryList extends ConsumerWidget {
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: historySearch.length,
-                itemBuilder: (context, index) {
-                  final item = historySearch[index];
-                  return ListTile(
-                    title: Text(item),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => ref
-                          .read(searchHistoryProvider.notifier)
-                          .removeQuery(item),
-                    ),
-                  );
-                },
-              ),
-            ),
+                child: ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: historySearch.length,
+              itemBuilder: (context, index) {
+                final item = historySearch[index];
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(item,
+                          style:
+                              const TextStyle(fontSize: 14)), // Giữ chữ nhỏ hơn
+                      IconButton(
+                        icon: const Icon(Icons.close, size: 18), // Thu nhỏ icon
+                        onPressed: () => ref
+                            .read(searchHistoryProvider.notifier)
+                            .removeQuery(item),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ))
           ],
         );
       },

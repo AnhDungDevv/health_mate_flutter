@@ -11,39 +11,46 @@ class SearchNotifier
   }
 
   final SearchConsultant useCase;
-  Timer? _debounceTimer; // Timer to handle debounce
-  String _currentQuery = ''; // To store the current query
+  Timer? _debounceTimer;
+  String _currentQuery = '';
+  int _lastSearchRequest = 0; // Track the latest search request ID
 
-  // Method to perform the search
   Future<void> search(String query) async {
-    // If query is empty, return empty data
+    // If the query is empty, return an empty result
     if (query.isEmpty) {
       state = const AsyncValue.data([]);
       return;
     }
 
-    state = const AsyncValue.loading(); // Set the loading state
+    final int requestId =
+        ++_lastSearchRequest; // Create a new ID for the current request
+
     try {
-      final results =
-          await useCase(query); // Call the use case to fetch results
-      state = AsyncValue.data(results); // Update state with the fetched results
+      // Call api
+      final results = await useCase(query);
+      // Ignore stale responses if they are not from the latest request
+      if (requestId != _lastSearchRequest) {
+        return;
+      }
+
+      state = AsyncValue.data(results);
     } catch (e) {
-      state = AsyncValue.error(e, StackTrace.current); // Handle errors
+      if (requestId == _lastSearchRequest) {
+        state = AsyncValue.error(
+            "Some error! Please try again", StackTrace.current);
+      }
     }
   }
 
-  // Method to update the query and apply debounce
   void updateSearchQuery(String query) {
     _currentQuery = query;
-
-    // Cancel the previous debounce timer if it exists
+    state = const AsyncValue.loading();
     _debounceTimer?.cancel();
 
-    // Start a new debounce timer
     _debounceTimer = Timer(const Duration(milliseconds: 500), () {
-      // Only search if the query hasn't changed during the debounce period
-      if (_currentQuery == query) {
-        search(query); // Trigger search after the user stops typing
+      // Ensure the query is still the same and not empty before searching
+      if (_currentQuery == query && query.isNotEmpty) {
+        search(query);
       }
     });
   }
@@ -52,7 +59,6 @@ class SearchNotifier
     _currentQuery = '';
   }
 
-  // Dispose the timer when no longer needed
   @override
   void dispose() {
     _debounceTimer?.cancel();
