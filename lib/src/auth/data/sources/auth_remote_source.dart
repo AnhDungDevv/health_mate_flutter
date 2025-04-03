@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:health_mate/core/network/api_client.dart';
 import 'package:health_mate/src/auth/data/models/auth_data.dart';
 import 'package:health_mate/src/auth/data/models/sign_in_request_model.dart';
-import 'package:health_mate/src/user/data/models/user_model.dart';
+import 'package:health_mate/src/profile/data/model/user_model.dart';
 import 'dart:async';
 
 abstract class AuthRemoteDataSource {

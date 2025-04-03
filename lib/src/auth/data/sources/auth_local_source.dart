@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:health_mate/src/auth/data/models/auth_data.dart';
 import 'package:health_mate/core/constants/storage_keys.dart';
-import 'package:health_mate/src/user/data/models/user_model.dart';
+import 'package:health_mate/src/profile/data/model/user_model.dart';
 import 'package:health_mate/core/storage/secure_storage_service.dart';
 import 'package:health_mate/core/storage/prefs_storage_service.dart';
 

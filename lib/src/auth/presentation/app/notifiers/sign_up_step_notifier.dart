@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_mate/src/auth/presentation/app/providers/auth_providers.dart';
-import 'package:health_mate/src/user/data/models/user_model.dart';
+import 'package:health_mate/src/profile/data/model/user_model.dart';
 
 class SignUpStepNotifier extends StateNotifier<int> {
   SignUpStepNotifier({required this.ref}) : super(1);

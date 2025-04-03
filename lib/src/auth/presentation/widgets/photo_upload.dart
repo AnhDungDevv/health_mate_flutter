@@ -22,7 +22,7 @@ class PhotoUpload extends ConsumerWidget {
             borderType: BorderType.Circle,
             radius: const Radius.circular(40),
             padding: const EdgeInsets.all(2),
-            color: AppColors.blue,
+            color: Theme.of(context).colorScheme.primary,
             strokeWidth: 1.5,
             dashPattern: const [5, 5],
             child: avatarState.when(

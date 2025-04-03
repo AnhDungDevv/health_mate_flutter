@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:health_mate/src/user/domain/entities/user_entity.dart';
+import 'package:health_mate/src/profile/domain/entities/user_entity.dart';
 
 class AuthDataEntity extends Equatable {
   final String accessToken;

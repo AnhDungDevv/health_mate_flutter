@@ -6,10 +6,10 @@ import 'package:health_mate/core/error/logger.dart';
 import 'package:health_mate/src/auth/data/models/sign_in_request_model.dart';
 import 'package:health_mate/src/auth/domain/entities/auth_entity.dart';
 import 'package:health_mate/src/auth/domain/entities/sign_in_entity.dart';
-import 'package:health_mate/src/user/data/models/user_model.dart';
+import 'package:health_mate/src/profile/data/model/user_model.dart';
 import 'package:health_mate/src/auth/data/sources/auth_local_source.dart';
 import 'package:health_mate/src/auth/data/sources/auth_remote_source.dart';
-import 'package:health_mate/src/user/domain/entities/user_entity.dart';
+import 'package:health_mate/src/profile/domain/entities/user_entity.dart';
 import 'package:health_mate/src/auth/domain/repos/auth_repo.dart';
 
 class AuthRepositoryImpl implements AuthRepository {

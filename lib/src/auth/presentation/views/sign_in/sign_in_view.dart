@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:health_mate/core/common/styles/style.dart';
 import 'package:health_mate/core/utils/validators.dart';
 import 'package:health_mate/src/auth/presentation/app/providers/auth_providers.dart';
 import 'package:health_mate/src/auth/presentation/app/states/signin_state.dart';
@@ -68,13 +67,14 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Sign In", style: headerTextStyle),
+                  Text("Sign In",
+                      style: Theme.of(context).textTheme.labelLarge),
                   const SizedBox(height: 16),
 
                   /// Email Input
                   CustomInputField(
                     label: "Email",
-                    labelStyle: labelTextStyle,
+                    labelStyle: Theme.of(context).textTheme.labelMedium,
                     controller: _emailController,
                     focusNode: _emailFocus,
                     keyboardType: TextInputType.emailAddress,
@@ -87,7 +87,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   /// Password Input
                   CustomInputField(
                     label: "Password",
-                    labelStyle: labelTextStyle,
+                    labelStyle: Theme.of(context).textTheme.labelMedium,
                     controller: _passwordController,
                     focusNode: _passwordFocus,
                     obscureText: true,
@@ -118,12 +118,12 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
                   const SizedBox(height: 16),
 
-                  const Align(
+                  Align(
                     alignment: Alignment.center,
                     child: Text(
                       "By continuing you agree to the Terms of Service and Privacy Policy",
                       textAlign: TextAlign.center,
-                      style: footerTextStyle,
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),
                 ],

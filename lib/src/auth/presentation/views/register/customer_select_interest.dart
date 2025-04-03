@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_mate/src/auth/presentation/app/providers/auth_providers.dart';
 import 'package:health_mate/src/auth/presentation/widgets/custom_appbar.dart';
-import 'package:health_mate/src/interest_consultant_type/presentaion/views/customer_select_interest.dart';
+import 'package:health_mate/src/consultant/presentaion/views/customer_select_category.dart';
 
 class CustomerSelectInterest extends ConsumerWidget {
   const CustomerSelectInterest({super.key});

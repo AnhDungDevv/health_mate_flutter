@@ -1,2 +1,0 @@
-E:/FlutterProjects/health_mate/android/app/.cxx/RelWithDebInfo/2d5rg3pd/armeabi-v7a/CMakeFiles/edit_cache.dir
-E:/FlutterProjects/health_mate/android/app/.cxx/RelWithDebInfo/2d5rg3pd/armeabi-v7a/CMakeFiles/rebuild_cache.dir

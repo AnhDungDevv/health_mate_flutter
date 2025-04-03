@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:health_mate/core/error/failure.dart';
-import 'package:health_mate/src/user/domain/entities/user_entity.dart';
+import 'package:health_mate/src/profile/domain/entities/user_entity.dart';
 import 'package:health_mate/src/auth/domain/repos/auth_repo.dart';
 
 class SignUpUsecase {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:health_mate/core/common/styles/colors.dart';
+import 'package:health_mate/core/routing/routes_name.dart';
 
 class ConsultantTabView extends StatelessWidget {
   const ConsultantTabView({super.key});
@@ -8,6 +8,7 @@ class ConsultantTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      physics: const NeverScrollableScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -17,26 +18,26 @@ class ConsultantTabView extends StatelessWidget {
           const SizedBox(height: 16),
 
           // Categories Section
-          _buildCategories(),
+          _buildCategories(context),
 
           const SizedBox(height: 16),
 
           // Recommended Section
-          _buildSectionHeader("Recommended", onViewAll: () {}),
+          _buildSectionHeader(context, "Recommended", onViewAll: () {}),
           const SizedBox(height: 8),
           _buildRecommended(),
 
           const SizedBox(height: 16),
 
           // Top Rated Section
-          _buildSectionHeader("Top Rated Doctor", onViewAll: () {}),
+          _buildSectionHeader(context, "Top Rated Doctor", onViewAll: () {}),
           const SizedBox(height: 8),
           _buildTopRated(),
 
           const SizedBox(height: 16),
 
           // Refer and Earn Section
-          _buildReferAndEarn(),
+          _buildReferAndEarn(context),
         ],
       ),
     );
@@ -155,7 +156,7 @@ class ConsultantTabView extends StatelessWidget {
     );
   }
 
-  Widget _buildCategories() {
+  Widget _buildCategories(BuildContext context) {
     final categories = [
       {"title": "Doctor", "image": "assets/images/category/cate1.png"},
       {"title": "Lawyer", "image": "assets/images/category/cate2.png"},
@@ -164,7 +165,7 @@ class ConsultantTabView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader("Choose your category", onViewAll: () {}),
+        _buildSectionHeader(context, "Choose your category", onViewAll: () {}),
         const SizedBox(height: 8),
         SizedBox(
           height: 180.h,
@@ -257,7 +258,7 @@ class ConsultantTabView extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border.all(color: AppColors.lightGrey),
+              border: Border.all(color: Theme.of(context).colorScheme.surface),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Column(
@@ -302,7 +303,7 @@ class ConsultantTabView extends StatelessWidget {
                 const Spacer(),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 10.w),
-                  color: AppColors.lightPeach,
+                  color: Theme.of(context).colorScheme.tertiaryContainer,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -419,30 +420,34 @@ class ConsultantTabView extends StatelessWidget {
     );
   }
 
-  Widget _buildReferAndEarn() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: Colors.blue,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: const Row(
-        children: [
-          Expanded(
-            child: Text(
-              "Refer and Earn\nInvite your friend and get rewarded",
-              style: TextStyle(color: Colors.white),
+  Widget _buildReferAndEarn(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, RoutesName.addfundsView),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.only(bottom: 16),
+        decoration: BoxDecoration(
+          color: Colors.blue,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Row(
+          children: [
+            Expanded(
+              child: Text(
+                "Refer and Earn\nInvite your friend and get rewarded",
+                style: TextStyle(color: Colors.white),
+              ),
             ),
-          ),
-          Icon(Icons.arrow_forward, color: Colors.white),
-        ],
+            Icon(Icons.arrow_forward, color: Colors.white),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildSectionHeader(String title, {required VoidCallback onViewAll}) {
-    return Container(
+  Widget _buildSectionHeader(BuildContext context, String title,
+      {required VoidCallback onViewAll}) {
+    return SizedBox(
       height: 40.h,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -453,9 +458,9 @@ class ConsultantTabView extends StatelessWidget {
           ),
           GestureDetector(
             onTap: onViewAll,
-            child: const Text(
+            child: Text(
               "View all",
-              style: TextStyle(color: AppColors.secondary),
+              style: TextStyle(color: Theme.of(context).colorScheme.primary),
             ),
           ),
         ],

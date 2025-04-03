@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:health_mate/src/user/data/models/user_model.dart';
+import 'package:health_mate/src/profile/data/model/user_model.dart';
 
 class SignUpEntity extends Equatable {
   final String? name;

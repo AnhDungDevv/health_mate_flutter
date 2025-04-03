@@ -123,9 +123,9 @@ class _OTPField extends ConsumerWidget {
       onChanged: (value) => ref.read(otpInputProvider.notifier).state = value,
       outlineBorderRadius: 5,
       otpFieldStyle: OtpFieldStyle(
-        borderColor: AppColors.secondary,
+        borderColor: Theme.of(context).colorScheme.outline,
         enabledBorderColor: Colors.grey.shade300,
-        focusBorderColor: AppColors.secondary,
+        focusBorderColor: Theme.of(context).colorScheme.tertiary,
       ),
     );
   }

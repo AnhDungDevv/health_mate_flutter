@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:health_mate/app.dart';
 import 'package:health_mate/firebase_options.dart';
@@ -20,6 +21,12 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  try {
+    await dotenv.load(fileName: "./.env");
+  } catch (e) {
+    debugPrint("❌ Failed to load .env file: $e");
+  }
+
   // await clearAllCache();
   runApp(const MyApp());
 }

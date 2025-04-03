@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:health_mate/src/user/data/models/user_model.dart';
+import 'package:health_mate/src/profile/data/model/user_model.dart';
 import 'package:health_mate/core/common/styles/colors.dart';
 
 class OptionCard extends StatelessWidget {
@@ -24,11 +24,14 @@ class OptionCard extends StatelessWidget {
         width: double.infinity,
         height: 130,
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.softPeach : AppColors.lightGrey,
+          color: isSelected
+              ? Theme.of(context).colorScheme.secondaryContainer
+              : Theme.of(context).colorScheme.surface,
           border: Border.all(
               width: isSelected ? 2 : 2,
-              color:
-                  isSelected ? AppColors.secondaryColor : AppColors.lightGrey),
+              color: isSelected
+                  ? Theme.of(context).colorScheme.surfaceTint
+                  : Theme.of(context).colorScheme.outline),
           borderRadius: BorderRadius.circular(isSelected ? 5 : 1),
         ),
         child: Padding(
@@ -46,7 +49,7 @@ class OptionCard extends StatelessWidget {
                   role == Role.customer
                       ? FontAwesomeIcons.comment
                       : FontAwesomeIcons.user,
-                  color: isSelected ? AppColors.secondaryColor : AppColors.text,
+                  color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.shadow
                 ),
               ),
               const SizedBox(width: 20),

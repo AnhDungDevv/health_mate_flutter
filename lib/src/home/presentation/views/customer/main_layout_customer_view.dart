@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:health_mate/src/home/presentation/views/home_customer_view.dart';
+import 'package:health_mate/src/chat/presentaion/view/chat_list_view.dart';
+import 'package:health_mate/src/consultant/presentaion/views/my_consultant_view.dart';
+import 'package:health_mate/src/home/presentation/views/customer/home_customer_view.dart';
+import 'package:health_mate/src/consultant/presentaion/views/category_list_view.dart';
+import 'package:health_mate/src/profile/presentaion/view/profile_view.dart';
 
 final selectedViewProvider = StateProvider<int>((ref) => 0);
 
@@ -14,18 +18,28 @@ class MainLayoutCustomerView extends ConsumerWidget {
     // Danh sách các màn hình
     final List<Widget> screens = [
       const HomeCustomerView(),
-      const Center(child: Text("Category Screen")),
-      const Center(child: Text("My Consult Screen")),
-      const Center(child: Text("Message Screen")),
-      const Center(child: Text("Profile Screen")),
+      const CategoryConsultantView(),
+      const MyConsultantView(),
+      const ChatListView(),
+      ProfileView(),
     ];
+
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.only(top: 20),
-        child: IndexedStack(
-          index: selectedIndex,
-          children: screens,
-        ),
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        transitionBuilder: (child, animation) {
+          return FadeTransition(
+            opacity: animation,
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0.1, 0.0),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            ),
+          );
+        },
+        child: screens[selectedIndex],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: selectedIndex,

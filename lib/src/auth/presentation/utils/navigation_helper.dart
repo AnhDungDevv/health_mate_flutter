@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:health_mate/core/routing/routes_name.dart';
-import 'package:health_mate/src/user/data/models/user_model.dart';
+import 'package:health_mate/src/profile/data/model/user_model.dart';
 
 class NavigationHelper {
   static void navigateToNextStep(BuildContext context, int step, Role role) {

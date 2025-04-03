@@ -1,5 +1,5 @@
 import 'package:health_mate/src/auth/domain/entities/auth_entity.dart';
-import 'package:health_mate/src/user/data/models/user_model.dart';
+import 'package:health_mate/src/profile/data/model/user_model.dart';
 
 class AuthDataModel {
   final String accessToken;

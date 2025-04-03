@@ -1,42 +1,54 @@
 import 'package:flutter/material.dart';
 
-enum TransitionType { fade, slideLeft, slideRight, slideUp, slideDown, scale }
+enum TransitionType {
+  fade,
+  slideLeft,
+  slideRight,
+  slideUp,
+  slideDown,
+  scale,
+  rotate
+}
 
 class AppPageRoute<T> extends PageRouteBuilder<T> {
   final Widget page;
   final TransitionType transitionType;
-  late final CurvedAnimation _curvedAnimation;
 
   AppPageRoute({required this.page, required this.transitionType})
       : super(
-          transitionDuration: const Duration(milliseconds: 400),
-          reverseTransitionDuration: const Duration(milliseconds: 300),
+          transitionDuration: const Duration(milliseconds: 500),
+          reverseTransitionDuration: const Duration(milliseconds: 400),
           pageBuilder: (context, animation, secondaryAnimation) => page,
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            final _curvedAnimation = CurvedAnimation(
+            final curvedAnimation = CurvedAnimation(
               parent: animation,
-              curve: Curves.easeInOut,
-              reverseCurve: Curves.easeInOut,
+              curve: Curves.easeInOutCubic,
+              reverseCurve: Curves.easeInOutCubic,
             );
 
             switch (transitionType) {
               case TransitionType.fade:
-                return FadeTransition(opacity: _curvedAnimation, child: child);
+                return FadeTransition(opacity: curvedAnimation, child: child);
               case TransitionType.slideLeft:
                 return _buildSlideTransition(
-                    _curvedAnimation, const Offset(1.0, 0.0), child);
+                    curvedAnimation, const Offset(1.0, 0.0), child);
               case TransitionType.slideRight:
                 return _buildSlideTransition(
-                    _curvedAnimation, const Offset(-1.0, 0.0), child);
+                    curvedAnimation, const Offset(-1.0, 0.0), child);
               case TransitionType.slideUp:
                 return _buildSlideTransition(
-                    _curvedAnimation, const Offset(0.0, 1.0), child);
+                    curvedAnimation, const Offset(0.0, 1.0), child);
               case TransitionType.slideDown:
                 return _buildSlideTransition(
-                    _curvedAnimation, const Offset(0.0, -1.0), child);
+                    curvedAnimation, const Offset(0.0, -1.0), child);
               case TransitionType.scale:
                 return ScaleTransition(
-                  scale: Tween(begin: 0.85, end: 1.0).animate(_curvedAnimation),
+                  scale: Tween(begin: 0.85, end: 1.0).animate(curvedAnimation),
+                  child: child,
+                );
+              case TransitionType.rotate:
+                return RotationTransition(
+                  turns: Tween(begin: 0.5, end: 1.0).animate(curvedAnimation),
                   child: child,
                 );
             }

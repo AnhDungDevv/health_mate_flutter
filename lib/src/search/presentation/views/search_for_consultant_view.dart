@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:health_mate/core/routing/routes_name.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:health_mate/src/search/presentation/app/provider/search_provider.dart';
 
 final searchTextProvider = StateProvider<String>((ref) => '');
@@ -51,8 +51,7 @@ class _SearchConsultantViewState extends ConsumerState<SearchConsultantView> {
                   onPressed: () {
                     _controller.clear();
                     ref.read(searchConsultantProvider.notifier).clearQuery();
-                    Navigator.pushReplacementNamed(
-                        context, RoutesName.homeCustomerView);
+                    Navigator.pop(context);
                   },
                 ),
                 Expanded(
@@ -168,32 +167,34 @@ class SearchHistoryList extends ConsumerWidget {
               ),
             ),
             Expanded(
-                child: ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: historySearch.length,
-              itemBuilder: (context, index) {
-                final item = historySearch[index];
-                return Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(item,
-                          style:
-                              const TextStyle(fontSize: 14)), // Giữ chữ nhỏ hơn
-                      IconButton(
-                        icon: const Icon(Icons.close, size: 18), // Thu nhỏ icon
-                        onPressed: () => ref
-                            .read(searchHistoryProvider.notifier)
-                            .removeQuery(item),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ))
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: historySearch.length,
+                itemBuilder: (context, index) {
+                  final item = historySearch[index];
+                  return SizedBox(
+                    height: 40,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                            padding: const EdgeInsets.only(left: 16),
+                            child: Text(item,
+                                style: const TextStyle(fontSize: 14))),
+                        IconButton(
+                          icon: const Icon(FontAwesomeIcons.circleXmark,
+                              size: 18),
+                          onPressed: () => ref
+                              .read(searchHistoryProvider.notifier)
+                              .removeQuery(item),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            )
           ],
         );
       },

@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:health_mate/src/user/data/models/customer_model.dart';
-import 'package:health_mate/src/user/data/models/user_model.dart';
+import 'package:health_mate/src/profile/data/model/customer_model.dart';
+import 'package:health_mate/src/profile/data/model/user_model.dart';
 import 'package:health_mate/src/auth/presentation/app/states/sign_up_state.dart';
-import 'package:health_mate/src/user/data/models/consultant_model.dart';
+import 'package:health_mate/src/profile/data/model/consultant_model.dart';
 import 'package:health_mate/src/auth/domain/usecases/register_usecase.dart';
-import 'package:health_mate/src/user/domain/entities/user_entity.dart';
+import 'package:health_mate/src/profile/domain/entities/user_entity.dart';
 
 class SignUpNotifier extends StateNotifier<SignUpState> {
   final SignUpUsecase signUpUsecase;

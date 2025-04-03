@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:health_mate/core/common/styles/colors.dart';
 import 'package:health_mate/core/utils/validators.dart';
 import 'package:health_mate/src/auth/presentation/app/providers/auth_providers.dart';
 import 'package:health_mate/src/auth/presentation/utils/navigation_helper.dart';
@@ -9,7 +8,7 @@ import 'package:health_mate/src/auth/presentation/widgets/custom_appbar.dart';
 import 'package:health_mate/src/auth/presentation/widgets/custom_button.dart';
 import 'package:health_mate/src/auth/presentation/widgets/custom_input_field.dart';
 import 'package:health_mate/src/auth/presentation/widgets/photo_upload.dart';
-import 'package:health_mate/src/user/data/models/user_model.dart';
+import 'package:health_mate/src/profile/data/model/user_model.dart';
 
 class CustomerInfoScreen extends ConsumerWidget {
   const CustomerInfoScreen({super.key});
@@ -110,12 +109,12 @@ class _NameInputFieldState extends ConsumerState<_NameInputField> {
   Widget build(BuildContext context) {
     return CustomInputField(
       label: 'Name',
-      labelStyle: TextStyle(fontSize: 14.w),
+      labelStyle: Theme.of(context).textTheme.labelMedium,
       controller: nameController,
       onChange: (value) =>
           ref.read(signUpProvider.notifier).updateData(name: value),
       validator: Validators.validateName,
-      inputDecoration: _inputDecoration('Enter your name'),
+      inputDecoration: _inputDecoration('Enter your name', context),
     );
   }
 
@@ -154,7 +153,7 @@ class _ReferralCodeInputFieldState
       onChange: (value) =>
           ref.read(signUpProvider.notifier).updateData(referralCode: value),
       validator: Validators.validateReferralCode,
-      inputDecoration: _inputDecoration('Enter your referral code'),
+      inputDecoration: _inputDecoration('Enter your referral code', context),
     );
   }
 
@@ -165,12 +164,13 @@ class _ReferralCodeInputFieldState
   }
 }
 
-InputDecoration _inputDecoration(String hintText) {
+InputDecoration _inputDecoration(String hintText, BuildContext context) {
   return InputDecoration(
     hintText: hintText,
-    hintStyle: const TextStyle(fontSize: 16, color: AppColors.grey),
+    hintStyle:
+        TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.outline),
     filled: true,
-    fillColor: AppColors.lightGrey,
+    fillColor: Theme.of(context).colorScheme.surface,
     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(0),
