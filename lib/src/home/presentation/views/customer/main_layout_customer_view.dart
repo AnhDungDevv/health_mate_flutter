@@ -47,6 +47,7 @@ class MainLayoutCustomerView extends ConsumerWidget {
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
+        backgroundColor: Colors.white,
         showSelectedLabels: true,
         showUnselectedLabels: true,
         items: const [

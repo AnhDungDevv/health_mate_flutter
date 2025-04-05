@@ -1,10 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:health_mate/src/profile/data/model/customer_model.dart';
 import 'package:health_mate/src/profile/data/model/user_model.dart';
 import 'package:health_mate/src/auth/presentation/app/states/sign_up_state.dart';
-import 'package:health_mate/src/profile/data/model/consultant_model.dart';
 import 'package:health_mate/src/auth/domain/usecases/register_usecase.dart';
-import 'package:health_mate/src/profile/domain/entities/user_entity.dart';
 
 class SignUpNotifier extends StateNotifier<SignUpState> {
   final SignUpUsecase signUpUsecase;
@@ -55,8 +52,7 @@ class SignUpNotifier extends StateNotifier<SignUpState> {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
     try {
-      final entity = _createUserEntity();
-      await signUpUsecase(entity);
+      await signUpUsecase(state.data);
 
       if (mounted) {
         state = SignUpState.initial();
@@ -66,12 +62,5 @@ class SignUpNotifier extends StateNotifier<SignUpState> {
         state = state.copyWith(isLoading: false, errorMessage: e.toString());
       }
     }
-  }
-
-  UserEntity _createUserEntity() {
-    final data = state.data;
-    return data.role == Role.consultant
-        ? ConsultantModel.fromRegistrationData(data).toEntity()
-        : CustomerModel.fromRegistrationData(data).toEntity();
   }
 }

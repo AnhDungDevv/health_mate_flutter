@@ -1,4 +1,4 @@
-import 'package:health_mate/src/payment/domain/entities/payment_method.dart';
+import 'package:health_mate/src/payment/domain/entities/payment_method_entity.dart';
 
 class PaymentMethodModel {
   final String id;

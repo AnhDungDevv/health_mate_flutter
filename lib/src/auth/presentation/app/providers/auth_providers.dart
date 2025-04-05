@@ -73,7 +73,8 @@ final signUpStepProvider = StateNotifierProvider<SignUpStepNotifier, int>(
   (ref) => SignUpStepNotifier(ref: ref),
 );
 
-final authNotifierProvider = StateNotifierProvider<AuthNotifier, AuthState>(
+final authNotifierProvider =
+    StateNotifierProvider<AuthNotifier, AsyncValue<AuthState>>(
   (ref) {
     final notifier = AuthNotifier(ref.read(authUseCase));
     notifier.quickCheckAuth();

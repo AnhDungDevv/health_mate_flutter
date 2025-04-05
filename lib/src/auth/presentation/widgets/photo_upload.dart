@@ -1,7 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:health_mate/core/common/styles/colors.dart';
 import 'package:health_mate/src/profile/profile_provider.dart';
 
 class PhotoUpload extends ConsumerWidget {

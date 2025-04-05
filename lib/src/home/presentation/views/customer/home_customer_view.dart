@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_mate/core/routing/routes_name.dart';
+import 'package:health_mate/src/auth/presentation/app/providers/auth_providers.dart';
 import 'package:health_mate/src/home/presentation/views/customer/consultant_tab_view.dart';
 import 'package:health_mate/src/home/presentation/views/customer/following_tab_view.dart';
 import 'package:health_mate/src/search/presentation/views/search_consultant_nav.dart';
@@ -20,7 +21,7 @@ class HomeCustomerView extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: CustomScrollView(
           slivers: [
-            _buildHeader(context),
+            _buildHeader(context, ref),
             const SliverToBoxAdapter(child: SearchConsultantNav()),
             _buildTabSelector(ref),
             _buildTabContent(ref)
@@ -92,7 +93,8 @@ Widget _buildTabSelector(WidgetRef ref) {
   );
 }
 
-Widget _buildHeader(BuildContext context) {
+Widget _buildHeader(BuildContext context, WidgetRef ref) {
+  final authState = ref.watch(authNotifierProvider);
   return SliverToBoxAdapter(
     child: Container(
       padding: const EdgeInsets.only(top: 16),
@@ -100,17 +102,32 @@ Widget _buildHeader(BuildContext context) {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Column(
+          Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Hello , John Doe',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),
-              ),
-              Text(
-                'Find your Consultant',
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+              authState.when(
+                data: (state) {
+                  final userName = state.authData?.user.name;
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Hello, $userName',
+                        style: const TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w300),
+                      ),
+                      const Text(
+                        'Find your Consultant',
+                        style: TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  );
+                },
+                loading: () => const CircularProgressIndicator(),
+                error: (e, stack) => const Text('Some error'),
               )
             ],
           ),

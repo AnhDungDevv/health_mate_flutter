@@ -4,7 +4,6 @@ import 'package:health_mate/core/routing/routes_name.dart';
 import 'package:health_mate/src/auth/presentation/app/providers/phone_provider.dart';
 import 'package:health_mate/src/auth/presentation/app/providers/auth_providers.dart';
 import 'package:health_mate/src/auth/presentation/app/providers/countdown_provider.dart';
-import 'package:health_mate/core/common/styles/colors.dart';
 import 'package:health_mate/src/auth/presentation/app/states/verify_o_t_p_state.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:health_mate/core/common/styles/colors.dart';
 import 'package:health_mate/src/auth/presentation/widgets/custom_input_field.dart';
 
 final selectedAmountProvider = StateProvider<String>((ref) => "20");

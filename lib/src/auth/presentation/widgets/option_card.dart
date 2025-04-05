@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:health_mate/src/profile/data/model/user_model.dart';
-import 'package:health_mate/core/common/styles/colors.dart';
 
 class OptionCard extends StatelessWidget {
   const OptionCard(
@@ -46,11 +45,12 @@ class OptionCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(
-                  role == Role.customer
-                      ? FontAwesomeIcons.comment
-                      : FontAwesomeIcons.user,
-                  color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.shadow
-                ),
+                    role == Role.customer
+                        ? FontAwesomeIcons.comment
+                        : FontAwesomeIcons.user,
+                    color: isSelected
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.shadow),
               ),
               const SizedBox(width: 20),
               Expanded(

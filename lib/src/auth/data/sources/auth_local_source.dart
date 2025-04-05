@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:health_mate/core/error/logger.dart';
 import 'package:health_mate/src/auth/data/models/auth_data.dart';
 import 'package:health_mate/core/constants/storage_keys.dart';
 import 'package:health_mate/src/profile/data/model/user_model.dart';
@@ -7,6 +8,8 @@ import 'package:health_mate/core/storage/prefs_storage_service.dart';
 
 abstract class AuthLocalDataSource {
   Future<void> saveAuthData(AuthDataModel authData);
+  Future<AuthDataModel?> getAuthData();
+
   Future<String?> getAccessToken();
   Future<String?> getRefreshToken();
   Future<UserModel?> getUserInfo();
@@ -26,8 +29,36 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   }
 
   @override
+  Future<AuthDataModel?> getAuthData() async {
+    try {
+      final accessToken = await _secureStorage.read(StorageKeys.accessToken);
+      final refreshToken = await _secureStorage.read(StorageKeys.refreshToken);
+      final userString = await _prefsStorage.read(StorageKeys.user);
+
+      if (accessToken == null || refreshToken == null || userString == null) {
+        AppLogger.info('Auth data is incomplete');
+        return null;
+      }
+
+      final user = UserModel.fromJson(jsonDecode(userString));
+      return AuthDataModel((b) => b
+        ..accessToken = accessToken
+        ..refreshToken = refreshToken
+        ..user.replace(user)
+        ..expiresIn = 0
+        ..status = 'success'
+        ..message = 'Local restored');
+    } catch (e, st) {
+      AppLogger.error('getAuthData error');
+      return null;
+    }
+  }
+
+  @override
   Future<String?> getAccessToken() async {
-    return await _secureStorage.read(StorageKeys.accessToken);
+    final value = await _secureStorage.read(StorageKeys.accessToken);
+    AppLogger.info('Aceesotkern -----: $value');
+    return value;
   }
 
   @override

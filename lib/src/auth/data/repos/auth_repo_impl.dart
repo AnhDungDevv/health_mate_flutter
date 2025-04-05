@@ -3,13 +3,14 @@ import 'package:dio/dio.dart';
 import 'package:health_mate/core/error/error_handler.dart';
 import 'package:health_mate/core/error/failure.dart';
 import 'package:health_mate/core/error/logger.dart';
+import 'package:health_mate/src/auth/data/models/auth_data.dart';
 import 'package:health_mate/src/auth/data/models/sign_in_request_model.dart';
+import 'package:health_mate/src/auth/data/models/sign_up_request_model.dart';
 import 'package:health_mate/src/auth/domain/entities/auth_entity.dart';
 import 'package:health_mate/src/auth/domain/entities/sign_in_entity.dart';
-import 'package:health_mate/src/profile/data/model/user_model.dart';
+import 'package:health_mate/src/auth/domain/entities/sign_up_entity.dart';
 import 'package:health_mate/src/auth/data/sources/auth_local_source.dart';
 import 'package:health_mate/src/auth/data/sources/auth_remote_source.dart';
-import 'package:health_mate/src/profile/domain/entities/user_entity.dart';
 import 'package:health_mate/src/auth/domain/repos/auth_repo.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -19,11 +20,12 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl({required this.localSource, required this.remoteSource});
 
   @override
-  Future<Either<Failure, UserModel>> register(UserEntity user) async {
+  Future<Either<Failure, AuthDataEntity>> register(SignUpEntity user) async {
     try {
-      final userModel = UserModel.fromEntity(user);
-      final registeredUser = await remoteSource.register(userModel);
-      return Right(registeredUser);
+      final requestModel = SignUpRequestModel.fromEntity(user);
+      final responseModel = await remoteSource.register(requestModel);
+      final responseEntity = responseModel.toEntity();
+      return Right(responseEntity);
     } on DioException catch (error) {
       return Left(ErrorHandler.handleDioError(error));
     } catch (error, stackTrace) {
@@ -43,6 +45,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final requestModel = SignInRequestModel.fromEntity(entity);
       final responseModel = await remoteSource.login(requestModel);
       final responseEntity = responseModel.toEntity();
+      await localSource.saveAuthData(responseModel);
       return Right(responseEntity);
     } catch (error, stackTrace) {
       AppLogger.error("Unexpected Error in login: $error\n$stackTrace");
@@ -82,9 +85,9 @@ class AuthRepositoryImpl implements AuthRepository {
       final accessToken = await localSource.getAccessToken();
       if (accessToken == null) return null;
 
-      final authData = await remoteSource.getAuthData();
-      await localSource.saveAuthData(authData);
-      return authData.toEntity();
+      final AuthDataModel? authData = await localSource.getAuthData();
+      await localSource.saveAuthData(authData!);
+      return authData!.toEntity();
     } catch (e) {
       return null;
     }

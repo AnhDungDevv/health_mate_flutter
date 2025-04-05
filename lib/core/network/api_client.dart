@@ -9,7 +9,7 @@ class ApiClient {
 
   ApiClient._internal() {
     _dio = Dio(BaseOptions(
-      baseUrl: "http://192.168.1.156:5000/api/v1",
+      baseUrl: "http://192.168.1.5:5000/api/v1",
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
       responseType: ResponseType.json,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:health_mate/core/common/styles/colors.dart';
 
 class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -18,7 +17,7 @@ class CustomButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).colorScheme.primary,
+            backgroundColor: Theme.of(context).primaryColor,
             minimumSize: const Size(double.infinity, 40),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(2),

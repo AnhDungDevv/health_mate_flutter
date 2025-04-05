@@ -123,7 +123,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     child: Text(
                       "By continuing you agree to the Terms of Service and Privacy Policy",
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodySmall,
+                      style: TextStyle(color: Theme.of(context).splashColor),
                     ),
                   ),
                 ],

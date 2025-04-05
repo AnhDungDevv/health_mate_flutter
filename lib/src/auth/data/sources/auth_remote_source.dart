@@ -3,11 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:health_mate/core/network/api_client.dart';
 import 'package:health_mate/src/auth/data/models/auth_data.dart';
 import 'package:health_mate/src/auth/data/models/sign_in_request_model.dart';
-import 'package:health_mate/src/profile/data/model/user_model.dart';
+import 'package:health_mate/src/auth/data/models/sign_up_request_model.dart';
 import 'dart:async';
 
 abstract class AuthRemoteDataSource {
-  Future<UserModel> register(UserModel user);
+  Future<AuthDataModel> register(SignUpRequestModel user);
   Future<AuthDataModel> login(SignInRequestModel data);
   Future<AuthDataModel> refreshAccessToken(String refreshToken);
   Future<AuthDataModel> getAuthData();
@@ -51,8 +51,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           error: "Login failed: ${response.statusMessage}",
         );
       }
-    } on DioException {
-      rethrow;
     } catch (error) {
       throw DioException(
         requestOptions: RequestOptions(path: "/api/v1/auth/login"),
@@ -63,12 +61,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<UserModel> register(UserModel user) async {
+  Future<AuthDataModel> register(SignUpRequestModel user) async {
     try {
       final response = await _dio.post('/auth/register', data: user.toJson());
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return UserModel.fromJson(response.data);
+        return AuthDataModel.fromJson(response.data);
       } else {
         throw DioException(
           requestOptions: response.requestOptions,

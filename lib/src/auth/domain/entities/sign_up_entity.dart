@@ -1,7 +1,6 @@
-import 'package:equatable/equatable.dart';
 import 'package:health_mate/src/profile/data/model/user_model.dart';
 
-class SignUpEntity extends Equatable {
+class SignUpEntity {
   final String? name;
   final String? email;
   final String? password;
@@ -24,17 +23,29 @@ class SignUpEntity extends Equatable {
     this.city,
     this.bio,
   });
-  @override
-  List<Object?> get props => [
-        name,
-        email,
-        password,
-        phone,
-        role,
-        referralCode,
-        country,
-        city,
-        avatar,
-        bio,
-      ];
+  SignUpEntity copyWith({
+    String? name,
+    String? email,
+    String? password,
+    String? phone,
+    String? referralCode,
+    String? avatar,
+    Role? role,
+    String? country,
+    String? city,
+    String? bio,
+  }) {
+    return SignUpEntity(
+      name: name ?? this.name,
+      email: email ?? this.email,
+      password: password ?? this.password,
+      phone: phone ?? this.phone,
+      referralCode: referralCode ?? this.referralCode,
+      avatar: avatar ?? this.avatar,
+      role: role ?? this.role,
+      country: country ?? this.country,
+      city: city ?? this.city,
+      bio: bio ?? this.bio,
+    );
+  }
 }

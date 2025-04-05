@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_mate/core/routing/routes_name.dart';
 import 'package:health_mate/src/auth/domain/entities/sign_in_entity.dart';
 import 'package:health_mate/src/auth/presentation/app/states/signin_state.dart';
-import 'package:health_mate/src/profile/domain/entities/user_entity.dart';
 import 'package:health_mate/src/auth/domain/usecases/sign_in_usecase.dart';
 
 class SignInNotifier extends StateNotifier<SignInState> {
@@ -45,7 +44,7 @@ class SignInNotifier extends StateNotifier<SignInState> {
             status: SignInStatus.failure,
             errorMessage: failure.message), (user) {
       state = state.copyWith(status: SignInStatus.success);
-      Navigator.pushReplacementNamed(context, RoutesName.homeCustomerView);
+      Navigator.pushNamed(context, RoutesName.mainLayoutCustomerView);
     });
   }
 }
