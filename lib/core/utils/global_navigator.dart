@@ -2,32 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:health_mate/src/call/presentaion/view/incomming_call_overlay_view.dart';
 
 class NavigationService {
-  static final GlobalKey<NavigatorState> navigatorKey =
-      GlobalKey<NavigatorState>();
+  static final navigatorKey = GlobalKey<NavigatorState>();
 
-  // ======= Chat =======
-  static String? currentChatUserId;
-
-  static bool isOnChatWithUser(String senderId) {
-    return currentChatUserId == senderId;
-  }
-
-  static void navigateToChat(String conversationId, String senderId) {
-    currentChatUserId = senderId;
+  static void navigateToChat(String conversationId) {
     navigatorKey.currentState?.pushNamed(
-      '/chatDetail',
-      arguments: {
-        'conversationId': conversationId,
-        'senderId': senderId,
-      },
+      '/chat',
+      arguments: {'conversationId': conversationId},
     );
   }
 
-  static void clearChatUser() {
-    currentChatUserId = null;
-  }
-
-  // ======= Incoming Call Overlay =======
   static OverlayEntry? _incomingCallOverlay;
 
   static void showIncomingCallOverlay({

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_mate/core/error/logger.dart';
 import 'package:health_mate/core/network/ws.dart';
+import 'package:health_mate/core/notification/notification_service.dart';
 import 'package:health_mate/core/routing/routes_name.dart';
 import 'package:health_mate/src/auth/presentation/app/providers/auth_providers.dart';
 import 'package:health_mate/src/auth/presentation/app/states/auth_state.dart';
@@ -63,6 +64,7 @@ class _SplashViewState extends ConsumerState<SplashView> {
         },
       );
     });
+    NotificationService.initialize();
 
     return Scaffold(
       body: Center(
