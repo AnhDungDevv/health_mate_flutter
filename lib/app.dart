@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         splitScreenMode: true,
         builder: (_, child) {
           return MaterialApp(
-            navigatorKey: GlobalNavigator.navigatorKey,
+            navigatorKey: NavigationService.navigatorKey,
             theme: AppTheme.light,
             darkTheme: AppTheme.dark,
             themeMode: ThemeMode.system,

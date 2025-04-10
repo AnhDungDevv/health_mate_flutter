@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:health_mate/app.dart';
+import 'package:health_mate/core/notification/local_notification_helper.dart';
+import 'package:health_mate/core/notification/notification_service.dart';
 import 'package:health_mate/core/storage/prefs_storage_service.dart';
 import 'package:health_mate/firebase_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,12 +24,9 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await PrefsStorageService.instance.init();
-
-  // try {
-  //   await dotenv.load(fileName: "./.env");
-  // } catch (e) {
-  //   debugPrint("❌ Failed to load .env file: $e");
-  // }
+  await Firebase.initializeApp();
+  await LocalNotificationHelper.initialize();
+  await NotificationService.initialize();
 
   runApp(const MyApp());
 }
