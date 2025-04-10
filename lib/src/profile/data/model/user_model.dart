@@ -1,90 +1,67 @@
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
-import 'package:health_mate/core/serializer/serializers.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:health_mate/src/profile/data/model/role.dart';
+import 'package:health_mate/src/profile/domain/entities/consultant_entity.dart';
+import 'package:health_mate/src/profile/domain/entities/customer_entity.dart';
 import 'package:health_mate/src/profile/domain/entities/user_entity.dart';
 
+part 'user_model.freezed.dart';
 part 'user_model.g.dart';
 
-/// Enum cho Role
-enum Role { consultant, customer }
+@Freezed(unionKey: 'role')
+sealed class UserModel with _$UserModel {
+  const UserModel._();
 
-/// Serializer cho Role
-class RoleSerializer implements PrimitiveSerializer<Role> {
-  @override
-  final Iterable<Type> types = const [Role];
-  @override
-  final String wireName = 'Role';
+  const factory UserModel.customer({
+    required String id,
+    required String name,
+    @RoleConverter() required Role role,
+    String? email,
+    String? phone,
+    String? avatar,
+    String? referralCode,
+    String? password,
+  }) = CustomerModel;
 
-  @override
-  Object serialize(Serializers serializers, Role role,
-      {FullType specifiedType = FullType.unspecified}) {
-    return role.name; // Serialize enum thành string
-  }
+  const factory UserModel.consultant({
+    required String id,
+    required String name,
+    @RoleConverter() required Role role,
+    String? email,
+    String? phone,
+    String? avatar,
+    String? referralCode,
+    String? password,
+    String? bio,
+    String? country,
+    String? city,
+  }) = ConsultantModel;
 
-  @override
-  Role deserialize(Serializers serializers, Object serialized,
-      {FullType specifiedType = FullType.unspecified}) {
-    return Role.values.firstWhere(
-        (e) => e.name == serialized); // Deserialize string thành enum
-  }
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
+      _$UserModelFromJson(json);
 }
 
-/// UserModel dùng Built Value
-abstract class UserModel implements Built<UserModel, UserModelBuilder> {
-  String get id;
-  String get name;
-  Role get role;
-  String? get email;
-  String? get phone;
-  String? get avatar;
-  String? get referralCode;
-  String? get password;
-
-  // Contructor mặc định (private)
-  UserModel._();
-
-  factory UserModel([void Function(UserModelBuilder) updates]) = _$UserModel;
-
-  // Chuyển từ JSON -> Model
-  static UserModel fromJson(Map<String, dynamic> json) {
-    return serializers.deserializeWith(UserModel.serializer, json)!;
-  }
-
-  // Chuyển từ Model -> JSON
-  Map<String, dynamic> toJson() {
-    return serializers.serializeWith(UserModel.serializer, this)
-        as Map<String, dynamic>;
-  }
-
-  // Chuyển từ Entity -> UserModel
-  factory UserModel.fromEntity(UserEntity entity) {
-    return UserModel(
-      (b) => b
-        ..id = entity.id
-        ..name = entity.name
-        ..role = entity.role
-        ..email = entity.email
-        ..phone = entity.phone
-        ..avatar = entity.avatar
-        ..referralCode = entity.referralCode
-        ..password = entity.password,
-    );
-  }
-
-  // Chuyển từ UserModel -> Entity
-  UserEntity toEntity() {
-    return UserEntity(
-      id: id,
-      name: name,
-      role: role,
-      email: email,
-      phone: phone,
-      avatar: avatar,
-      referralCode: referralCode,
-      password: password,
-    );
-  }
-
-  // Serializer
-  static Serializer<UserModel> get serializer => _$userModelSerializer;
+extension UserModelX on UserModel {
+  UserEntity toEntity() => switch (this) {
+        CustomerModel c => CustomerEntity(
+            id: c.id,
+            name: c.name,
+            role: c.role,
+            email: c.email,
+            phone: c.phone,
+            avatar: c.avatar,
+            referralCode: c.referralCode,
+          ),
+        ConsultantModel c => ConsultantEntity(
+            id: c.id,
+            name: c.name,
+            role: c.role,
+            email: c.email,
+            phone: c.phone,
+            avatar: c.avatar,
+            referralCode: c.referralCode,
+            bio: c.bio,
+            country: c.country,
+            city: c.city,
+          ),
+      };
 }

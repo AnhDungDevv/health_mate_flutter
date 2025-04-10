@@ -1,4 +1,4 @@
-import 'package:health_mate/src/profile/data/model/user_model.dart';
+import 'package:health_mate/src/profile/data/model/role.dart';
 
 class SignUpEntity {
   final String? name;

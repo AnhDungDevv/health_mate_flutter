@@ -1,72 +1,44 @@
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
-import 'package:health_mate/src/auth/domain/entities/sign_up_entity.dart';
-import 'package:health_mate/src/auth/presentation/app/states/sign_up_state.dart';
-import 'package:health_mate/src/profile/data/model/user_model.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:health_mate/src/profile/data/model/role.dart';
 import 'package:health_mate/src/profile/domain/entities/consultant_entity.dart';
 
+part 'consultant_model.freezed.dart';
 part 'consultant_model.g.dart';
 
-abstract class ConsultantModel
-    implements Built<ConsultantModel, ConsultantModelBuilder> {
-  String get id;
-  String get name;
-  Role get role;
-  String? get email;
-  String? get phone;
-  String? get avatar;
-  String? get referralCode;
-  String? get bio;
-  String? get country;
-  String? get city;
+@Freezed(unionKey: 'type')
+sealed class ConsultantModel with _$ConsultantModel {
+  const ConsultantModel._();
 
-  ConsultantModel._();
+  const factory ConsultantModel.base({
+    required String id,
+    required String name,
+    @RoleConverter() required Role role,
+    String? email,
+    String? phone,
+    String? avatar,
+    String? referralCode,
+    String? bio,
+    String? country,
+    String? city,
+  }) = BaseConsultantModel;
 
-  factory ConsultantModel([void Function(ConsultantModelBuilder) updates]) =
-      _$ConsultantModel;
+  factory ConsultantModel.fromJson(Map<String, dynamic> json) =>
+      _$ConsultantModelFromJson(json);
+}
 
-  factory ConsultantModel.fromRegistrationData(SignUpEntity data) {
-    return ConsultantModel((b) => b
-      ..name = data.name ?? ''
-      ..email = data.email ?? ''
-      ..phone = data.phone ?? ''
-      ..role = data.role
-      ..country = data.country ?? ''
-      ..city = data.city ?? ''
-      ..avatar = data.avatar ?? ''
-      ..bio = data.bio ?? ''
-      ..referralCode = data.referralCode ?? '');
-  }
-
-  factory ConsultantModel.fromEntity(ConsultantEntity entity) {
-    return ConsultantModel((b) => b
-      ..id = entity.id
-      ..name = entity.name
-      ..role = entity.role
-      ..email = entity.email
-      ..phone = entity.phone
-      ..avatar = entity.avatar
-      ..referralCode = entity.referralCode
-      ..bio = entity.bio
-      ..country = entity.country
-      ..city = entity.city);
-  }
-
-  ConsultantEntity toEntity() {
-    return ConsultantEntity(
-      id: id,
-      name: name,
-      role: role,
-      email: email,
-      phone: phone,
-      avatar: avatar,
-      referralCode: referralCode,
-      bio: bio,
-      country: country,
-      city: city,
-    );
-  }
-
-  static Serializer<ConsultantModel> get serializer =>
-      _$consultantModelSerializer;
+extension ConsultantModelX on ConsultantModel {
+  ConsultantEntity toEntity() => switch (this) {
+        BaseConsultantModel c => ConsultantEntity(
+            id: c.id,
+            name: c.name,
+            role: c.role,
+            email: c.email,
+            phone: c.phone,
+            avatar: c.avatar,
+            referralCode: c.referralCode,
+            bio: c.bio,
+            country: c.country,
+            city: c.city,
+          ),
+      };
 }

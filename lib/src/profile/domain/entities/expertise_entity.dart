@@ -18,7 +18,7 @@ class ExpertiseEntity {
 
 extension ExpertiseEntityMapper on ExpertiseEntity {
   ExpertiseModel toModel() {
-    return ExpertiseModel(
+    return ExpertiseModel.basic(
       id: id,
       category: category,
       videoURL: videoURL,

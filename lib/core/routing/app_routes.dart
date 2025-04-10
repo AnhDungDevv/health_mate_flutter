@@ -23,7 +23,7 @@ import 'package:health_mate/src/payment/presentaion/view/add_funds_view.dart';
 import 'package:health_mate/src/profile/presentaion/view/profile_view.dart';
 import 'package:health_mate/src/profile/presentaion/view/update_profile_view.dart';
 import 'package:health_mate/src/search/presentation/views/search_for_consultant_view.dart';
-import 'package:health_mate/src/splash/presentation/splash_view.dart';
+import 'package:health_mate/src/splash/presentation/view/splash_view.dart';
 import 'package:health_mate/src/wallet/presentaion/view/my_wallet.dart';
 import 'package:health_mate/src/wallet/presentaion/view/refer_and_earn_view.dart';
 
@@ -43,8 +43,8 @@ class Routes {
       RoutesName.updateProfileView: const UpdateProfileView(),
       RoutesName.referAndEarnView: const ReferAndEarnView(),
       RoutesName.chatListView: const ChatListView(),
-      RoutesName.chatView: const ChatView(),
-      RoutesName.myWalletView: const MyWalletView   (),
+      RoutesName.chatView: ChatView(),
+      RoutesName.myWalletView: const MyWalletView(),
       RoutesName.searchChatView: const SearchChatView(),
       RoutesName.addfundsView: const AddFundsView(),
       RoutesName.signUpView: const SignUpScreen(),

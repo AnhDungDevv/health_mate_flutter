@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:health_mate/core/error/logger.dart';
-import 'package:health_mate/src/auth/data/models/auth_data.dart';
+import 'package:health_mate/src/auth/data/models/auth_data_model.dart';
 import 'package:health_mate/core/constants/storage_keys.dart';
 import 'package:health_mate/src/profile/data/model/user_model.dart';
 import 'package:health_mate/core/storage/secure_storage_service.dart';
@@ -22,10 +22,13 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
 
   @override
   Future<void> saveAuthData(AuthDataModel authData) async {
+    if (authData is! AuthDataModelSuccess) return;
     await _secureStorage.write(StorageKeys.accessToken, authData.accessToken);
     await _secureStorage.write(StorageKeys.refreshToken, authData.refreshToken);
     await _prefsStorage.write(
-        StorageKeys.user, jsonEncode(authData.user.toJson()));
+      StorageKeys.user,
+      jsonEncode(authData.user.toJson()),
+    );
   }
 
   @override
@@ -37,27 +40,34 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
 
       if (accessToken == null || refreshToken == null || userString == null) {
         AppLogger.info('Auth data is incomplete');
-        return null;
+        return const AuthDataModel.error(
+          status: 'error',
+          message: 'No auth data found',
+        );
       }
 
       final user = UserModel.fromJson(jsonDecode(userString));
-      return AuthDataModel((b) => b
-        ..accessToken = accessToken
-        ..refreshToken = refreshToken
-        ..user.replace(user)
-        ..expiresIn = 0
-        ..status = 'success'
-        ..message = 'Local restored');
+      return AuthDataModel.success(
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        user: user,
+        expiresIn: 0,
+        status: 'success',
+        message: 'Local restored',
+      );
     } catch (e, st) {
       AppLogger.error('getAuthData error');
-      return null;
+      return const AuthDataModel.error(
+        status: 'error',
+        message: 'Failed to get auth data',
+      );
     }
   }
 
   @override
   Future<String?> getAccessToken() async {
     final value = await _secureStorage.read(StorageKeys.accessToken);
-    AppLogger.info('Aceesotkern -----: $value');
+    AppLogger.info('AccessToken: $value');
     return value;
   }
 

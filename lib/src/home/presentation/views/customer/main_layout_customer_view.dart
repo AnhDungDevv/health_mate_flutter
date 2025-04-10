@@ -7,6 +7,8 @@ import 'package:health_mate/src/consultant/presentaion/views/category_list_view.
 import 'package:health_mate/src/profile/presentaion/view/profile_view.dart';
 
 final selectedViewProvider = StateProvider<int>((ref) => 0);
+final loadedTabsProvider =
+    StateProvider<Set<int>>((ref) => {0}); // Mặc định load tab 0
 
 class MainLayoutCustomerView extends ConsumerWidget {
   const MainLayoutCustomerView({super.key});
@@ -14,15 +16,34 @@ class MainLayoutCustomerView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedIndex = ref.watch(selectedViewProvider);
+    final loadedTabs = ref.watch(loadedTabsProvider);
 
-    // Danh sách các màn hình
-    final List<Widget> screens = [
-      const HomeCustomerView(),
-      const CategoryConsultantView(),
-      const MyConsultantView(),
-      const ChatListView(),
-      ProfileView(),
-    ];
+    // Load tab khi được mở
+    ref.listen(selectedViewProvider, (prev, next) {
+      final current = ref.read(loadedTabsProvider);
+      if (!current.contains(next)) {
+        ref.read(loadedTabsProvider.notifier).state = {...current, next};
+      }
+    });
+
+    // Build từng tab khi được mở
+    final List<Widget> tabs = List.generate(5, (index) {
+      if (loadedTabs.contains(index)) {
+        switch (index) {
+          case 0:
+            return const HomeCustomerView();
+          case 1:
+            return const CategoryConsultantView();
+          case 2:
+            return const MyConsultantView();
+          case 3:
+            return const ChatListView();
+          case 4:
+            return ProfileView();
+        }
+      }
+      return const SizedBox();
+    });
 
     return Scaffold(
       body: AnimatedSwitcher(
@@ -31,19 +52,20 @@ class MainLayoutCustomerView extends ConsumerWidget {
           return FadeTransition(
             opacity: animation,
             child: SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(0.1, 0.0),
-                end: Offset.zero,
-              ).animate(animation),
+              position:
+                  Tween<Offset>(begin: const Offset(0.1, 0.0), end: Offset.zero)
+                      .animate(animation),
               child: child,
             ),
           );
         },
-        child: screens[selectedIndex],
+        child: tabs[selectedIndex],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: selectedIndex,
-        onTap: (value) => ref.read(selectedViewProvider.notifier).state = value,
+        onTap: (index) {
+          ref.read(selectedViewProvider.notifier).state = index;
+        },
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,

@@ -81,6 +81,13 @@ final authNotifierProvider =
     return notifier;
   },
 );
+final userIdProvider = Provider<String?>((ref) {
+  final authData = ref.watch(authNotifierProvider);
+  return authData.maybeWhen(
+    data: (value) => value.authData?.user.id,
+    orElse: () => null,
+  );
+});
 // State Providers
 final countryCodeProvider = StateProvider<String>((ref) => '+84');
 final phoneControllerProvider = Provider((ref) => TextEditingController());

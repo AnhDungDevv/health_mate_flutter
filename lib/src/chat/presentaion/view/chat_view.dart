@@ -1,21 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:health_mate/src/auth/presentation/app/providers/auth_providers.dart';
+import 'package:health_mate/src/auth/presentation/app/states/auth_state.dart';
+import 'package:health_mate/src/chat/presentaion/app/provider/chat_provider.dart';
 import 'package:health_mate/src/service_options/presentaion/widgets/consultant_type_widget.dart';
+import 'package:health_mate/src/chat/domain/entity/chat_message_entity.dart';
 
-class ChatView extends StatelessWidget {
-  const ChatView({super.key});
+class ChatView extends ConsumerWidget {
+  ChatView({super.key});
+  final TextEditingController _messageController = TextEditingController();
 
   void showConsultationType(BuildContext context) {
     showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
-        ),
-        builder: (context) => const ConsultationTypeWidget());
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      builder: (context) => const ConsultationTypeWidget(),
+    );
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+    final conversationId = args['conversationId'];
+    final authState = ref.watch(authNotifierProvider);
+
+    final currentUserId = authState.when(
+      data: (state) {
+        if (state.status == AuthStatus.authenticated) {
+          return state.authData?.user.id;
+        }
+        return null;
+      },
+      loading: () => null,
+      error: (error, stackTrace) => null,
+    );
+    final chatMessages = ref.watch(chatNotifierProvider(conversationId));
+
     return GestureDetector(
       onHorizontalDragEnd: (details) {
         if (details.primaryVelocity! > 0) {
@@ -29,13 +53,12 @@ class ChatView extends StatelessWidget {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {
-              Navigator.pop(context); // Quay lại màn hình trước
+              Navigator.pop(context);
             },
           ),
           leadingWidth: 25,
           title: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            spacing: 10,
             children: [
               const CircleAvatar(
                 radius: 20,
@@ -79,34 +102,25 @@ class ChatView extends StatelessWidget {
           children: [
             // Chat messages
             Expanded(
-              child: ListView(
+              child: ListView.builder(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                children: const [
-                  // Incoming message
-                  Align(
-                    alignment: Alignment.centerLeft,
+                itemCount: chatMessages.length,
+                itemBuilder: (context, index) {
+                  final message = chatMessages[index];
+                  final bool isSender = message.senderId == currentUserId;
+                  return Align(
+                    alignment:
+                        isSender ? Alignment.centerRight : Alignment.centerLeft,
                     child: ChatBubble(
-                      message:
-                          "Good afternoon! It's nice to meet you. I see from your background that you have an impressive",
-                      isSender: false,
-                      time: '8:21 AM',
+                      message: message.content,
+                      isSender: isSender,
+                      time: message.timestamp.toString(),
                     ),
-                  ),
-                  SizedBox(height: 8),
-                  // Outgoing message
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: ChatBubble(
-                      message: "Hello! Thank you for your kind words",
-                      isSender: true,
-                      time: '8:21 AM',
-                    ),
-                  ),
-                ],
+                  );
+                },
               ),
             ),
-            // Message input
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
@@ -117,9 +131,10 @@ class ChatView extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: TextField(
-                      decoration: InputDecoration(
+                      controller: _messageController,
+                      decoration: const InputDecoration(
                         hintText: 'Type your message',
                         border: InputBorder.none,
                       ),
@@ -131,7 +146,25 @@ class ChatView extends StatelessWidget {
                   ),
                   IconButton(
                     icon: const Icon(Icons.send, color: Colors.blue),
-                    onPressed: () {},
+                    onPressed: () {
+                      final messageText = _messageController.text.trim();
+                      if (messageText.isNotEmpty) {
+                        final message = ChatMessageEntity(
+                          id: DateTime.now().toString(),
+                          conversationId: conversationId,
+                          senderId: currentUserId!,
+                          receiverId: "receiver_id",
+                          type: "text",
+                          content: messageText,
+                          timestamp: DateTime.now(),
+                          isRead: false,
+                        );
+                        ref
+                            .read(chatNotifierProvider(conversationId).notifier)
+                            .sendMessage(message);
+                        _messageController.clear();
+                      }
+                    },
                   ),
                 ],
               ),

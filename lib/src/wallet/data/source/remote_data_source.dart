@@ -11,10 +11,17 @@ abstract class WalletRemoteSource {
 
 class WalletRemoteSourceImpl implements WalletRemoteSource {
   final _dio = ApiClient().dio;
+  final mockWalletModel = const WalletModel(
+    id: 'wallet_123',
+    userId: 'user_456',
+    balance: 1500.75,
+    currency: 'USD',
+  );
+
   @override
   Future<WalletModel> getWalletBalance(String userId) async {
-    final response = await _dio.get('/wallet/$userId');
-    return WalletModel.fromJson(response.data);
+    // final response = await _dio.get('/wallet/$userId');
+    return mockWalletModel;
   }
 
   @override

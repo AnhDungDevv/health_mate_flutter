@@ -1,49 +1,41 @@
 import 'dart:io';
-
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:health_mate/src/profile/domain/entities/expertise_entity.dart';
 
-class ExpertiseModel extends ExpertiseEntity {
-  @override
-  final File? identityProofFile;
+part 'expertise_model.freezed.dart';
+part 'expertise_model.g.dart';
 
-  ExpertiseModel({
-    required super.category,
-    required super.videoURL,
-    this.identityProofFile,
+@Freezed(unionKey: 'type')
+sealed class ExpertiseModel with _$ExpertiseModel {
+  const ExpertiseModel._();
+
+  const factory ExpertiseModel.basic({
     String? id,
-  }) : super(
-          id: id,
-          identityProofFile: identityProofFile,
-        );
+    required String category,
+    required String videoURL,
+    @JsonKey(fromJson: _fileFromJson, toJson: _fileToJson)
+    File? identityProofFile,
+  }) = BasicExpertiseModel;
 
-  Map<String, dynamic> toJson() {
-    return {
-      "id": id,
-      "category": category,
-      "videoURL": videoURL,
-      "identityProofFile": identityProofFile?.path,
-    };
-  }
-
-  factory ExpertiseModel.fromJson(Map<String, dynamic> json) {
-    return ExpertiseModel(
-      id: json["id"],
-      category: json["category"],
-      videoURL: json["videoURL"],
-      identityProofFile: json["identityProofFile"] != null
-          ? File(json["identityProofFile"])
-          : null,
-    );
-  }
+  factory ExpertiseModel.fromJson(Map<String, dynamic> json) =>
+      _$ExpertiseModelFromJson(json);
 }
 
-extension ExpertiseModelMapper on ExpertiseModel {
-  ExpertiseEntity toEntity() {
-    return ExpertiseEntity(
-      id: id,
-      category: category,
-      videoURL: videoURL,
-      identityProofFile: identityProofFile,
-    );
-  }
+extension ExpertiseModelX on ExpertiseModel {
+  ExpertiseEntity toEntity() => switch (this) {
+        BasicExpertiseModel e => ExpertiseEntity(
+            id: e.id,
+            category: e.category,
+            videoURL: e.videoURL,
+            identityProofFile: e.identityProofFile,
+          ),
+      };
+}
+
+File? _fileFromJson(String? path) {
+  return path != null ? File(path) : null;
+}
+
+String? _fileToJson(File? file) {
+  return file?.path;
 }

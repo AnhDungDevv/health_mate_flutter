@@ -1,5 +1,5 @@
 import 'package:health_mate/src/auth/domain/entities/sign_up_entity.dart';
-import 'package:health_mate/src/profile/data/model/user_model.dart';
+import 'package:health_mate/src/profile/data/model/role.dart';
 
 class SignUpState {
   final SignUpEntity data;

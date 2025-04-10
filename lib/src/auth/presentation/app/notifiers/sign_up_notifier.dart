@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:health_mate/src/profile/data/model/role.dart';
 import 'package:health_mate/src/profile/data/model/user_model.dart';
 import 'package:health_mate/src/auth/presentation/app/states/sign_up_state.dart';
 import 'package:health_mate/src/auth/domain/usecases/register_usecase.dart';

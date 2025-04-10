@@ -1,33 +1,23 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:health_mate/src/payment/domain/entities/payment_method_entity.dart';
 
-class PaymentMethodModel {
-  final String id;
-  final String name;
-  final bool isActive;
-  final String icon;
-  const PaymentMethodModel({
-    required this.id,
-    required this.name,
-    required this.isActive,
-    required this.icon,
-  });
-  factory PaymentMethodModel.fromJson(Map<String, dynamic> json) {
-    return PaymentMethodModel(
-        id: json['id'] as String,
-        name: json['name'] as String,
-        isActive: json['isActive'] as bool,
-        icon: json['icon'] as String);
-  }
+part 'payment_method_model.freezed.dart';
+part 'payment_method_model.g.dart';
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'isActive': isActive,
-      'icon': icon,
-    };
-  }
+@freezed
+sealed class PaymentMethodModel with _$PaymentMethodModel {
+  const factory PaymentMethodModel({
+    required String id,
+    required String name,
+    required bool isActive,
+    required String icon,
+  }) = _PaymentMethodModel;
 
+  factory PaymentMethodModel.fromJson(Map<String, dynamic> json) =>
+      _$PaymentMethodModelFromJson(json);
+}
+
+extension PaymentMethodModelX on PaymentMethodModel {
   PaymentMethodEntity toEntity() {
     return PaymentMethodEntity(
       id: id,

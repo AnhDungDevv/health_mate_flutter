@@ -1,54 +1,41 @@
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
-import 'package:health_mate/core/serializer/serializers.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:health_mate/src/wallet/doamin/entities/transaction_entity.dart';
 
+part 'transaction_model.freezed.dart';
 part 'transaction_model.g.dart';
 
-abstract class TransactionModel
-    implements Built<TransactionModel, TransactionModelBuilder> {
-  String get id;
-  String get walletId;
-  String get type;
-  double get amount;
-  String get status;
-  DateTime get createdAt;
-  TransactionModel._();
+@freezed
+sealed class TransactionModel with _$TransactionModel {
+  const factory TransactionModel({
+    required String id,
+    required String walletId,
+    required String type,
+    required double amount,
+    required String status,
+    required DateTime createdAt,
+  }) = _TransactionModel;
 
-  factory TransactionModel([void Function(TransactionModelBuilder) updates]) =
-      _$TransactionModel;
+  factory TransactionModel.fromJson(Map<String, dynamic> json) =>
+      _$TransactionModelFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    return serializers.serializeWith(TransactionModel.serializer, this)
-            as Map<String, dynamic>? ??
-        {};
-  }
+  factory TransactionModel.fromEntity(TransactionEntity entity) =>
+      TransactionModel(
+        id: entity.id,
+        walletId: entity.walletId,
+        type: entity.type,
+        amount: entity.amount,
+        status: entity.status,
+        createdAt: entity.createdAt,
+      );
+}
 
-  static TransactionModel fromJson(Map<String, dynamic> json) {
-    return serializers.deserializeWith(TransactionModel.serializer, json)!;
-  }
-
-  TransactionEntity toEntity() {
-    return TransactionEntity(
-      id: id,
-      walletId: walletId,
-      type: type,
-      amount: amount,
-      status: status,
-      createdAt: createdAt,
-    );
-  }
-
-  static TransactionModel fromEntity(TransactionEntity entity) {
-    return TransactionModel((b) => b
-      ..id = entity.id
-      ..walletId = entity.walletId
-      ..type = entity.type
-      ..amount = entity.amount
-      ..status = entity.status
-      ..createdAt = entity.createdAt);
-  }
-
-  static Serializer<TransactionModel> get serializer =>
-      _$transactionModelSerializer;
+extension TransactionModelX on TransactionModel {
+  TransactionEntity toEntity() => TransactionEntity(
+        id: id,
+        walletId: walletId,
+        type: type,
+        amount: amount,
+        status: status,
+        createdAt: createdAt,
+      );
 }

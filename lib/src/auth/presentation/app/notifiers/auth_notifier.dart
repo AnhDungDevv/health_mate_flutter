@@ -15,10 +15,8 @@ class AuthNotifier extends StateNotifier<AsyncValue<AuthState>> {
     try {
       final accessToken = await _authUseCase.getLocalAccessToken();
       if (accessToken != null) {
-        AppLogger.info('check auth 1');
         await _validateAuth();
       } else {
-        AppLogger.info(' un check auth 1');
         state = const AsyncValue.data(
             AuthState(status: AuthStatus.unauthenticated));
       }
@@ -44,5 +42,10 @@ class AuthNotifier extends StateNotifier<AsyncValue<AuthState>> {
     } catch (e, stackTrace) {
       state = AsyncValue.error(e, stackTrace);
     }
+  }
+
+  String? getUserId() {
+    final currentState = state.asData?.value;
+    return currentState?.authData?.user.id;
   }
 }

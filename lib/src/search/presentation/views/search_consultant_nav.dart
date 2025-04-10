@@ -6,12 +6,9 @@ class SearchConsultantNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, RoutesName.searchView);
-      },
+      onTap: () => Navigator.pushNamed(context, RoutesName.searchView),
       child: Container(
         height: 50,
-        margin: const EdgeInsets.only(top: 16),
         decoration: BoxDecoration(
           color: Colors.grey[200],
           borderRadius: BorderRadius.circular(5),

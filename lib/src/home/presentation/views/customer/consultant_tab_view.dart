@@ -7,39 +7,27 @@ class ConsultantTabView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      physics: const NeverScrollableScrollPhysics(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Banner Section
-          _buildBanner(),
-
-          const SizedBox(height: 16),
-
-          // Categories Section
-          _buildCategories(context),
-
-          const SizedBox(height: 16),
-
-          // Recommended Section
-          _buildSectionHeader(context, "Recommended", onViewAll: () {}),
-          const SizedBox(height: 8),
-          _buildRecommended(),
-
-          const SizedBox(height: 16),
-
-          // Top Rated Section
-          _buildSectionHeader(context, "Top Rated Doctor", onViewAll: () {}),
-          const SizedBox(height: 8),
-          _buildTopRated(),
-
-          const SizedBox(height: 16),
-
-          // Refer and Earn Section
-          _buildReferAndEarn(context),
-        ],
-      ),
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(child: _buildBanner()),
+        const SliverToBoxAdapter(child: SizedBox(height: 16)),
+        SliverToBoxAdapter(child: _buildCategories(context)),
+        const SliverToBoxAdapter(child: SizedBox(height: 16)),
+        SliverToBoxAdapter(
+          child: _buildSectionHeader(context, "Recommended", onViewAll: () {}),
+        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 8)),
+        SliverToBoxAdapter(child: _buildRecommended()),
+        const SliverToBoxAdapter(child: SizedBox(height: 16)),
+        SliverToBoxAdapter(
+          child: _buildSectionHeader(context, "Top Rated Doctor",
+              onViewAll: () {}),
+        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 8)),
+        SliverToBoxAdapter(child: _buildTopRated()),
+        const SliverToBoxAdapter(child: SizedBox(height: 16)),
+        SliverToBoxAdapter(child: _buildReferAndEarn(context)),
+      ],
     );
   }
 

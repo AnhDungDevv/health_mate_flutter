@@ -20,6 +20,7 @@ class WalletStateNotifier extends StateNotifier<AsyncValue<WalletEntity>> {
     try {
       final wallet = await getWalletBalance(userId);
       state = AsyncValue.data(wallet);
+      
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
     }

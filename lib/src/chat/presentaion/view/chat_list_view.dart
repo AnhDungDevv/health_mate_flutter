@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:health_mate/core/routing/routes_name.dart';
+import 'package:health_mate/src/chat/presentaion/app/provider/chat_provider.dart';
 
-class ChatListView extends StatelessWidget {
+class ChatListView extends ConsumerWidget {
   const ChatListView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final listConversation = ref.watch(conversationNotifierProvider);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Message',
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge
-                ?.copyWith(fontWeight: FontWeight.w400, fontSize: 24)),
+        title: Text(
+          'Messages',
+          style: Theme.of(context)
+              .textTheme
+              .titleLarge
+              ?.copyWith(fontWeight: FontWeight.w400, fontSize: 24),
+        ),
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: false,
@@ -26,28 +32,52 @@ class ChatListView extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16),
-        child: ListView.builder(
-          itemCount: chatData.length,
-          itemBuilder: (context, index) {
-            final chat = chatData[index];
-            return ChatItem(
-              id: chat['id'] as String,
-              onTap: () {
-                Navigator.pushNamed(context, RoutesName.chatView);
-              },
-              name: chat['name']!,
-              message: chat['message']!,
-              time: chat['time']!,
-              avatarUrl: chat['avatarUrl']!,
-              isOnline: chat['isOnline']!,
-              isRead: chat['isRead']!,
-            );
-          },
-        ),
+      body: listConversation.when(
+        data: (conversations) {
+          if (conversations.isEmpty) {
+            return const Center(child: Text("No messages yet"));
+          }
+          return ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: conversations.length,
+            itemBuilder: (context, index) {
+              final conversation = conversations[index];
+
+              final receiver = conversation.receiver;
+
+              return ChatItem(
+                id: conversation.id,
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    RoutesName.chatView,
+                    arguments: conversation.id,
+                  );
+                },
+                name: receiver?.name ?? 'Unknown User',
+                message: conversation.lastMessage?.content ?? '',
+                time: _formatTime(conversation.updatedAt),
+                avatarUrl: receiver?.avatarUrl ?? 'assets/images/default.png',
+                isOnline: receiver?.isOnline ?? false,
+                isRead: conversation.lastMessage?.isRead ?? false,
+              );
+            },
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, _) => Center(child: Text('Error: $err')),
       ),
     );
+  }
+
+  String _formatTime(DateTime time) {
+    final now = DateTime.now();
+    final diff = now.difference(time);
+
+    if (diff.inMinutes < 1) return 'Just now';
+    if (diff.inHours < 1) return '${diff.inMinutes} minutes ago';
+    if (diff.inDays < 1) return '${diff.inHours} hours ago';
+    return '${time.hour}:${time.minute.toString().padLeft(2, '0')}';
   }
 }
 
@@ -61,55 +91,58 @@ class ChatItem extends StatelessWidget {
   final bool isRead;
   final VoidCallback onTap;
 
-  const ChatItem(
-      {super.key,
-      required this.id,
-      required this.name,
-      required this.message,
-      required this.time,
-      required this.avatarUrl,
-      required this.isOnline,
-      required this.isRead,
-      required this.onTap});
+  const ChatItem({
+    super.key,
+    required this.id,
+    required this.name,
+    required this.message,
+    required this.time,
+    required this.avatarUrl,
+    required this.isOnline,
+    required this.isRead,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Slidable(
       key: ValueKey(id),
       direction: Axis.horizontal,
-      endActionPane:
-          ActionPane(extentRatio: 0.6, motion: const DrawerMotion(), children: [
-        SlidableAction(
-          onPressed: (context) {},
-          backgroundColor: Colors.grey,
-          foregroundColor: Colors.white,
-          icon: Icons.more_horiz,
-          label: 'Xem thêm',
-        ),
-        SlidableAction(
-          onPressed: (context) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Ghim được nhấn')),
-            );
-          },
-          backgroundColor: Colors.orange,
-          foregroundColor: Colors.white,
-          icon: Icons.push_pin,
-          label: 'Ghim',
-        ),
-        // Nút "Lưu trữ"
-        SlidableAction(
-          onPressed: (context) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Lưu trữ được nhấn')),
-            );
-          },
-          backgroundColor: Colors.purple,
-          foregroundColor: Colors.white,
-          icon: Icons.archive,
-          label: 'Lưu trữ',
-        ),
-      ]),
+      endActionPane: ActionPane(
+        extentRatio: 0.6,
+        motion: const DrawerMotion(),
+        children: [
+          SlidableAction(
+            onPressed: (context) {},
+            backgroundColor: Colors.grey,
+            foregroundColor: Colors.white,
+            icon: Icons.more_horiz,
+            label: 'More',
+          ),
+          SlidableAction(
+            onPressed: (context) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Pinned')),
+              );
+            },
+            backgroundColor: Colors.orange,
+            foregroundColor: Colors.white,
+            icon: Icons.push_pin,
+            label: 'Pin',
+          ),
+          SlidableAction(
+            onPressed: (context) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Archived')),
+              );
+            },
+            backgroundColor: Colors.purple,
+            foregroundColor: Colors.white,
+            icon: Icons.archive,
+            label: 'Archive',
+          ),
+        ],
+      ),
       child: GestureDetector(
         onTap: onTap,
         child: Padding(
@@ -175,17 +208,9 @@ class ChatItem extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   if (isRead)
-                    const Icon(
-                      Icons.check_circle,
-                      color: Colors.blue,
-                      size: 16,
-                    )
+                    const Icon(Icons.check_circle, color: Colors.blue, size: 16)
                   else
-                    const Icon(
-                      Icons.circle,
-                      color: Colors.blue,
-                      size: 10,
-                    ),
+                    const Icon(Icons.circle, color: Colors.blue, size: 10),
                 ],
               ),
             ],
@@ -195,60 +220,3 @@ class ChatItem extends StatelessWidget {
     );
   }
 }
-
-final List<Map<String, dynamic>> chatData = [
-  {
-    'id': '1',
-    'name': 'Kristin',
-    'message': 'I found a 2007 study on effects',
-    'time': '00:12',
-    'avatarUrl': 'assets/images/user_consultant/1.png',
-    'isOnline': true,
-    'isRead': false,
-  },
-  {
-    'id': '2',
-    'name': 'Ronald',
-    'message': 'An average healthy 7 year old',
-    'time': '00:12',
-    'avatarUrl': 'assets/images/user_consultant/1.png',
-    'isOnline': true,
-    'isRead': true,
-  },
-  {
-    'id': '3',
-    'name': 'Eduardo',
-    'message': 'In most states, the legal limit in blood',
-    'time': '00:12',
-    'avatarUrl': 'assets/images/user_consultant/1.png',
-    'isOnline': false,
-    'isRead': true,
-  },
-  {
-    'id': '4',
-    'name': 'Leslie',
-    'message': 'However rare side effects observed',
-    'time': '00:12',
-    'avatarUrl': 'assets/images/user_consultant/1.png',
-    'isOnline': true,
-    'isRead': true,
-  },
-  {
-    'id': '5',
-    'name': 'Aubrey',
-    'message': 'Alcohol based exposures through',
-    'time': '00:12',
-    'avatarUrl': 'assets/images/user_consultant/1.png',
-    'isOnline': false,
-    'isRead': true,
-  },
-  {
-    'id': '6',
-    'name': 'Soham',
-    'message': 'So yes, the alcohol (ethanol) in hand',
-    'time': '00:12',
-    'avatarUrl': 'assets/images/user_consultant/1.png',
-    'isOnline': false,
-    'isRead': true,
-  },
-];

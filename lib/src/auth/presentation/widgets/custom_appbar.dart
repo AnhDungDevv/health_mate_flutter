@@ -9,6 +9,7 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      forceMaterialTransparency: true,
       leading: IconButton(onPressed: onTap, icon: const Icon(Icons.arrow_back)),
       actions: [
         Padding(padding: const EdgeInsets.all(16.0), child: Text(step))

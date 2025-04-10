@@ -1,34 +1,25 @@
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:health_mate/src/payment/domain/entities/payment_entity.dart';
 
+part 'payment_model.freezed.dart';
 part 'payment_model.g.dart';
 
-abstract class PaymentModel
-    implements Built<PaymentModel, PaymentModelBuilder> {
-  String get id;
-  String get userId;
-  double get amount;
-  String get method;
-  String get status;
-  DateTime get createdAt;
+@freezed
+sealed class PaymentModel with _$PaymentModel {
+  const factory PaymentModel({
+    required String id,
+    required String userId,
+    required double amount,
+    required String method,
+    required String status,
+    required DateTime createdAt,
+  }) = _PaymentModel;
 
-  PaymentModel._();
-  factory PaymentModel([void Function(PaymentModelBuilder) updates]) =
-      _$PaymentModel;
+  factory PaymentModel.fromJson(Map<String, dynamic> json) =>
+      _$PaymentModelFromJson(json);
+}
 
-  static Serializer<PaymentModel> get serializer => _$paymentModelSerializer;
-
-  factory PaymentModel.fromJson(Map<String, dynamic> json) {
-    return PaymentModel((b) => b
-      ..id = json['id']
-      ..userId = json['userId']
-      ..amount = (json['amount'] as num).toDouble()
-      ..method = json['method']
-      ..status = json['status']
-      ..createdAt = DateTime.parse(json['createdAt']));
-  }
-
+extension PaymentModelX on PaymentModel {
   PaymentEntity toEntity() {
     return PaymentEntity(
       id: id,

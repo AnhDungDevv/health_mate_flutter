@@ -6,6 +6,7 @@ import 'package:health_mate/src/auth/presentation/utils/navigation_helper.dart';
 import 'package:health_mate/src/auth/presentation/widgets/custom_appbar.dart';
 import 'package:health_mate/src/auth/presentation/widgets/custom_button.dart';
 import 'package:health_mate/src/auth/presentation/widgets/option_card.dart';
+import 'package:health_mate/src/profile/data/model/role.dart';
 import 'package:health_mate/src/profile/data/model/user_model.dart';
 
 class SignUpScreen extends ConsumerWidget {
