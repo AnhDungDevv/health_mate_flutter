@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:health_mate/core/error/failure.dart';
 import 'package:health_mate/src/auth/presentation/widgets/custom_button.dart';
 import 'package:health_mate/src/consultant/domain/entities/category_entity.dart';
 
 import 'package:health_mate/src/consultant/presentaion/app/provider/category_provider.dart';
-import 'package:health_mate/src/consultant/presentaion/app/state/category_state.dart';
 import 'package:health_mate/src/consultant/presentaion/widgets/select_category_card.dart';
 
 class SelectInterestList extends ConsumerStatefulWidget {
@@ -41,12 +41,14 @@ class _SelectInterestItemState extends ConsumerState<SelectInterestList> {
             height: 16,
           ),
           Expanded(
-            child: consultantState.status == InterestConsultantStatus.loading
-                ? const Center(child: CircularProgressIndicator())
-                : consultantState.status == InterestConsultantStatus.error
-                    ? Center(
-                        child: Text('Lỗi: ${consultantState.errorMessage}'))
-                    : _ConsultantTypeGrid(consultantState.consultantsType),
+            child: consultantState.when(
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, _) {
+                final failure = error as Failure;
+                return Center(child: Text('Lỗi: ${failure.message}'));
+              },
+              data: (consultants) => _ConsultantTypeGrid(consultants),
+            ),
           ),
         ],
       ),

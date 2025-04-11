@@ -1,29 +1,31 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_mate/src/consultant/domain/usecase/get_category.dart';
-import 'package:health_mate/src/consultant/presentaion/app/state/category_state.dart';
+import 'package:health_mate/src/consultant/domain/entities/category_entity.dart';
 
 class InterestConsultantNotifier
-    extends StateNotifier<InterestConsultantState> {
+    extends StateNotifier<AsyncValue<List<CategoryEntity>>> {
   final GetInterestConsultantsUseCase _getInterestConsultantsUseCase;
-  InterestConsultantNotifier(this._getInterestConsultantsUseCase)
-      : super(InterestConsultantState.initial());
 
+  InterestConsultantNotifier(this._getInterestConsultantsUseCase)
+      : super(const AsyncValue.loading()) {
+    fetchConsultantTypes();
+  }
   Future<void> fetchConsultantTypes() async {
-    final result = await _getInterestConsultantsUseCase();
-    result.fold(
-      (failure) {
-        state = state.copyWith(
-          status: InterestConsultantStatus.error,
-          errorMessage: failure.message,
-        );
-      },
-      (consultantTypes) {
-        state = state.copyWith(
-          status: InterestConsultantStatus.loaded,
-          consultantsType: consultantTypes,
-          errorMessage: null,
-        );
-      },
-    );
+    state = const AsyncValue.loading();
+
+    try {
+      final result = await _getInterestConsultantsUseCase();
+
+      result.fold(
+        (failure) {
+          state = AsyncValue.error(failure, StackTrace.current);
+        },
+        (consultants) {
+          state = AsyncValue.data(consultants);
+        },
+      );
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
   }
 }

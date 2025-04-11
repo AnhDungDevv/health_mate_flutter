@@ -1,410 +1,331 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:health_mate/core/error/failure.dart';
 import 'package:health_mate/core/routing/routes_name.dart';
+import 'package:health_mate/src/consultant/presentaion/app/provider/category_provider.dart';
+import 'package:health_mate/src/home/presentation/app/providers/banner_provider.dart';
+import 'package:health_mate/src/home/presentation/app/providers/recommended_consultant_providers.dart';
 
-class ConsultantTabView extends StatelessWidget {
+class ConsultantTabView extends ConsumerWidget {
   const ConsultantTabView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return CustomScrollView(
       slivers: [
-        SliverToBoxAdapter(child: _buildBanner()),
+        SliverToBoxAdapter(child: _buildBannerListView(context, ref)),
         const SliverToBoxAdapter(child: SizedBox(height: 16)),
-        SliverToBoxAdapter(child: _buildCategories(context)),
+        SliverToBoxAdapter(child: _buildCategories(context, ref)),
         const SliverToBoxAdapter(child: SizedBox(height: 16)),
         SliverToBoxAdapter(
           child: _buildSectionHeader(context, "Recommended", onViewAll: () {}),
         ),
         const SliverToBoxAdapter(child: SizedBox(height: 8)),
-        SliverToBoxAdapter(child: _buildRecommended()),
+        SliverToBoxAdapter(child: _buildRecommended(context, ref)),
         const SliverToBoxAdapter(child: SizedBox(height: 16)),
         SliverToBoxAdapter(
           child: _buildSectionHeader(context, "Top Rated Doctor",
               onViewAll: () {}),
         ),
         const SliverToBoxAdapter(child: SizedBox(height: 8)),
-        SliverToBoxAdapter(child: _buildTopRated()),
+        _buildTopRated(context, ref),
         const SliverToBoxAdapter(child: SizedBox(height: 16)),
         SliverToBoxAdapter(child: _buildReferAndEarn(context)),
       ],
     );
   }
 
-  Widget _buildBanner() {
-    final List<Map<String, dynamic>> banners = [
-      {
-        "title": "Take Your First Consultant and Get 10% OFF",
-        "subtitle": "Coupon automatically apply on your first order",
-        "icon": Icons.local_offer,
-        "image": "assets/images/take_consultant/1.png",
-      },
-      {
-        "title": "Free Shipping on Orders Over \$50",
-        "subtitle": "Limited time offer. Shop now!",
-        "icon": Icons.local_shipping,
-        "image": "assets/images/take_consultant/1.png",
-      },
-      {
-        "title": "Refer a Friend & Get \$5 OFF",
-        "subtitle": "Share the love and earn rewards",
-        "icon": Icons.people,
-        "image": "assets/images/take_consultant/1.png",
-      },
-    ];
+  Widget _buildCategories(BuildContext context, WidgetRef ref) {
+    final categoriesState = ref.watch(interestConsultantProvider);
 
-    return SizedBox(
-      height: 120,
-      child: ListView.separated(
-        separatorBuilder: (_, __) => const SizedBox(width: 16),
-        itemCount: banners.length,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) {
-          final banner = banners[index];
-          return Container(
-            width: 300.w,
-            height: 150.h,
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(8),
-              image: DecorationImage(
-                image: AssetImage(banner["image"] as String),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Stack(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black.withAlpha((0.7 * 255).toInt()),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              banner["title"] as String,
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 8),
-                            SizedBox(
-                              width: 200.w,
-                              child: Text(
-                                banner["subtitle"] as String,
-                                style: const TextStyle(
-                                    fontSize: 12, color: Colors.white),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Icon(banner["icon"], color: Colors.orange, size: 40),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  bottom: 8,
-                  right: 8,
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withAlpha((0.6 * 255).toInt()),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Text(
-                      "1/4",
-                      style: TextStyle(
-                        color: Colors.white, // White text color
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildCategories(BuildContext context) {
-    final categories = [
-      {"title": "Doctor", "image": "assets/images/category/cate1.png"},
-      {"title": "Lawyer", "image": "assets/images/category/cate2.png"},
-      {"title": "Mentor", "image": "assets/images/category/cate3.png"},
-    ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionHeader(context, "Choose your category", onViewAll: () {}),
         const SizedBox(height: 8),
-        SizedBox(
-          height: 180.h,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: categories.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 16),
-            itemBuilder: (context, index) {
-              return Container(
-                width: 150.w,
-                height: 180.h,
-                decoration: BoxDecoration(
+        categoriesState.when(
+          loading: () => const SizedBox(
+            height: 180,
+            child: Center(child: CircularProgressIndicator()),
+          ),
+          error: (error, _) {
+            final failure = error as Failure;
+            return SizedBox(
+              height: 180,
+              child: Center(
+                child: Text('Lỗi: ${failure.message}'),
+              ),
+            );
+          },
+          data: (categories) => SizedBox(
+            height: 180.h,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: categories.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 16),
+              itemBuilder: (context, index) {
+                final category = categories[index];
+                return Container(
+                  width: 150.w,
+                  height: 180.h,
+                  decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     image: DecorationImage(
-                      image: AssetImage(categories[index]["image"].toString()),
+                      image: AssetImage(category.imageURL),
                       fit: BoxFit.cover,
-                    )),
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        height: 90.h,
-                        decoration: BoxDecoration(
+                    ),
+                  ),
+                  child: Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          height: 90.h,
+                          decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
                             gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Colors.transparent,
-                                  Colors.black.withAlpha((0.7 * 255).toInt())
-                                ])),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 10,
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.transparent,
+                                Colors.black.withAlpha((0.7 * 255).toInt())
+                              ],
+                            ),
+                          ),
                         ),
-                        child: Text(
-                          categories[index]["title"].toString(),
-                          style: const TextStyle(
+                      ),
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 10,
+                          ),
+                          child: Text(
+                            category.name, // giả sử `title` là tên category
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16,
-                              fontWeight: FontWeight.bold),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
-                      ),
-                    )
-                  ],
-                ),
-              );
-            },
+                      )
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildRecommended() {
-    final recommended = [
-      {
-        "name": "Dr. Vinod Kumar",
-        "image": "assets/images/user_consultant/1.png",
-        "specialty": "Orthopedic",
-        "rating": 4.5,
-        "online": true
-      },
-      {
-        "name": "Dr. Madhuri",
-        "image": "assets/images/user_consultant/1.png",
-        "specialty": "Gynecologist",
-        "rating": 4.8,
-        "online": false
-      },
-    ];
+  Widget _buildRecommended(BuildContext context, WidgetRef ref) {
+    final recommendedList = ref.watch(recommendedConsultantListProvider);
 
-    return SizedBox(
-      height: 180.h,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: recommended.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 16),
-        itemBuilder: (context, index) {
-          final item = recommended[index];
-          return Container(
-            width: 150.w,
-            height: 176.h,
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: Theme.of(context).colorScheme.surface),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Stack(
+    return recommendedList.when(
+      loading: () => const CircularProgressIndicator(),
+      error: (e, _) => Text('Lỗi: $e'),
+      data: (consultants) {
+        return SizedBox(
+          height: 180.h,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: consultants.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 16),
+            itemBuilder: (context, index) {
+              final item = consultants[index];
+              return Container(
+                width: 150.w,
+                height: 176.h,
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border:
+                      Border.all(color: Theme.of(context).colorScheme.surface),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    ClipOval(
-                      child: Image.asset(
-                        item["image"] as String,
-                        width: 60.w,
-                        height: 60.h,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 1,
-                      right: 1,
-                      child: Container(
-                        width: 15.w,
-                        height: 15.w,
-                        decoration: BoxDecoration(
-                          border: Border.all(width: 2, color: Colors.white),
-                          color: item["online"] as bool
-                              ? Colors.green
-                              : Colors.red,
-                          shape: BoxShape.circle,
+                    Stack(
+                      children: [
+                        ClipOval(
+                          child: Image.asset(
+                            item.consultant.image, // giả sử `image` là string
+                            width: 60.w,
+                            height: 60.h,
+                            fit: BoxFit.cover,
+                          ),
                         ),
+                        Positioned(
+                          bottom: 1,
+                          right: 1,
+                          child: Container(
+                            width: 15.w,
+                            height: 15.w,
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 2, color: Colors.white),
+                              color: item.isOnline ? Colors.green : Colors.red,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      item.consultant.name,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      item.consultant.specialty,
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                    const Spacer(),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10.w),
+                      color: Theme.of(context).colorScheme.tertiaryContainer,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.star,
+                              color: Colors.orange, size: 16),
+                          Text("${item.consultant.rating}"),
+                        ],
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  item["name"] as String,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTopRated(BuildContext context, WidgetRef ref) {
+    final topRatedAsync = ref.watch(topConsultantListProvider);
+
+    return topRatedAsync.when(
+      data: (consultants) {
+        print('TopRated consultants count: ${consultants.length}'); // Debug
+        if (consultants.isEmpty) {
+          return SliverToBoxAdapter(
+            child: SizedBox(
+              height: 100.h,
+              child: const Center(
+                child: Text(
+                  'No top-rated consultants available',
+                  style: TextStyle(color: Colors.grey),
                 ),
-                Text(
-                  item["specialty"] as String,
-                  style: const TextStyle(color: Colors.grey),
-                ),
-                const Spacer(),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w),
-                  color: Theme.of(context).colorScheme.tertiaryContainer,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.star, color: Colors.orange, size: 16),
-                      Text("${item["rating"]}"),
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ),
           );
-        },
+        }
+        return SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              final item = consultants[index];
+              return _buildTopRatedItem(context, item);
+            },
+            childCount: consultants.length,
+          ),
+        );
+      },
+      loading: () => const SliverToBoxAdapter(
+        child: SizedBox(
+          height: 100,
+          child: Center(child: CircularProgressIndicator()),
+        ),
+      ),
+      error: (err, stack) => SliverToBoxAdapter(
+        child: SizedBox(
+          height: 100.h,
+          child: Center(child: Text('Error: $err')),
+        ),
       ),
     );
   }
 
-  Widget _buildTopRated() {
-    final topRated = [
-      {
-        "name": "Dr. John Smith",
-        "image": "assets/images/user_consultant/1.png",
-        "specialty": "Clinical Psychologist",
-        "rating": 4.9,
-        "online": true
-      },
-      {
-        "name": "Dr. John Smith",
-        "image": "assets/images/user_consultant/1.png",
-        "specialty": "Clinical Psychologist",
-        "rating": 5.0,
-        "online": false
-      },
-      {
-        "name": "Dr. John Smith",
-        "image": "assets/images/user_consultant/1.png",
-        "specialty": "Clinical Psychologist",
-        "rating": 4.8,
-        "online": true
-      },
-    ];
-
-    return Column(
-      children: List.generate(topRated.length, (index) {
-        final item = topRated[index];
-        return Container(
-          margin: const EdgeInsets.only(bottom: 8),
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withAlpha((0.2 * 255).toInt()),
-                blurRadius: 4,
-                spreadRadius: 2,
-              ),
-            ],
+  Widget _buildTopRatedItem(BuildContext context, dynamic item) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            blurRadius: 4,
+            spreadRadius: 2,
           ),
-          child: Row(
+        ],
+      ),
+      child: Row(
+        children: [
+          Stack(
             children: [
-              Stack(
-                children: [
-                  ClipOval(
-                    child: Image.asset(
-                      item["image"] as String,
-                      width: 60.w,
-                      height: 60.h,
-                      fit: BoxFit.cover,
-                    ),
+              ClipOval(
+                child: Image.asset(
+                  item.consultant.image ?? 'assets/images/default.png',
+                  width: 60.w,
+                  height: 60.h,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Icon(
+                    Icons.person,
+                    size: 60.w,
+                    color: Colors.grey,
                   ),
-                  Positioned(
-                    bottom: 1,
-                    right: 1,
-                    child: Container(
-                      width: 15.w,
-                      height: 15.w,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 2, color: Colors.white),
-                        color:
-                            item["online"] as bool ? Colors.green : Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item["name"] as String,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      item["specialty"] as String,
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                  ],
                 ),
               ),
-              Row(
-                children: [
-                  const Icon(Icons.star, color: Colors.orange, size: 16),
-                  Text("${item["rating"]}"),
-                ],
+              Positioned(
+                bottom: 1,
+                right: 1,
+                child: Container(
+                  width: 15.w,
+                  height: 15.w,
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 2, color: Colors.white),
+                    color: item.isOnline ? Colors.green : Colors.red,
+                    shape: BoxShape.circle,
+                  ),
+                ),
               ),
             ],
           ),
-        );
-      }),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.consultant.name ?? 'Unknown',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  item.consultant.specialty ?? 'No specialty',
+                  style: const TextStyle(color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
+          Row(
+            children: [
+              const Icon(Icons.star, color: Colors.orange, size: 16),
+              Text(
+                "${item.consultant.rating ?? 0.0}",
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -428,6 +349,103 @@ class ConsultantTabView extends StatelessWidget {
             ),
             Icon(Icons.arrow_forward, color: Colors.white),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBannerListView(BuildContext context, WidgetRef ref) {
+    final bannerState = ref.watch(bannerNotifierProvider);
+    return bannerState.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Center(child: Text("Error: $e")),
+      data: (banners) => SizedBox(
+        height: 120,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          separatorBuilder: (_, __) => const SizedBox(width: 16),
+          itemCount: banners.length,
+          itemBuilder: (_, index) {
+            final banner = banners[index];
+            return Container(
+              width: 300.w,
+              height: 150.h,
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(8),
+                image: DecorationImage(
+                  image: AssetImage(banner.image),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black.withAlpha((0.7 * 255).toInt()),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                banner.title,
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 8),
+                              SizedBox(
+                                width: 200.w,
+                                child: Text(
+                                  banner.subtitle,
+                                  style: const TextStyle(
+                                      fontSize: 12, color: Colors.white),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Icon(banner.icon, color: Colors.orange, size: 40),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 8,
+                    right: 8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withAlpha((0.6 * 255).toInt()),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Text(
+                        "1/4",
+                        style: TextStyle(
+                          color: Colors.white, // White text color
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );

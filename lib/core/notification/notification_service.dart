@@ -38,7 +38,7 @@ class NotificationService {
 
   static Future<void> handleBackgroundNotification(
       RemoteMessage message) async {
-    AppLogger.info('📮 Background message: ${message.data}');
+    AppLogger.info(' Background message: ${message.data}');
     final data = message.data;
 
     await LocalNotificationHelper.showNotification(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:health_mate/core/error/failure.dart';
 import 'package:health_mate/core/routing/routes_name.dart';
 import 'package:health_mate/src/consultant/domain/entities/category_entity.dart';
 import 'package:health_mate/src/consultant/presentaion/app/provider/category_provider.dart';
@@ -31,24 +32,26 @@ class _SelectInterestItemState extends ConsumerState<CategoryConsultantView> {
       appBar: AppBar(
         title: const Text('Category'),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              const SearchConsultantNav(),
-              const SizedBox(
-                height: 16,
+      body: consultantState.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, _) {
+          final failure = error as Failure;
+          return Center(child: Text('Lỗi: ${failure.message}'));
+        },
+        data: (consultants) {
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: [
+                  const SearchConsultantNav(),
+                  const SizedBox(height: 16),
+                  _ConsultantTypeGrid(consultants),
+                ],
               ),
-              consultantState.status == InterestConsultantStatus.loading
-                  ? const Center(child: CircularProgressIndicator())
-                  : consultantState.status == InterestConsultantStatus.error
-                      ? Center(
-                          child: Text('Lỗi: ${consultantState.errorMessage}'))
-                      : _ConsultantTypeGrid(consultantState.consultantsType),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

@@ -44,7 +44,7 @@ class _SplashViewState extends ConsumerState<SplashView> {
 
     final role = authState.authData!.user.role;
     final userId = authState.authData!.user.id;
-    final socketUrl = 'ws://192.168.0.101:5000/api/v1/ws?user_id=$userId';
+    final socketUrl = 'ws://192.168.0.104:5000/api/v1/ws?user_id=$userId';
     WebSocketSingleton.init(socketUrl);
     final nextRoute = role == Role.customer
         ? RoutesName.mainLayoutCustomerView

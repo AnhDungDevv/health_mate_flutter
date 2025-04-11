@@ -89,9 +89,7 @@ class ConversationNotifier
       List<ConversationEntity> conversations, List<ChatUserEntity> users) {
     return conversations.map((conversation) {
       final receiverId = conversation.memberIds.firstWhere(
-          (id) =>
-              id !=
-              "currentUserId", // Lấy người nhận (người không phải là currentUser)
+          (id) => id != "currentUserId",
           orElse: () => conversation.memberIds[0]);
 
       final receiver = users.firstWhere((user) => user.id == receiverId,
