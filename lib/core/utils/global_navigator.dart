@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:health_mate/src/call/presentaion/view/incomming_call_overlay_view.dart';
+import 'package:health_mate/src/video_call/presentaion/view/incomming_call_overlay_view.dart';
 
 class NavigationService {
   static final navigatorKey = GlobalKey<NavigatorState>();
