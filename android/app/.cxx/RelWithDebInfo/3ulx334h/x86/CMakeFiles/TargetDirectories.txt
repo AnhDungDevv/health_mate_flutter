@@ -1,0 +1,2 @@
+E:/Project/health_mate/android/app/.cxx/RelWithDebInfo/3ulx334h/x86/CMakeFiles/edit_cache.dir
+E:/Project/health_mate/android/app/.cxx/RelWithDebInfo/3ulx334h/x86/CMakeFiles/rebuild_cache.dir

@@ -28,7 +28,7 @@ class ProfileView extends StatelessWidget {
     {
       'title': 'Message',
       'subtitle': 'View and reply to your chats',
-      'onTap': RoutesName.chatListView,
+      'onTap': RoutesName.ConversationView,
     },
     {
       'title': 'Refer and Earn',

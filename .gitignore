@@ -1,0 +1,68 @@
+# Flutter/Dart default
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.flutter-versions
+pubspec.lock
+.melos_tool/
+
+# VS Code
+.vscode/
+
+# IntelliJ / Android Studio
+.idea/
+*.iml
+
+# macOS
+.DS_Store
+
+# Linux
+*.swp
+
+# Android
+android/.gradle/
+android/captures/
+android/.idea/
+android/local.properties
+android/app/debug/
+android/app/release/
+android/key.properties
+
+# iOS
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Pods/
+ios/.symlinks/
+ios/.flutter-plugins
+ios/.flutter-plugins-dependencies
+ios/Runner.xcworkspace
+ios/.generated/
+ios/Flutter/App.framework
+ios/Flutter/engine/
+ios/Flutter/ephemeral/
+ios/Flutter/*.xcframework
+
+# Web
+web/.dart_tool/
+
+# Windows
+windows/.dart_tool/
+windows/flutter/
+windows/CMakeFiles/
+windows/Runner/GeneratedPluginRegistrant.*
+
+# Fuchsia
+.fuchsia/
+
+# Tests
+coverage/
+
+# Misc
+*.log
+*.tmp
+*.lock
+
+# Firebase (nếu bạn dùng)
+firebase.json

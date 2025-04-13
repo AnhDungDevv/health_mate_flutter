@@ -14,7 +14,7 @@ part of 'chat_message_model.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$ChatMessageModelImpl {
+mixin _$ChatMessageModel {
   String get id;
   String get conversationId;
   String get senderId;
@@ -24,22 +24,22 @@ mixin _$ChatMessageModelImpl {
   DateTime get timestamp;
   bool get isRead;
 
-  /// Create a copy of ChatMessageModelImpl
+  /// Create a copy of ChatMessageModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $ChatMessageModelImplCopyWith<ChatMessageModelImpl> get copyWith =>
-      _$ChatMessageModelImplCopyWithImpl<ChatMessageModelImpl>(
-          this as ChatMessageModelImpl, _$identity);
+  $ChatMessageModelCopyWith<ChatMessageModel> get copyWith =>
+      _$ChatMessageModelCopyWithImpl<ChatMessageModel>(
+          this as ChatMessageModel, _$identity);
 
-  /// Serializes this ChatMessageModelImpl to a JSON map.
+  /// Serializes this ChatMessageModel to a JSON map.
   Map<String, dynamic> toJson();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is ChatMessageModelImpl &&
+            other is ChatMessageModel &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.conversationId, conversationId) ||
                 other.conversationId == conversationId) &&
@@ -61,15 +61,15 @@ mixin _$ChatMessageModelImpl {
 
   @override
   String toString() {
-    return 'ChatMessageModelImpl(id: $id, conversationId: $conversationId, senderId: $senderId, receiverId: $receiverId, type: $type, content: $content, timestamp: $timestamp, isRead: $isRead)';
+    return 'ChatMessageModel(id: $id, conversationId: $conversationId, senderId: $senderId, receiverId: $receiverId, type: $type, content: $content, timestamp: $timestamp, isRead: $isRead)';
   }
 }
 
 /// @nodoc
-abstract mixin class $ChatMessageModelImplCopyWith<$Res> {
-  factory $ChatMessageModelImplCopyWith(ChatMessageModelImpl value,
-          $Res Function(ChatMessageModelImpl) _then) =
-      _$ChatMessageModelImplCopyWithImpl;
+abstract mixin class $ChatMessageModelCopyWith<$Res> {
+  factory $ChatMessageModelCopyWith(
+          ChatMessageModel value, $Res Function(ChatMessageModel) _then) =
+      _$ChatMessageModelCopyWithImpl;
   @useResult
   $Res call(
       {String id,
@@ -83,14 +83,14 @@ abstract mixin class $ChatMessageModelImplCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$ChatMessageModelImplCopyWithImpl<$Res>
-    implements $ChatMessageModelImplCopyWith<$Res> {
-  _$ChatMessageModelImplCopyWithImpl(this._self, this._then);
+class _$ChatMessageModelCopyWithImpl<$Res>
+    implements $ChatMessageModelCopyWith<$Res> {
+  _$ChatMessageModelCopyWithImpl(this._self, this._then);
 
-  final ChatMessageModelImpl _self;
-  final $Res Function(ChatMessageModelImpl) _then;
+  final ChatMessageModel _self;
+  final $Res Function(ChatMessageModel) _then;
 
-  /// Create a copy of ChatMessageModelImpl
+  /// Create a copy of ChatMessageModel
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -143,8 +143,8 @@ class _$ChatMessageModelImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _ChatMessageModelImpl extends ChatMessageModelImpl {
-  const _ChatMessageModelImpl(
+class _ChatMessageModel extends ChatMessageModel {
+  const _ChatMessageModel(
       {required this.id,
       required this.conversationId,
       required this.senderId,
@@ -154,8 +154,8 @@ class _ChatMessageModelImpl extends ChatMessageModelImpl {
       required this.timestamp,
       required this.isRead})
       : super._();
-  factory _ChatMessageModelImpl.fromJson(Map<String, dynamic> json) =>
-      _$ChatMessageModelImplFromJson(json);
+  factory _ChatMessageModel.fromJson(Map<String, dynamic> json) =>
+      _$ChatMessageModelFromJson(json);
 
   @override
   final String id;
@@ -174,18 +174,17 @@ class _ChatMessageModelImpl extends ChatMessageModelImpl {
   @override
   final bool isRead;
 
-  /// Create a copy of ChatMessageModelImpl
+  /// Create a copy of ChatMessageModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$ChatMessageModelImplCopyWith<_ChatMessageModelImpl> get copyWith =>
-      __$ChatMessageModelImplCopyWithImpl<_ChatMessageModelImpl>(
-          this, _$identity);
+  _$ChatMessageModelCopyWith<_ChatMessageModel> get copyWith =>
+      __$ChatMessageModelCopyWithImpl<_ChatMessageModel>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$ChatMessageModelImplToJson(
+    return _$ChatMessageModelToJson(
       this,
     );
   }
@@ -194,7 +193,7 @@ class _ChatMessageModelImpl extends ChatMessageModelImpl {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _ChatMessageModelImpl &&
+            other is _ChatMessageModel &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.conversationId, conversationId) ||
                 other.conversationId == conversationId) &&
@@ -216,16 +215,16 @@ class _ChatMessageModelImpl extends ChatMessageModelImpl {
 
   @override
   String toString() {
-    return 'ChatMessageModelImpl(id: $id, conversationId: $conversationId, senderId: $senderId, receiverId: $receiverId, type: $type, content: $content, timestamp: $timestamp, isRead: $isRead)';
+    return 'ChatMessageModel(id: $id, conversationId: $conversationId, senderId: $senderId, receiverId: $receiverId, type: $type, content: $content, timestamp: $timestamp, isRead: $isRead)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$ChatMessageModelImplCopyWith<$Res>
-    implements $ChatMessageModelImplCopyWith<$Res> {
-  factory _$ChatMessageModelImplCopyWith(_ChatMessageModelImpl value,
-          $Res Function(_ChatMessageModelImpl) _then) =
-      __$ChatMessageModelImplCopyWithImpl;
+abstract mixin class _$ChatMessageModelCopyWith<$Res>
+    implements $ChatMessageModelCopyWith<$Res> {
+  factory _$ChatMessageModelCopyWith(
+          _ChatMessageModel value, $Res Function(_ChatMessageModel) _then) =
+      __$ChatMessageModelCopyWithImpl;
   @override
   @useResult
   $Res call(
@@ -240,14 +239,14 @@ abstract mixin class _$ChatMessageModelImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$ChatMessageModelImplCopyWithImpl<$Res>
-    implements _$ChatMessageModelImplCopyWith<$Res> {
-  __$ChatMessageModelImplCopyWithImpl(this._self, this._then);
+class __$ChatMessageModelCopyWithImpl<$Res>
+    implements _$ChatMessageModelCopyWith<$Res> {
+  __$ChatMessageModelCopyWithImpl(this._self, this._then);
 
-  final _ChatMessageModelImpl _self;
-  final $Res Function(_ChatMessageModelImpl) _then;
+  final _ChatMessageModel _self;
+  final $Res Function(_ChatMessageModel) _then;
 
-  /// Create a copy of ChatMessageModelImpl
+  /// Create a copy of ChatMessageModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -261,7 +260,7 @@ class __$ChatMessageModelImplCopyWithImpl<$Res>
     Object? timestamp = null,
     Object? isRead = null,
   }) {
-    return _then(_ChatMessageModelImpl(
+    return _then(_ChatMessageModel(
       id: null == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable

@@ -5,27 +5,11 @@ import 'package:health_mate/src/chat/domain/entity/chat_message_entity.dart';
 part 'chat_message_model.freezed.dart';
 part 'chat_message_model.g.dart';
 
-// Định nghĩa interface với toEntity
-abstract class ChatMessageModel {
-  String get id;
-  String get conversationId;
-  String get senderId;
-  String get receiverId;
-  String get type;
-  String get content;
-  DateTime get timestamp;
-  bool get isRead;
-
-  ChatMessageEntity toEntity();
-}
-
 @freezed
-sealed class ChatMessageModelImpl
-    with _$ChatMessageModelImpl
-    implements ChatMessageModel {
-  const ChatMessageModelImpl._();
+sealed class ChatMessageModel with _$ChatMessageModel {
+  const ChatMessageModel._();
 
-  const factory ChatMessageModelImpl({
+  const factory ChatMessageModel({
     required String id,
     required String conversationId,
     required String senderId,
@@ -34,13 +18,13 @@ sealed class ChatMessageModelImpl
     required String content,
     required DateTime timestamp,
     required bool isRead,
-  }) = _ChatMessageModelImpl;
+  }) = _ChatMessageModel;
 
-  factory ChatMessageModelImpl.fromJson(Map<String, dynamic> json) =>
-      _$ChatMessageModelImplFromJson(json);
+  factory ChatMessageModel.fromJson(Map<String, dynamic> json) =>
+      _$ChatMessageModelFromJson(json);
 
-  factory ChatMessageModelImpl.fromEntity(ChatMessageEntity entity) =>
-      ChatMessageModelImpl(
+  factory ChatMessageModel.fromEntity(ChatMessageEntity entity) =>
+      ChatMessageModel(
         id: entity.id,
         conversationId: entity.conversationId,
         senderId: entity.senderId,
@@ -50,8 +34,9 @@ sealed class ChatMessageModelImpl
         timestamp: entity.timestamp,
         isRead: entity.isRead,
       );
+}
 
-  @override
+extension ChatMessageModelX on ChatMessageModel {
   ChatMessageEntity toEntity() => ChatMessageEntity(
         id: id,
         conversationId: conversationId,

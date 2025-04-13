@@ -7,12 +7,12 @@ import 'package:health_mate/src/chat/data/models/chat_message_model.dart';
 
 abstract class ChatWsSource {
   Future<void> disconnect();
-  void sendMessage(ChatMessageModelImpl message);
-  Stream<ChatMessageModelImpl> get onMessageReceived;
+  void sendMessage(ChatMessageModel message);
+  Stream<ChatMessageModel> get onMessageReceived;
 }
 
 class ChatWebSocketSourceImpl implements ChatWsSource {
-  final _messageController = StreamController<ChatMessageModelImpl>.broadcast();
+  final _messageController = StreamController<ChatMessageModel>.broadcast();
   StreamSubscription? _subscription;
 
   ChatWebSocketSourceImpl() {
@@ -28,29 +28,28 @@ class ChatWebSocketSourceImpl implements ChatWsSource {
 
             // Phân loại message theo type
             if (decoded['type'] == 'chat_message') {
-              final message = ChatMessageModelImpl.fromJson(decoded['data']);
+              final message = ChatMessageModel.fromJson(decoded['data']);
               _messageController.add(message);
             } else {
-              AppLogger.info('📨 Received other type: ${decoded['type']}');
+              AppLogger.info(' Received other type: ${decoded['type']}');
             }
           } catch (e) {
-            AppLogger.error('❌ Error decoding data: $e');
+            AppLogger.error('Error decoding data: $e');
           }
         },
         onError: (error) => AppLogger.error('❌ WebSocket error: $error'),
         onDone: () => AppLogger.info('🔌 WebSocket closed'),
       );
     } catch (e) {
-      AppLogger.error('❌ WebSocket subscription failed: $e');
+      AppLogger.error(' WebSocket subscription failed: $e');
     }
   }
 
   @override
-  Stream<ChatMessageModelImpl> get onMessageReceived =>
-      _messageController.stream;
+  Stream<ChatMessageModel> get onMessageReceived => _messageController.stream;
 
   @override
-  void sendMessage(ChatMessageModelImpl message) {
+  void sendMessage(ChatMessageModel message) {
     final data = json.encode({
       "type": "chat_message",
       "data": message.toJson(),

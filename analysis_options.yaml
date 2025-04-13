@@ -1,0 +1,16 @@
+# analysis_options.yaml
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  errors:
+    library_private_types_in_public_api: ignore
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+
+linter:
+  rules:
+    # Bạn có thể thêm các quy tắc bổ sung hoặc bỏ qua một số quy tắc theo nhu cầu của dự án.
+    - prefer_const_constructors
+    - prefer_const_literals_to_create_immutables
+    - avoid_print

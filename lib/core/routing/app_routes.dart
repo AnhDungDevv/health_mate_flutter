@@ -6,8 +6,8 @@ import 'package:health_mate/src/auth/presentation/views/register/consultant_info
 import 'package:health_mate/src/auth/presentation/views/register/customer_infomation.dart';
 import 'package:health_mate/src/auth/presentation/views/register/customer_select_interest.dart';
 import 'package:health_mate/src/auth/presentation/views/sign_in/sign_in_view.dart';
-import 'package:health_mate/src/chat/presentaion/view/chat_list_view.dart';
 import 'package:health_mate/src/chat/presentaion/view/chat_view.dart';
+import 'package:health_mate/src/chat/presentaion/view/conversations_view.dart';
 import 'package:health_mate/src/chat/presentaion/view/search_chat_view.dart';
 import 'package:health_mate/src/consultant/presentaion/views/category_specfic_view.dart';
 import 'package:health_mate/src/consultant/presentaion/views/consultantion_detail_view.dart';
@@ -42,7 +42,7 @@ class Routes {
       RoutesName.searchView: const SearchConsultantView(),
       RoutesName.updateProfileView: const UpdateProfileView(),
       RoutesName.referAndEarnView: const ReferAndEarnView(),
-      RoutesName.chatListView: const ChatListView(),
+      RoutesName.ConversationView: const ConversationView(),
       RoutesName.chatView: ChatView(),
       RoutesName.myWalletView: const MyWalletView(),
       RoutesName.searchChatView: const SearchChatView(),

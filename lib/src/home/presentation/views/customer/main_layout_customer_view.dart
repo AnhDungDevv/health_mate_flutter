@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:health_mate/src/chat/presentaion/view/chat_list_view.dart';
+import 'package:health_mate/src/chat/presentaion/view/conversations_view.dart';
 import 'package:health_mate/src/consultant/presentaion/views/my_consultant_view.dart';
 import 'package:health_mate/src/home/presentation/views/customer/home_customer_view.dart';
 import 'package:health_mate/src/consultant/presentaion/views/category_list_view.dart';
@@ -18,7 +18,7 @@ class MainLayoutCustomerView extends ConsumerWidget {
     final selectedIndex = ref.watch(selectedViewProvider);
     final loadedTabs = ref.watch(loadedTabsProvider);
 
-    // Load tab khi được mở
+    // Load when open app
     ref.listen(selectedViewProvider, (prev, next) {
       final current = ref.read(loadedTabsProvider);
       if (!current.contains(next)) {
@@ -37,7 +37,7 @@ class MainLayoutCustomerView extends ConsumerWidget {
           case 2:
             return const MyConsultantView();
           case 3:
-            return const ChatListView();
+            return const ConversationView();
           case 4:
             return ProfileView();
         }

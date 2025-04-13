@@ -1,5 +1,6 @@
 import 'package:health_mate/core/error/failure.dart';
 import 'package:health_mate/src/chat/data/models/chat_message_model.dart';
+import 'package:health_mate/src/chat/data/models/conversation_model.dart';
 import 'package:health_mate/src/chat/data/sources/chat_remote_source.dart';
 import 'package:health_mate/src/chat/data/sources/chat_ws_source.dart';
 import 'package:health_mate/src/chat/domain/entity/chat_message_entity.dart';
@@ -39,7 +40,7 @@ class ChatRepositoryImpl implements ChatRepository {
   @override
   void sendMessage(ChatMessageEntity message) {
     try {
-      final model = ChatMessageModelImpl.fromEntity(message);
+      final model = ChatMessageModel.fromEntity(message);
       ws.sendMessage(model);
     } catch (error) {
       throw Failure.fromException(error);

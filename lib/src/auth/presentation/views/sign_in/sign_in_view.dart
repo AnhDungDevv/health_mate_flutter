@@ -132,7 +132,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           ),
 
           /// Loading Overlay
-
           Consumer(
             builder: (context, ref, child) {
               final isLoading = ref.watch(signInProvider

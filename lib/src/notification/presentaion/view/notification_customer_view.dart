@@ -1,46 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-final notificationProvider = Provider<List<NotificationItem>>((ref) {
-  // Replace with your data fetching logic
-  return [
-    NotificationItem(
-      title: 'Dr John sent you a message',
-      description: 'Hi there...',
-      time: '12:23 PM',
-      date: DateTime.now(),
-      type: NotificationType.message,
-    ),
-    NotificationItem(
-      title: 'New Application Update',
-      description: 'Now you can decline call easily in the...',
-      time: '12:23 PM',
-      date: DateTime.now(),
-      type: NotificationType.update,
-    ),
-    NotificationItem(
-      title: '\$12 Debited from Wallet',
-      description: 'Call consultant with Dr John',
-      time: '12:23 PM',
-      date: DateTime.now().subtract(const Duration(days: 1)),
-      type: NotificationType.payment,
-    ),
-    NotificationItem(
-      title: '\$120 Credited to Wallet',
-      description: '',
-      time: '12:23 PM',
-      date: DateTime.now().subtract(const Duration(days: 1)),
-      type: NotificationType.payment,
-    ),
-  ];
-});
+import 'package:health_mate/src/notification/domain/entity/notification_entity.dart';
+import 'package:health_mate/src/notification/presentaion/app/provider/notificationprovider.dart';
 
 class NotificationCustomerView extends ConsumerWidget {
   const NotificationCustomerView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notifications = ref.watch(notificationProvider);
+    final state = ref.watch(notificationStateProvider);
+    final notifications = state.notifications;
 
     return DefaultTabController(
       length: 2,
@@ -104,7 +73,7 @@ class NotificationCustomerView extends ConsumerWidget {
 }
 
 class NotificationList extends StatelessWidget {
-  final List<NotificationItem> notifications;
+  final List<NotificationEntity> notifications;
 
   const NotificationList({super.key, required this.notifications});
 
@@ -114,6 +83,7 @@ class NotificationList extends StatelessWidget {
     final todayNotifications = notifications
         .where((n) => n.date.day == today.day && n.date.month == today.month)
         .toList();
+
     final thisWeekNotifications = notifications
         .where((n) =>
             n.date.isBefore(today) &&
@@ -154,48 +124,30 @@ class SectionHeader extends StatelessWidget {
 }
 
 class NotificationTile extends StatelessWidget {
-  final NotificationItem notification;
+  final NotificationEntity notification;
 
   const NotificationTile({super.key, required this.notification});
+
+  IconData _getIconForNotificationType(NotificationType type) {
+    switch (type) {
+      case NotificationType.payment:
+        return Icons.payment;
+      case NotificationType.update:
+        return Icons.notifications_active;
+      case NotificationType.message:
+        return Icons.system_update;
+      default:
+        return Icons.notifications;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(notification.type.icon),
+      leading: Icon(_getIconForNotificationType(notification.type)),
       title: Text(notification.title),
       subtitle: Text(notification.description),
       trailing: Text(notification.time),
     );
   }
-}
-
-enum NotificationType { message, update, payment }
-
-extension NotificationTypeExtension on NotificationType {
-  IconData get icon {
-    switch (this) {
-      case NotificationType.message:
-        return Icons.message;
-      case NotificationType.update:
-        return Icons.update;
-      case NotificationType.payment:
-        return Icons.attach_money;
-    }
-  }
-}
-
-class NotificationItem {
-  final String title;
-  final String description;
-  final String time;
-  final DateTime date;
-  final NotificationType type;
-
-  NotificationItem({
-    required this.title,
-    required this.description,
-    required this.time,
-    required this.date,
-    required this.type,
-  });
 }

@@ -6,9 +6,8 @@ part of 'chat_message_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_ChatMessageModelImpl _$ChatMessageModelImplFromJson(
-        Map<String, dynamic> json) =>
-    _ChatMessageModelImpl(
+_ChatMessageModel _$ChatMessageModelFromJson(Map<String, dynamic> json) =>
+    _ChatMessageModel(
       id: json['id'] as String,
       conversationId: json['conversationId'] as String,
       senderId: json['senderId'] as String,
@@ -19,8 +18,7 @@ _ChatMessageModelImpl _$ChatMessageModelImplFromJson(
       isRead: json['isRead'] as bool,
     );
 
-Map<String, dynamic> _$ChatMessageModelImplToJson(
-        _ChatMessageModelImpl instance) =>
+Map<String, dynamic> _$ChatMessageModelToJson(_ChatMessageModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'conversationId': instance.conversationId,

@@ -22,9 +22,7 @@ class ChatRemoteSourceImpl implements ChatRemoteSource {
       final res = await _dio.get('/conversations/$userId');
       if (res.statusCode == 200) {
         final data = json.decode(res.data) as List;
-        return data
-            .map((json) => ConversationModelImpl.fromJson(json))
-            .toList();
+        return data.map((json) => ConversationModel.fromJson(json)).toList();
       } else {
         throw Exception('Failed to fetch conversations: ${res.statusCode}');
       }
@@ -39,7 +37,7 @@ class ChatRemoteSourceImpl implements ChatRemoteSource {
       final response = await _dio.get('conversations/$conversationId/messages');
       if (response.statusCode == 200) {
         final data = json.decode(response.data) as List;
-        return data.map((json) => ChatMessageModelImpl.fromJson(json)).toList();
+        return data.map((json) => ChatMessageModel.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load messages');
       }

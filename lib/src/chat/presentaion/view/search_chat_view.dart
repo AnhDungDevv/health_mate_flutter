@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_mate/core/routing/routes_name.dart';
-import 'package:health_mate/src/chat/presentaion/view/chat_list_view.dart';
+import 'package:health_mate/src/chat/presentaion/view/conversations_view.dart';
 import 'package:health_mate/src/search/presentation/widgets/search_input.dart';
 
 class SearchChatView extends ConsumerStatefulWidget {

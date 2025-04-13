@@ -8,7 +8,7 @@ class RoutesName {
   static const String homeConsultantView = "home_consultant_view";
   static const String updateProfileView = "update_profile_view";
   static const String myWalletView = "my_wallet_view";
-  static const String chatListView = "chat_list_view";
+  static const String ConversationView = "chat_list_view";
   static const String referAndEarnView = "funds_and_earn_view";
   static const String searchChatView = "search_chat_view";
   static const String chatView = "chat_view";

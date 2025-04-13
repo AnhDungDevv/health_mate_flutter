@@ -1,3 +1,4 @@
+// conversation_model.dart
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:health_mate/src/chat/domain/entity/conversation_entity.dart';
 import 'chat_message_model.dart';
@@ -5,46 +6,35 @@ import 'chat_message_model.dart';
 part 'conversation_model.freezed.dart';
 part 'conversation_model.g.dart';
 
-// Định nghĩa interface với toEntity
-abstract class ConversationModel {
-  String get id;
-  String get userId1;
-  String get userId2;
-  ChatMessageModel? get lastMessage;
-  DateTime get updatedAt;
-
-  ConversationEntity toEntity();
-}
-
 @freezed
-sealed class ConversationModelImpl
-    with _$ConversationModelImpl
-    implements ConversationModel {
-  const ConversationModelImpl._();
+sealed class ConversationModel with _$ConversationModel {
+  const ConversationModel._();
 
-  const factory ConversationModelImpl({
+  const factory ConversationModel({
     required String id,
     required String userId1,
     required String userId2,
-    ChatMessageModelImpl? lastMessage,
+    ChatMessageModel? lastMessage,
     required DateTime updatedAt,
-  }) = _ConversationModelImpl;
+  }) = _ConversationModel;
 
-  factory ConversationModelImpl.fromJson(Map<String, dynamic> json) =>
-      _$ConversationModelImplFromJson(json);
+  factory ConversationModel.fromJson(Map<String, dynamic> json) =>
+      _$ConversationModelFromJson(json);
 
-  factory ConversationModelImpl.fromEntity(ConversationEntity entity) =>
-      ConversationModelImpl(
+  factory ConversationModel.fromEntity(ConversationEntity entity) =>
+      ConversationModel(
         id: entity.id,
         userId1: entity.memberIds[0],
         userId2: entity.memberIds[1],
         lastMessage: entity.lastMessage != null
-            ? ChatMessageModelImpl.fromEntity(entity.lastMessage!)
+            ? ChatMessageModel.fromEntity(entity.lastMessage!)
             : null,
         updatedAt: entity.updatedAt,
       );
+}
 
-  @override
+// Extension để convert model → entity
+extension ConversationModelX on ConversationModel {
   ConversationEntity toEntity() => ConversationEntity(
         id: id,
         memberIds: [userId1, userId2],
@@ -52,7 +42,3 @@ sealed class ConversationModelImpl
         updatedAt: updatedAt,
       );
 }
-
-// Hàm helper để serialize lastMessage sang JSON
-Map<String, dynamic>? _toJsonLastMessage(ChatMessageModelImpl? message) =>
-    message?.toJson();

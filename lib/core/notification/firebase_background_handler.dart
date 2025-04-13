@@ -6,6 +6,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
 
   await LocalNotificationHelper.showNotification(
+    // message
     title: 'Hello',
     body: 'How are you',
     payload: 'are you ok',
